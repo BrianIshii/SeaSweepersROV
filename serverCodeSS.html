@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<style>
+			body{background-color:lightblue;}header{color:black;text-align:center;padding:0px;}
+			table{background-color:blue;width:400px;height: 700px;text-align:center;padding:0px;}tr{font-size:200%;padding:10px;}th{color:black;}td{color:red;}
+		</style>
+	</head>
+          
+	<body>
+		<header>
+			<h1 style=‘font-size:500%;’>
+			Sea Sweepers
+			</h1>
+		</header>
+    <table border=‘1’>
+		<tr>
+			<th>Temperature(F)</th>
+		</tr>
+		<tr>
+			<td>
+			client.println(temperatureF)
+			</td>
+		</tr>
+		<tr>
+			<th>Humidity</th>
+		</tr>
+		<tr>
+			<td>
+			client.print(DHT.humidity)
+			</td>
+		</tr>
+		<tr>
+			<th>
+			Temperature(C)
+			</th>
+		</tr>
+		<tr>
+			<td>
+			client.print(DHT.temperature)
+			</td>
+		</tr>          
+	</body>
+</html>
