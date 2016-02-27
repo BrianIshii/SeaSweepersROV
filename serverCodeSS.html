@@ -1,44 +1,234 @@
-<!DOCTYPE HTML>
-<html>
-	<head>
-		<style>
-			body{background-color:lightblue;}header{color:black;text-align:center;padding:0px;}
-			table{background-color:blue;width:400px;height: 700px;text-align:center;padding:0px;}tr{font-size:200%;padding:10px;}th{color:black;}td{color:red;}
-		</style>
-	</head>
-          
-	<body>
-		<header>
-			<h1 style=‘font-size:500%;’>
-			Sea Sweepers
-			</h1>
-		</header>
-    <table border=‘1’>
-		<tr>
-			<th>Temperature(F)</th>
-		</tr>
-		<tr>
-			<td>
-			client.println(temperatureF)
-			</td>
-		</tr>
-		<tr>
-			<th>Humidity</th>
-		</tr>
-		<tr>
-			<td>
-			client.print(DHT.humidity)
-			</td>
-		</tr>
-		<tr>
-			<th>
-			Temperature(C)
-			</th>
-		</tr>
-		<tr>
-			<td>
-			client.print(DHT.temperature)
-			</td>
-		</tr>          
-	</body>
-</html>
+<!DOCTYPE html>
+	<html>
+		<head>
+			<style>
+				body{
+					background-color:blue;
+				}
+				div.header {
+ 					text-align:center;
+					font-size:200%;
+  					position: fixed;
+  					top: 0px;
+  					width: 300px;
+   					height: 50px;
+   					color: black;
+   					border: 3px solid white;
+   				}
+				table.column {
+	 				bottom: 0px;
+	 				position: fixed;
+	 				height:350px;
+ 					width:300px;
+     				color:white;
+					font-size: 200%;
+     				border: 3px solid white;
+     				text-align:center;
+     			}
+				tr {
+					height: 50px;
+					border: 3px solid white;
+				}
+				th {
+					color:red;
+					border: 3px solid white;
+				}
+				table.motorVolts {
+					left: 300px;
+					bottom: 0px;
+					position: fixed;
+	 				height:200px;
+ 					width:278px;
+     				color:white;
+     				border: 3px solid white;
+					font-size: 150%;
+				}
+				table.bottom {
+     				border: 3px solid white;
+					font-size: 150%;
+	 				bottom: 0px;
+	 				position: fixed;
+	 				height:200px;
+ 					width:280px;
+     				color:white;
+    				text-align:center;
+    			}
+				#container {
+  					bottom: 216px;
+  					right: 585px;
+					position: fixed;
+  					width: 274px;
+  					height: 410px;
+  					background:#8B4513;
+  					border: 3px solid white;
+  				}
+				#animate {
+					top: 0px;
+  					width: 274px;
+  					height: 200px;
+  					position: absolute;
+  					background-color: lightblue;
+				}
+				#line {
+					top: 200px;
+					width: 274px;
+					height: 2px;
+					position: absolute;
+					background-color: black;
+				}
+				p.button{
+					margin-top: 100px;
+					float:right;
+				}
+				#depthData {
+	 				bottom: 216px;
+    				right: 303px;
+					position: fixed;
+  					width: 278px;
+  					height: 410px;
+  					background: lightblue;
+  					border: 3px solid white;
+
+				}
+				#ROV {
+ 					right: 40px;
+  					width: 50px;
+ 					height: 50px;
+  					position: absolute;
+  					background-color: black;
+				}
+				#depthLine {
+  					width: 278px;
+  					height: 2px;
+  					position: absolute;
+  					background-color: black;
+				}
+				#motorLayout {
+  					bottom: 216px;
+  					right: 861px;
+					position: fixed;
+  					width: 274px;
+  					height: 410px;
+  					background: grey;
+  					border: 3px solid white;
+  				}
+  				#motorBlock {
+  					width: 20px;
+  					height: 20px;
+  					position: absolute;
+  					background-color: black;
+				}
+			</style>
+		</head>
+		<body>
+			<div class="header" style ="left: 0px; background-color:yellow;">
+				WARNING
+			</div>
+			<div class="header" style = "left: 500px; right: 300px; color: white; ">
+				Sea Sweepers
+			</div>
+			<div class="header" style= "right: 0px; background-color:red;">
+				STOP
+			</div>
+
+			<table class="column" style="left: 0px;">
+  				<tr><th>Temperature(F)</th></tr>
+  				<tr><td>100</td></tr>
+  				<tr><th>Humidity</th></tr>
+  				<tr><td>20</td></tr>
+  				<tr><th>Temperature(C)</th></tr>
+  				<tr><td>100</td></tr>
+  				<tr><th><button onclick="myMove()">Click Me</button></th></tr>
+  				<tr><td><button onclick="depthAnimations()">depth</button></td></tr>
+  				<tr><th>Humidity</th></tr>
+  				<tr><td>20</td></tr>
+  				<tr><th>Temperature(C)</th></tr>
+  				<tr><td>100</td></tr>
+			</table>
+			<table class= "column" style = "right: 0px;">
+  				<tr><th>timer</th></tr>
+  				<tr><td>12:00</td></tr>
+  				<tr><th>ggg</th></tr>
+  				<tr><td>20</td></tr>
+  				<tr><th>Temperature</th></tr>
+  				<tr><td>100</td></tr>
+  				<tr><th>Temperature(F)</th></tr>
+  				<tr><td>100</td></tr>
+  				<tr><th>Humidity</th></tr>
+  				<tr><td>20</td></tr>
+  				<tr><th>Temperature(C)</th></tr>
+  				<tr><td>100</td></tr>
+			</table>
+			<div id ="container">
+				<div id ="animate"></div>
+				<div id ="line"></div>
+			</div>
+			<script>
+				function myMove() {
+  					var elem = document.getElementById("animate");   
+ 					var line = document.getElementById("line"); 
+  					var pos = 0;
+  					var start = 40;
+  					var id = setInterval(frame, 5);
+  					function frame() {
+    					if (pos == 350) {
+      						clearInterval(id);
+    					} else {
+     						 pos++; 
+     						 start++;
+     						 line.style.top = start + 'px';
+     						 elem.style.height = start + 'px';
+   						}	
+  					}
+				}
+			</script>
+			<div id ="depthData">
+				<div id ="ROV"></div>
+				<div id ="depthLine" style= "margin-top: 100px;">10</div>
+				<div id ="depthLine" style= "margin-top: 200px;">20</div>
+				<div id ="depthLine" style= "margin-top: 300px;">30</div>
+			</div>
+			<div id ="motorLayout">
+				<div id = "motorBlock"style= "top: 40px; right: 10px;"></div>
+				<div id = "motorBlock"style= "top: 40px; left: 10px;"></div>
+				<div id = "motorBlock"style= "top: 100px; right: 10px;"></div>
+				<div id = "motorBlock"style= "top: 100px; left: 10px;"></div>
+				<div id = "motorBlock"style= "bottom: 100px; right: 10px;"></div>
+				<div id = "motorBlock"style= "bottom: 100px; left: 10px;"></div>
+				<div id = "motorBlock"style= "bottom: 40px; right: 10px;"></div>
+				<div id = "motorBlock"style= "bottom: 40px; left: 10px;"></div>
+
+			</div>
+			<script>
+				function depthAnimations() {
+				var elem = document.getElementById("ROV");   
+ 				var pos = 0;
+  				var id = setInterval(frame, 5);
+  					function frame() {
+    					if (pos == 350) {
+      						clearInterval(id);
+    					} else {
+      						pos++; 
+      						elem.style.top = pos + 'px';   
+    					}
+  					}
+				}
+			</script>
+			<table class= "bottom" 	style= "right: 300px;" border="1">
+				<tr><th>depth</th></tr>
+				<tr><td>100</td></tr>
+  				<tr><th>Humiditdfdfy</th></tr>
+  				<tr><td>20</td></tr>
+  			<table class= "bottom" style= "	right: 580px;" border="1">
+  				<tr><th>Temperature(F)</th></tr>
+  				<tr><td>100</td></tr>
+  				<tr><th>Humiditdfdfy</th></tr>
+  				<tr><td>20</td></tr>
+    		<table class= "motorVolts" border="1" style>
+    			<tr><th>M1</th><th>M2</th><th>M3</th><th>M4</th></tr>
+   				<tr><td>100</td><td>100</td><td>100</td><td>100</td></tr>
+ 	 			<tr><th>M5</th><th>M6</th><th>M7</th><th>M8</th></tr>
+ 	 			<tr><td>20</td><td>100</td><td>100</td><td>100</td></tr>
+			</table>
+		</body>
+	</html>
