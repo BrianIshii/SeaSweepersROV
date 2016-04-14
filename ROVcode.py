@@ -405,62 +405,6 @@ class App():
 					except: 
 						print "bad CD"
 					self.currentDepthData.configure(text=depthBuffer,bg = color)
-    def dataThree(self,dataArray):
-    	global color 
-    	global pressureBuffer 
-    	first = 0
-    	pressureBuffer = ""		
-    	for item in range(len(dataArray)):
-			if first == 0:
-				if dataArray[item] == 'E':
-					first +=1
-					print item
-					a = 1
-					try:
-						while dataArray[int(item)+a] != 'F': 
-							pressureBuffer += dataArray[int(item)+a]
-							a +=1
-						print int(pressureBuffer)
-						if int(pressureBuffer) >= 71:
-							color = "red"
-							self.stopTitle.configure(bg = color)
-						elif int(pressureBuffer)>=71:
-							color = "yellow"
-							self.warningTitle.configure(bg = color)
-						else: 
-							color = "white"
-							#self.warningStop()
-					except: 
-						print "bad EF"
-					self.pressureData.configure(text=pressureBuffer,bg = color)
-    def dataThree(self,dataArray):
-    	global color 
-    	global vOneBuffer 
-    	first = 0
-    	vOneBuffer = ""		
-    	for item in range(len(dataArray)):
-			if first == 0:
-				if dataArray[item] == 'G':
-					first +=1
-					print item
-					a = 1
-					try:
-						while dataArray[int(item)+a] != 'H': 
-							vOneBuffer += dataArray[int(item)+a]
-							a +=1
-						print int(vOneBuffer)
-						if int(vOneBuffer) >= 71:
-							color = "red"
-							self.stopTitle.configure(bg = color)
-						elif int(vOneBuffer)>=71:
-							color = "yellow"
-							self.warningTitle.configure(bg = color)
-						else: 
-							color = "white"
-							#self.warningStop()
-					except: 
-						print "bad EF"
-					self.motorOneData.configure(text=vOneBuffer,bg = color)
     def compassData(self,angle):
 			print angle
 			pi = int(angle)
