@@ -5,7 +5,7 @@ import math
 from serial import *
 
 serialPort = "/dev/cu.usbmodemFD121"
-baudRate = 4800
+baudRate = 115200
 ser = Serial(serialPort , baudRate, timeout=0, writeTimeout=0) #ensure non-blocking
 serBuffer = ""
 tempBuffer= ""
@@ -34,6 +34,7 @@ e = ""
 g = ""
 b = ""
 color = "white"
+w=0
 
 altitudeBuffer = ""
 class App():
@@ -57,16 +58,15 @@ class App():
         		continue
         	self.l = tk.Label(text=l, bg ="gray").grid(column=0,row=x,columnspan=2)
         	x+=2
-        self.warningTitle = tk.Label(text="WARNING", bg="gray", width=10)
-        self.stopTitle = tk.Label(text="STOP", bg="gray", width=10)#needgrid
+        self.warningTitle = tk.Label(text="WARNING", bg="yellow", width=10)
+        self.stopTitle = tk.Label(text="STOP", bg="red", width=10)#needgrid
         self.title = tk.Label(text="Sea Sweepers", bg="gray")#needgrid
         
-        self.voltData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20, height=2)
-        
+        self.voltData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20, height=2) 
         self.ampData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2)
         
         self.temperatureData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2)
-        
+        self.angle = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2)
         self.humidityData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2)
         
         self.temperatureDataCelcius = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2)
@@ -113,7 +113,11 @@ class App():
         
         self.bottomDepthTitle = tk.Label(text="Bottom Depth", bg ="gray")
         self.bottomDepthData = tk.Label(text="TBA",relief=tk.SUNKEN,width=10,height=2)
-        
+
+        self.probeTempTitle = tk.Label(text="Probe Temperature", bg ="gray")
+        self.probeData = tk.Label(text="TBA",relief=tk.SUNKEN,width=10,height=2)
+        self.probeButton = tk.Button(text="top",width=7,highlightbackground="gray", background='black',command=self.probeTempValue)
+                
         self.timerTitle = tk.Label(text="Timer", bg="gray",width=10)
         self.timerButton = tk.Button(text= "Start", bg="gray", width=7,highlightbackground="gray", command=self.getTime)
         self.timerData = tk.Label(text="00:00", relief=tk.SUNKEN, width=20,height=2)
@@ -122,6 +126,7 @@ class App():
         self.topDepthButton = tk.Button(text="top",width=7,highlightbackground="gray", background='black',command=self.topDepthValue)
         self.middleDepthButton = tk.Button(text="middle",width=7,highlightbackground="gray", command=self.middleDepthValue)
         self.bottomDepthButton = tk.Button(text="bottom",width=7,highlightbackground="gray", command=self.bottomDepthValue)
+        
         #depthCanvas for depth
         self.depthCanvas = tk.Canvas(self.root, width=200, height = 400, background= "blue",bd=0,highlightthickness=1)
         self.rov = self.depthCanvas.create_rectangle(40, 20, 0, 0, outline='red', fill='black')
@@ -150,6 +155,17 @@ class App():
         self.horizonLine = self.horizonCanvas.create_line(0,100,200,200, activefill="white")#delete
         self.sky = self.horizonCanvas.create_rectangle(0,0,202,200, fill="blue", outline='black')
 
+        #motorControl
+        self.motorControl = tk.Canvas(self.root, width=200, height = 200, background= "gray")
+        self.hexagon = self.motorControl.create_polygon(25,75,75,25,125,25,175,75,175,135,125,185,75,185,25,135, outline='black', fill='black')
+        self.V1 = self.motorControl.create_oval(40,40,60,60, outline='black', fill='white')
+        self.V2 = self.motorControl.create_oval(140,40,160,60, outline='black', fill='white')		
+        self.V3 = self.motorControl.create_oval(40,150,60,170, outline='black', fill='white')		
+        self.V4 = self.motorControl.create_oval(140,150,160,170, outline='black', fill='white')		
+        self.H1 = self.motorControl.create_polygon(50,80,80,50,90,60,60,90,50,80, outline='black', fill='white')
+        self.H2 = self.motorControl.create_polygon(150,80,120,50,110,60,140,90,150,80, outline='black', fill='white')		
+        self.H3 = self.motorControl.create_polygon(50,120,80,150,90,140,60,110,50,120, outline='black', fill='white')		
+        self.H4 = self.motorControl.create_polygon(150,120,120,150,110,140,140,110,150,120, outline='black', fill='white')	
 
         #grid layout
         #left column
@@ -158,6 +174,7 @@ class App():
         self.voltData.grid(             column=0,  row=2,  columnspan=2)
         self.ampData.grid(              column=0,  row=4,  columnspan=2)
         self.temperatureData.grid(      column=0,  row=6,  columnspan=2)
+        self.angle.grid(                column=2,  row=6,  columnspan=4)        
         self.humidityData.grid(         column=0,  row=8,  columnspan=2)
         self.temperatureDataCelcius.grid(column=0, row=10, columnspan=2)
         self.pressureData.grid(         column=0,  row=12, columnspan=2)
@@ -190,13 +207,20 @@ class App():
         self.middleDepthTitle.grid(     column=9,  row=7)
         self.middleDepthButton.grid(    column=10, row=7)
         self.middleDepthData.grid(      column=9,  row=8)
-        self.bottomDepthTitle.grid(     column=9, row=9)
+        self.bottomDepthTitle.grid(     column=9,  row=9)
         self.bottomDepthButton.grid(    column=10, row=9)
-        self.bottomDepthData.grid(      column=9, row=10)
+        self.bottomDepthData.grid(      column=9,  row=10)
         
+        #probe right side
+        self.probeTempTitle.grid(       column=9,  row=11)
+        self.probeButton.grid(          column=10, row=11)        
+        self.probeData.grid(            column=9,  row=12)
+                
     	self.depthCanvas.grid(          column=7,   row=1, columnspan=2,  rowspan=10)
     	self.horizonCanvas.grid(        column=6,   row=1,                rowspan=10)
     	self.compassCanvas.grid(        column=2,   row=1, columnspan=4,  rowspan=5)
+    	self.motorControl.grid(         column=2,   row=8, columnspan=4,  rowspan=5)
+
     	self.update_data()
         self.root.mainloop()
     def topDepthValue(self):
@@ -208,6 +232,9 @@ class App():
     def bottomDepthValue(self):
     	global depthBuffer
     	self.bottomDepthData.configure(text=depthBuffer)
+    def probeTempValue(self):
+    	global probeTempBuffer
+    	self.probeData.configure(text=probeTempBuffer)
     def updateClock(self):
     	now = time.time()
         global startTime
@@ -228,10 +255,11 @@ class App():
     	startTime = int(start)
     	self.updateClock()
     def update_data(self):
+		global w
 		ser.close
 		ser.open
-		c = ""
-		serr = ""
+		serr=""
+		c= ""
 		first = 0
 		dataArray = []
 		global dataArray
@@ -239,41 +267,117 @@ class App():
 		for i in data:
 			dataArray.append(i)
 		print dataArray
-		
-		self.dataOne(dataArray)
-		self.dataTwo(dataArray)
+		w = 0
+		for i in range(19):
+			self.dataOne(i)
+		self.dataTwo()
 		self.root.after(400, self.update_data)
 
-    def dataOne(self,dataArray):
-    	global color
-    	global tempBuffer
+    def dataOne(self,c):
+    	head = ['A','B','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n']
+    	limits = ['23','29','109','110','20','20','20','20','20','20','20','20','20','20','20','20','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2']
+    	global color 
+    	global w
+    	buffers = ['tempBuffer','pressureBuffer', 'probeTempBuffer','vOneBuffer',
+    	 'vTwoBuffer','vThreeBuffer','vFourBuffer','hOneBuffer','hTwoBuffer','hThreeBuffer',
+		 'hFourBuffer','totalVoltBuffer','totalAmpBuffer','xAccelBuffer','yAccelBuffer',
+		 'zAccelBuffer','angleBuffer','waterOne','waterTwo']
+    	buf = buffers[c]
+    	global buf
     	first = 0
+    	buf = ""
     	for item in range(len(dataArray)):
 			if first == 0:
-				if dataArray[item] == 'A':
+				if dataArray[item] == head[2*c]:
 					first +=1
 					print item
 					a = 1
 					try:
-						while dataArray[int(item)+a] != 'B': 
-							tempBuffer += dataArray[int(item)+a]
+						while dataArray[int(item)+a] != head[(2*c)+1]: 
+							buf += dataArray[int(item)+a]
 							a +=1
-						print int(tempBuffer)
-						if int(tempBuffer) >= 73:
+						print int(buf)
+						if int(buf) >= int(limits[(2*c)+1]):
 							color = "red"
 							self.stopTitle.configure(bg = color)
-						elif int(tempBuffer)>=71:
+							w+=1
+						elif int(buf)>= int(limits[(2*c)]):
 							color = "yellow"
 							self.warningTitle.configure(bg = color)
+							w+=1
 						else: 
 							color = "white"
-							self.warningTitle.configure(bg ="gray")
-							self.stopTitle.configure(bg = "gray")
+							if w == 0:
+								self.warningTitle.configure(bg = "gray")
+								self.stopTitle.configure(bg = "gray")
 					except: 
 						print "bad AB"
-					self.temperatureData.configure(text=tempBuffer,bg = color)
-					tempBuffer = ""
-    def dataTwo(self,dataArray):
+					if c == 0:
+						self.temperatureData.configure(text=buf,bg = color)
+					elif c == 1:
+						self.pressureData.configure(text=buf, bg = color)
+					elif c == 2:
+						self.temperatureDataCelcius.configure(text=buf, bg = color)
+						global probeTempBuffer
+						probeTempBuffer = buf
+					elif c == 3:
+						self.motorOneData.configure(text=buf, bg = color)
+						if int(buf)>10:
+							self.motorControl.itemconfigure(self.V1, fill='green')
+							self.compassCanvas.update()
+					elif c == 4:
+						self.motorTwoData.configure(text=buf, bg = color)
+						if int(buf)>10:
+							self.motorControl.itemconfigure(self.V2, fill='green')
+							self.compassCanvas.update()
+					elif c == 5:
+						self.motorThreeData.configure(text=buf, bg = color)
+						if int(buf)>10:
+							self.motorControl.itemconfigure(self.V3, fill='green')
+							self.compassCanvas.update()
+					elif c == 6:
+						self.motorFourData.configure(text=buf, bg = color)
+						if int(buf)>10:
+							self.motorControl.itemconfigure(self.V4, fill='green')
+							self.compassCanvas.update()
+					elif c == 7:
+						self.motorFiveData.configure(text=buf, bg = color)
+						if int(buf)>10:
+							self.motorControl.itemconfigure(self.H1, fill='green')
+							self.compassCanvas.update()
+					elif c == 8:
+						self.motorSixData.configure(text=buf, bg = color)
+						if int(buf)>10:
+							self.motorControl.itemconfigure(self.H2, fill='green')
+							self.compassCanvas.update()
+					elif c == 9:
+						self.motorSevenData.configure(text=buf, bg = color)
+						if int(buf)>10:
+							self.motorControl.itemconfigure(self.H3, fill='green')
+							self.compassCanvas.update()
+					elif c == 10:
+						self.motorEightData.configure(text=buf, bg = color)
+						if int(buf)>10:
+							self.motorControl.itemconfigure(self.H4, fill='green')
+							self.compassCanvas.update()
+					elif c == 11:
+						self.voltData.configure(text=buf, bg = color)
+					elif c == 12:
+						self.ampData.configure(text=buf, bg = color)
+					elif c == 13:
+						self.aData.configure(text=buf, bg = color)
+					elif c == 14:
+						self.bData.configure(text=buf, bg = color)
+					elif c == 15:
+						self.humidityData.configure(text=buf, bg = color)
+					elif c == 16:
+						self.angle.configure(text=buf, bg = color)
+						self.compassData(buf)
+					elif c == 17:
+						self.waterSensorDataOne.configure(text=buf, bg = color)
+					elif c == 18:
+						self.waterSensorDataTwo.configure(text=buf, bg = color)
+    def dataTwo(self):
     	global color 
     	global depthBuffer 
     	first = 0
@@ -297,255 +401,69 @@ class App():
 							self.warningTitle.configure(bg = color)
 						else: 
 							color = "white"
-							self.warningTitle.configure(bg ="gray")
-							self.stopTitle.configure(bg = "gray")
+							#self.warningStop()
 					except: 
 						print "bad CD"
 					self.currentDepthData.configure(text=depthBuffer,bg = color)
-    def data(self,c):
-		global serBuffer
-		global tempBuffer
-		global depthBuffer 
-		global pressureBuffer 
-		global probeTempBuffer 
-		global vOneBuffer
-		global vTwoBuffer 
-		global vThreeBuffer
-		global vFourBuffer
-		global hOneBuffer 
-		global hTwoBuffer
-		global hThreeBuffer 
-		global hFourBuffer
-		global totalVoltBuffer 
-		global totalAmpBuffer
-		global xAccelBuffer
-		global yAccelBuffer
-		global zAccelBuffer 
-		global angleBuffer
-		global dataArray
-		global r
-		global e
-		global g
-		global b
-		global waterOne
-		global waterTwo
-		if c.find('A')!=-1:
-			head = c.find('A')
-			tail = c.find('B')
-			diff = tail - head
-			#print diff
-			for i in range(diff-1):
-				tempBuffer += c[head+i+1]
-			if tempBuffer != "":
-				self.temperatureData.configure(text=tempBuffer)
-				tempBuffer = ""		
-			else:
-				tempBuffer = ""
-		if c.find('C') !=-1:
-			head = c.find('C')
-			tail = c.find('D')
-			diff = tail - head
-			#print diff
-			for i in range(diff-1):
-				depthBuffer += c[head+i+1]
-			if depthBuffer !="":
-				self.currentDepthData.configure(text=depthBuffer)
-				depthBuffer = ""
-			else:
-				depthBuffer = ""	
-		if c.find('E')!=-1:
-			head = c.find('E')
-			tail = c.find('F')
-			diff = tail - head
-			#print diff
-			for i in range(diff-1):
-				pressureBuffer += c[head+i+1]
-			if pressureBuffer !="":
-				self.pressureData.configure(text=pressureBuffer)
-				pressureBuffer = ""
-			else:
-				pressurebuffer = ""
-		if c.find('G')!=-1:
-			head = c.find('G')
-			tail = c.find('H')
-			diff = tail - head
-			#print diff
-			for i in range(diff-1):
-				probeTempBuffer += c[head+i+1]
-			if probeTempBuffer !="":
-				self.temperatureDataCelcius.configure(text=probeTempBuffer)
-				probeTempBuffer = ""	
-			else:
-				probetempBuffer = ""	
-		if c.find('I')!=-1:
-			head = c.find('I')
-			tail = c.find('J')
-			diff = tail - head
-			#print diff
-			for i in range(diff-1):
-				vOneBuffer += c[head+i+1]
-			if vOneBuffer != "":
-				self.motorOneData.configure(text=vOneBuffer)
-				vOneBuffer = ""	
-			else:
-				vOneBuffer = ""
-		if c.find('K')!=-1:
-			head = c.find('K')
-			tail = c.find('L')
-			diff = tail - head
-			#print diff
-			for i in range(diff-1):
-				vTwoBuffer += c[head+i+1]
-			if vTwoBuffer !="":
-				self.motorTwoData.configure(text=vTwoBuffer)
-				vTwoBuffer = ""	
-			else:
-				vTwoBuffer = ""
-		if c.find('M')!=-1:
-			head = c.find('M')
-			tail = c.find('N')
-			diff = tail - head
-			#print diff
-			for i in range(diff-1):
-				vThreeBuffer += c[head+i+1]
-			if vThreeBuffer !="":
-				self.motorThreeData.configure(text=vThreeBuffer)
-				vThreeBuffer = ""	
-			else:
-				vThreeBuffer = ""
-		if c.find('O')!=-1:
-			head = c.find('O')
-			tail = c.find('P')
-			diff = tail - head
-			#print diff
-			for i in range(diff-1):
-				vFourBuffer += c[head+i+1]
-			if vFourBuffer !="":
-				self.motorFourData.configure(text=vFourBuffer)
-				vFourBuffer = ""
-			else:
-				vFourBuffer = ""	
-		if c.find('Q')!=-1:
-			head = c.find('Q')
-			tail = c.find('R')
-			diff = tail - head
-			#print diff
-			for i in range(diff-1):
-				hOneBuffer += c[head+i+1]
-			if hOneBuffer !="":
-				self.motorFiveData.configure(text=hOneBuffer)
-				hOneBuffer = ""
-			else:
-				hOneBuffer = ""
-		if c.find('S')!=-1:
-			head = c.find('S')
-			tail = c.find('T')
-			diff = tail - head
-			#print diff
-			for i in range(diff-1):
-				hTwoBuffer += c[head+i+1]
-			if hTwoBuffer !="":
-				self.motorSixData.configure(text=hTwoBuffer)
-				hTwoBuffer = ""
-			else:
-				hTwoBuffer = ""
-		if c.find('U')!=-1:
-			head = c.find('U')
-			tail = c.find('V')
-			diff = tail - head
-			#print diff
-			for i in range(diff-1):
-				hThreeBuffer += c[head+i+1]
-			if hThreeBuffer!="":
-				self.motorSevenData.configure(text=hThreeBuffer)
-				hThreeBuffer = ""
-			else:
-				hThreeBuffer = ""
-		if c.find('W')!=-1:
-			head = c.find('W')
-			tail = c.find('X')
-			diff = tail - head
-			#print diff
-			for i in range(diff-1):
-				hFourBuffer += c[head+i+1]
-			if hFourBuffer !="":
-				self.motorEightData.configure(text=hFourBuffer)
-				hFourBuffer = ""
-			else:
-				hFourBuffer = ""
-		if c.find('Y')!=-1:
-			head = c.find('Y')
-			tail = c.find('Z')
-			diff = tail - head
-			#print diff
-			for i in range(diff-1):
-				totalVoltBuffer += c[head+i+1]
-			if	totalVoltBuffer !="":
-				self.voltData.configure(text=totalVoltBuffer)
-				totalVoltBuffer = ""
-			else:
-				totalVoltBuffer = ""
-		if c.find('a')!=-1:
-			head = c.find('a')
-			tail = c.find('b')
-			diff = tail - head
-			#print diff
-			for i in range(diff-1):
-				totalAmpBuffer += c[head+i+1]
-			if totalAmpBuffer !="":
-				self.ampData.configure(text=totalAmpBuffer)
-				totalAmpBuffer = ""
-			else:
-				totalAmpbuffer = ""
-		if c.find('c')!=-1:
-			head = c.find('c')
-			tail = c.find('d')
-			diff = tail - head
-			#print diff
-			for i in range(diff-1):
-				xAccelBuffer += c[head+i+1]
-			if xAccelBuffer != "":
-				self.aData.configure(text=xAccelBuffer)
-				xAccelBuffer = ""
-			else:
-				xAccelBuffer = ""
-		if c.find('e')!=-1:
-			head = c.find('e')
-			tail = c.find('f')
-			diff = tail - head
-			#print diff
-			for i in range(diff-1):
-				yAccelBuffer += c[head+i+1]
-			if yAccelBuffer !="":
-				self.bData.configure(text=yAccelBuffer)
-				yAccelBuffer = ""
-			else:
-				yAccelBuffer = ""
-		if c.find('g')!=-1:
-			head = c.find('g')
-			tail = c.find('h')
-			diff = tail - head
-			#print diff
-			for i in range(diff-1):
-				zAccelBuffer += c[head+i+1]
-			if zAccelBuffer !="":
-				self.humidityData.configure(text=zAccelBuffer)
-				zAccelBuffer = ""
-			else:
-				zAccelBuffer = ""
-		if c.find('i')!=-1:
-			pi = 0
-			head = c.find('i')
-			tail = c.find('j')
-			diff = tail - head
-			#print diff
-			ggg = ""
-			#for i in range(diff-1):
-				#gleBuffer += c[head+i+1].rstrip('\r\n')
-			#print angleBuffer
-			#pi = angleBuffer
-			pi = float(30.0) + float(9.0)
-			pi = int(pi)
+    def dataThree(self,dataArray):
+    	global color 
+    	global pressureBuffer 
+    	first = 0
+    	pressureBuffer = ""		
+    	for item in range(len(dataArray)):
+			if first == 0:
+				if dataArray[item] == 'E':
+					first +=1
+					print item
+					a = 1
+					try:
+						while dataArray[int(item)+a] != 'F': 
+							pressureBuffer += dataArray[int(item)+a]
+							a +=1
+						print int(pressureBuffer)
+						if int(pressureBuffer) >= 71:
+							color = "red"
+							self.stopTitle.configure(bg = color)
+						elif int(pressureBuffer)>=71:
+							color = "yellow"
+							self.warningTitle.configure(bg = color)
+						else: 
+							color = "white"
+							#self.warningStop()
+					except: 
+						print "bad EF"
+					self.pressureData.configure(text=pressureBuffer,bg = color)
+    def dataThree(self,dataArray):
+    	global color 
+    	global vOneBuffer 
+    	first = 0
+    	vOneBuffer = ""		
+    	for item in range(len(dataArray)):
+			if first == 0:
+				if dataArray[item] == 'G':
+					first +=1
+					print item
+					a = 1
+					try:
+						while dataArray[int(item)+a] != 'H': 
+							vOneBuffer += dataArray[int(item)+a]
+							a +=1
+						print int(vOneBuffer)
+						if int(vOneBuffer) >= 71:
+							color = "red"
+							self.stopTitle.configure(bg = color)
+						elif int(vOneBuffer)>=71:
+							color = "yellow"
+							self.warningTitle.configure(bg = color)
+						else: 
+							color = "white"
+							#self.warningStop()
+					except: 
+						print "bad EF"
+					self.motorOneData.configure(text=vOneBuffer,bg = color)
+    def compassData(self,angle):
+			print angle
+			pi = int(angle)
 			angleBuffer = "" # empty the buffer
 			if pi <360 and pi>0:
 				r = pi % 360
@@ -570,30 +488,8 @@ class App():
 				b = 360- (-pi % 360)
 			elif pi < -360:
 				g = 360 - (-pi % 360)
-		if c.find('k')!=-1:
-			head = c.find('k')
-			tail = c.find('l')
-			diff = tail - head
-			#print diff
-			for i in range(diff-1):
-				waterOne += c[head+i+1]
-			if waterOne !="":
-				self.waterSensorDataOne.configure(text=waterOne)
-				waterOne = ""
-			else:
-				waterOne= ""
-		if c.find('m')!=-1:
-			head = c.find('m')
-			tail = c.find('n')
-			diff = tail - head
-			#print diff
-			for i in range(diff-1):
-				waterTwo += c[head+i+1]
-			if waterTwo !="":
-				self.waterSensorDataTwo.configure(text=waterTwo)
-				waterTwo = ""
-			else:
-				waterTwo = ""
-		self.root.after(400, self.update_data)
+
+
+		
 
 app=App()

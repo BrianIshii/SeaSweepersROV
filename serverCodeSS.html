@@ -30,7 +30,7 @@
 					border: 3px solid white;
 				}
 				th {
-					color:red;
+					color:white;
 					border: 3px solid white;
 				}
 				table.motorVolts {
@@ -108,7 +108,7 @@
   					right: 861px;
 					position: fixed;
   					width: 274px;
-  					height: 410px;
+  					height: 200px;
   					background: grey;
   					border: 3px solid white;
   				}
@@ -118,39 +118,48 @@
   					position: absolute;
   					background-color: black;
 				}
+				#compass {
+  					bottom: 416px;
+  					right: 861px;
+					position: fixed;
+  					width: 274px;
+  					height: 210px;
+  					background: red;
+  					border: 3px solid white;
+  				}
 			</style>
 		</head>
 		<body>
-			<div class="header" style ="left: 0px; background-color:yellow;">
+			<div class="header" style ="left: 0px; background-color:white;">
 				WARNING
 			</div>
 			<div class="header" style = "left: 500px; right: 300px; color: white; ">
 				Sea Sweepers
 			</div>
-			<div class="header" style= "right: 0px; background-color:red;">
+			<div class="header" style= "right: 0px; background-color:white;">
 				STOP
 			</div>
 
 			<table class="column" style="left: 0px;">
+  				<tr><th>Volt(v)</th></tr>
+  				<tr><td><10y>13.2r>+13.8</td></tr>
+  				<tr><th>Amps(A)</th></tr>
+  				<tr><td>y>22r>24</td></tr>
   				<tr><th>Temperature(F)</th></tr>
-  				<tr><td>100</td></tr>
-  				<tr><th>Humidity</th></tr>
-  				<tr><td>20</td></tr>
-  				<tr><th>Temperature(C)</th></tr>
-  				<tr><td>100</td></tr>
-  				<tr><th><button onclick="myMove()">Click Me</button></th></tr>
-  				<tr><td><button onclick="depthAnimations()">depth</button></td></tr>
-  				<tr><th>Humidity</th></tr>
-  				<tr><td>20</td></tr>
-  				<tr><th>Temperature(C)</th></tr>
-  				<tr><td>100</td></tr>
+  				<tr><td>100></td></tr>
+  				<tr><th>Humidity(%)</th></tr>
+  				<tr><td>100%</td></tr>
+  				<tr><th>temperature(C)</th></tr>
+  				<tr><td>202020</td></tr>
+  				<tr><th>tangle</th></tr>
+  				<tr><td>1 time</td></tr>
 			</table>
 			<table class= "column" style = "right: 0px;">
   				<tr><th>timer</th></tr>
-  				<tr><td>12:00</td></tr>
-  				<tr><th>ggg</th></tr>
-  				<tr><td>20</td></tr>
-  				<tr><th>Temperature</th></tr>
+  				<tr><td>15:00</td></tr>
+  				<tr><th>temperture (F)</th></tr>
+  				<tr><td>100</td></tr>
+  				<tr><th>Temperature(C)</th></tr>
   				<tr><td>100</td></tr>
   				<tr><th>Temperature(F)</th></tr>
   				<tr><td>100</td></tr>
@@ -189,15 +198,25 @@
 				<div id ="depthLine" style= "margin-top: 300px;">30</div>
 			</div>
 			<div id ="motorLayout">
-				<div id = "motorBlock"style= "top: 40px; right: 10px;"></div>
-				<div id = "motorBlock"style= "top: 40px; left: 10px;"></div>
-				<div id = "motorBlock"style= "top: 100px; right: 10px;"></div>
-				<div id = "motorBlock"style= "top: 100px; left: 10px;"></div>
-				<div id = "motorBlock"style= "bottom: 100px; right: 10px;"></div>
-				<div id = "motorBlock"style= "bottom: 100px; left: 10px;"></div>
-				<div id = "motorBlock"style= "bottom: 40px; right: 10px;"></div>
-				<div id = "motorBlock"style= "bottom: 40px; left: 10px;"></div>
+				<div id = "motorBlock"style= "top: 25px; right: 20px; background-color:white;"></div>
+				<div id = "motorBlock"style= "top: 25px; left: 20px;"></div>
+				<div id = "motorBlock"style= "top: 50px; right: 50px;"></div>
+				<div id = "motorBlock"style= "top: 50px; left: 50px;"></div>
+				<div id = "motorBlock"style= "bottom: 25px; right: 20px;"></div>
+				<div id = "motorBlock"style= "bottom: 25px; left: 20px;"></div>
+				<div id = "motorBlock"style= "bottom: 50px; right: 50px;"></div>
+				<div id = "motorBlock"style= "bottom: 50px; left: 50px;"></div>
+				
+<svg height="210" width="500">
+  <polygon points="60,80 110,30 160,30 210,80 210,130 160,180 110,180 60,130" style="fill:lime;stroke:purple;stroke-width:1" />
 
+			</div>
+			<div id ="compass">
+			<svg height="250" width="400">
+  <circle cx="140" cy="105" r="100" stroke="black" stroke-width="3" fill="white" />
+  Sorry, your browser does not support inline SVG.  
+  <line x1="140" y1="105" x2="140" y2="0" style="stroke:rgb(255,0,0);stroke-width:2" />
+</svg> 
 			</div>
 			<script>
 				function depthAnimations() {
@@ -217,12 +236,12 @@
 			<table class= "bottom" 	style= "right: 300px;" border="1">
 				<tr><th>depth</th></tr>
 				<tr><td>100</td></tr>
-  				<tr><th>Humiditdfdfy</th></tr>
+  				<tr><th>pressure</th></tr>
   				<tr><td>20</td></tr>
   			<table class= "bottom" style= "	right: 580px;" border="1">
-  				<tr><th>Temperature(F)</th></tr>
+  				<tr><th>y-axis</th></tr>
   				<tr><td>100</td></tr>
-  				<tr><th>Humiditdfdfy</th></tr>
+  				<tr><th>x-axis</th></tr>
   				<tr><td>20</td></tr>
     		<table class= "motorVolts" border="1" style>
     			<tr><th>M1</th><th>M2</th><th>M3</th><th>M4</th></tr>
