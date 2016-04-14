@@ -29,6 +29,7 @@ angleBuffer = 0
 dataArray=[]
 waterOne = ""
 waterTwo = ""
+motorColor = "white"
 r=""
 e = ""
 g = ""
@@ -277,6 +278,7 @@ class App():
     	head = ['A','B','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n']
     	limits = ['23','29','109','110','20','20','20','20','20','20','20','20','20','20','20','20','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2','2']
     	global color 
+    	global motorColor
     	global w
     	buffers = ['tempBuffer','pressureBuffer', 'probeTempBuffer','vOneBuffer',
     	 'vTwoBuffer','vThreeBuffer','vFourBuffer','hOneBuffer','hTwoBuffer','hThreeBuffer',
@@ -322,44 +324,44 @@ class App():
 						probeTempBuffer = buf
 					elif c == 3:
 						self.motorOneData.configure(text=buf, bg = color)
-						if int(buf)>10:
-							self.motorControl.itemconfigure(self.V1, fill='green')
-							self.compassCanvas.update()
+						motorColor = self.motorCanvasColor(buf)
+						self.motorControl.itemconfigure(self.V1, fill=motorColor)
+						self.compassCanvas.update()
 					elif c == 4:
 						self.motorTwoData.configure(text=buf, bg = color)
-						if int(buf)>10:
-							self.motorControl.itemconfigure(self.V2, fill='green')
-							self.compassCanvas.update()
+						motorColor = self.motorCanvasColor(buf)
+						self.motorControl.itemconfigure(self.V2, fill=motorColor)
+						self.compassCanvas.update()
 					elif c == 5:
 						self.motorThreeData.configure(text=buf, bg = color)
-						if int(buf)>10:
-							self.motorControl.itemconfigure(self.V3, fill='green')
-							self.compassCanvas.update()
+						motorColor = self.motorCanvasColor(buf)						
+						self.motorControl.itemconfigure(self.V3, fill=motorColor)
+						self.compassCanvas.update()
 					elif c == 6:
 						self.motorFourData.configure(text=buf, bg = color)
-						if int(buf)>10:
-							self.motorControl.itemconfigure(self.V4, fill='green')
-							self.compassCanvas.update()
+						motorColor = self.motorCanvasColor(buf)
+						self.motorControl.itemconfigure(self.V4, fill=motorColor)
+						self.compassCanvas.update()
 					elif c == 7:
 						self.motorFiveData.configure(text=buf, bg = color)
-						if int(buf)>10:
-							self.motorControl.itemconfigure(self.H1, fill='green')
-							self.compassCanvas.update()
+						motorColor = self.motorCanvasColor(buf)
+						self.motorControl.itemconfigure(self.H1, fill=motorColor)
+						self.compassCanvas.update()
 					elif c == 8:
 						self.motorSixData.configure(text=buf, bg = color)
-						if int(buf)>10:
-							self.motorControl.itemconfigure(self.H2, fill='green')
-							self.compassCanvas.update()
+						motorColor = self.motorCanvasColor(buf)
+						self.motorControl.itemconfigure(self.H2, fill=motorColor)
+						self.compassCanvas.update()
 					elif c == 9:
 						self.motorSevenData.configure(text=buf, bg = color)
-						if int(buf)>10:
-							self.motorControl.itemconfigure(self.H3, fill='green')
-							self.compassCanvas.update()
+						motorColor = self.motorCanvasColor(buf)
+						self.motorControl.itemconfigure(self.H3, fill=motorColor)
+						self.compassCanvas.update()
 					elif c == 10:
 						self.motorEightData.configure(text=buf, bg = color)
-						if int(buf)>10:
-							self.motorControl.itemconfigure(self.H4, fill='green')
-							self.compassCanvas.update()
+						motorColor = self.motorCanvasColor(buf)
+						self.motorControl.itemconfigure(self.H4, fill=motorColor)
+						self.compassCanvas.update()
 					elif c == 11:
 						self.voltData.configure(text=buf, bg = color)
 					elif c == 12:
@@ -432,8 +434,15 @@ class App():
 				b = 360- (-pi % 360)
 			elif pi < -360:
 				g = 360 - (-pi % 360)
-
-
+    def motorCanvasColor(self, buf):
+		if int(buf)>500:
+			return "orange"		
+		elif int(buf)>300:
+			return "yellow"
+		elif int(buf)>100:
+			return "green"
+		else:
+			return "white"
 		
 
 app=App()
