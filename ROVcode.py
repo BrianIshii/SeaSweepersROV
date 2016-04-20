@@ -73,30 +73,18 @@ class App():
         self.humidityData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2)
         
         self.temperatureDataCelcius = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2)
-                        
         self.pressureData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2)
-        
         self.waterSensorDataOne = tk.Label(text="TBA", relief=tk.SUNKEN, width=20,height=2)
-        
         self.waterSensorDataTwo = tk.Label(text="TBA", relief=tk.SUNKEN, width=20,height=2)
 
-        
+        #motorData labels
         self.motorOneData = tk.Label(text="TBA", relief=tk.SUNKEN,width=5,height=2)
-        
         self.motorTwoData = tk.Label(text="TBA", relief=tk.SUNKEN,width=5,height=2)
-        
         self.motorThreeData = tk.Label(text="TBA", relief=tk.SUNKEN,width=5,height=2)
-        
         self.motorFourData = tk.Label(text="TBA", relief=tk.SUNKEN,width=5,height=2)
-        
         self.motorFiveData = tk.Label(text="TBA", relief=tk.SUNKEN,width=5,height=2)
-        
         self.motorSixData = tk.Label(text="TBA", relief=tk.SUNKEN,width=5,height=2)
-        
         self.motorSevenData = tk.Label(text="TBA", relief=tk.SUNKEN,width=5,height=2)
-        
-        self.motorEightData = tk.Label(text="TBA", relief=tk.SUNKEN,width=5,height=2)
-
         self.motorEightData = tk.Label(text="TBA", relief=tk.SUNKEN,width=5,height=2)
 
         self.aTitle = tk.Label(text="TBA", bg ="gray")
