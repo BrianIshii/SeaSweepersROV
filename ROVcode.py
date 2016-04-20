@@ -3,8 +3,8 @@ import Tkinter as tk
 import time
 import math
 from serial import *
-
-serialPort = "/dev/ttyACM0"
+#for raspberry pi use "/dev/ttyACM0"
+serialPort = "/dev/cu.usbmodemFD121"
 baudRate = 115200
 ser = Serial(serialPort , baudRate, timeout=0, writeTimeout=0) #ensure non-blocking
 serBuffer = ""
@@ -108,20 +108,20 @@ class App():
         self.currentDepthTitle = tk.Label(text="Current Depth (m)", bg ="gray")
         self.currentDepthData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2)
         
-        self.topDepthTitle = tk.Label(text="Starting Depth", bg ="yellow")
+        self.topDepthTitle = tk.Label(text="Starting Depth", bg ="orange")
         self.topDepthData = tk.Label(text="TBA",relief=tk.SUNKEN,width=10,height=2)
                 
-        self.middleDepthTitle = tk.Label(text="Middle Depth", bg ="orange")
+        self.middleDepthTitle = tk.Label(text="Middle Depth", bg ="red")
         self.middleDepthData = tk.Label(text="TBA",relief=tk.SUNKEN,width=10,height=2)        
         
-        self.bottomDepthTitle = tk.Label(text="Bottom Depth", bg ="red")
+        self.bottomDepthTitle = tk.Label(text="Bottom Depth", bg ="yellow")
         self.bottomDepthData = tk.Label(text="TBA",relief=tk.SUNKEN,width=10,height=2)
         self.probeTempTitle = tk.Label(text="Probe Temp", bg ="gray")
         self.probeData = tk.Label(text="TBA",relief=tk.SUNKEN,width=10,height=2)
         self.probeDataF = tk.Label(text="TBA",relief=tk.SUNKEN,width=10,height=2)
         self.C = tk.Label(text="Celcius", bg ="gray",width=10,height=2)
         self.F = tk.Label(text="Fahrenheit", bg ="gray",width=10,height=2)
-        self.probeButton = tk.Button(text="top",width=7,highlightbackground="gray", background='black',command=self.probeTempValue)
+        self.probeButton = tk.Button(text="top",width=7,highlightbackground="gray",command=self.probeTempValue)
                 
         self.timerTitle = tk.Label(text="Timer", bg="gray",width=10)
         self.timerButton = tk.Button(text= "Start", bg="gray", width=7,highlightbackground="gray", command=self.getTime)
@@ -135,9 +135,9 @@ class App():
         #depthCanvas for depth
         self.depthCanvas = tk.Canvas(self.root, width=200, height = 400, background= "blue",bd=0,highlightthickness=1)
         self.rov = self.depthCanvas.create_rectangle(50, 20, 10, 0, outline='black', fill='white')
-        self.topDepthLine = self.depthCanvas.create_line(0,0,200,0, fill = "yellow",width=3, dash=(4, 4))
-        self.middleDepthLine = self.depthCanvas.create_line(0,0,200,0, fill = "orange",width=3, dash=(4, 4))
-        self.bottomDepthLine = self.depthCanvas.create_line(0,0,200,0, fill = "red",width=3, dash=(4, 4))
+        self.topDepthLine = self.depthCanvas.create_line(0,0,200,0, fill = "orange",width=3, dash=(4, 4))
+        self.middleDepthLine = self.depthCanvas.create_line(0,0,200,0, fill = "red",width=3, dash=(4, 4))
+        self.bottomDepthLine = self.depthCanvas.create_line(0,0,200,0, fill = "yellow",width=3, dash=(4, 4))
         #self.textTenFeet = self.depthCanvas.create_text(10,110 ,text= "10")
         #self.textTwentyFeet = self.depthCanvas.create_text(10,210 ,text= "20")
         #self.textThirtyFeet = self.depthCanvas.create_text(10,310 ,text= "30")
