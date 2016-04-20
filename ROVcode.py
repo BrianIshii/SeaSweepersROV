@@ -61,24 +61,24 @@ class App():
                 continue
             self.l = tk.Label(text=l, bg ="gray").grid(column=0,row=x,columnspan=2)
             x+=2
-        self.warningTitle = tk.Label(text="WARNING", bg="yellow", width=10)
-        self.stopTitle = tk.Label(text="STOP", bg="red", width=10)#needgrid
+        self.warningTitle = tk.Label(text="WARNING", bg="yellow", width=15)
+        self.stopTitle = tk.Label(text="STOP", bg="red", width=15)#needgrid
         self.title = tk.Label(text="Sea Sweepers", bg="gray")#needgrid
         
-        self.voltData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20, height=2) 
-        self.ampData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2)
+        self.voltData = tk.Label(text="TBA",relief=tk.SUNKEN,width=30, height=2) 
+        self.ampData = tk.Label(text="TBA",relief=tk.SUNKEN,width=30,height=2)
         
-        self.temperatureData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2)
-        self.angle = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2)
-        self.humidityData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2)
+        self.temperatureData = tk.Label(text="TBA",relief=tk.SUNKEN,width=30,height=2)
+        self.angle = tk.Label(text="TBA",relief=tk.SUNKEN,width=30,height=2)
+        self.humidityData = tk.Label(text="TBA",relief=tk.SUNKEN,width=30,height=2)
         
-        self.temperatureDataCelcius = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2)
+        self.temperatureDataCelcius = tk.Label(text="TBA",relief=tk.SUNKEN,width=30,height=2)
                         
-        self.pressureData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2)
+        self.pressureData = tk.Label(text="TBA",relief=tk.SUNKEN,width=30,height=2)
         
-        self.waterSensorDataOne = tk.Label(text="TBA", relief=tk.SUNKEN, width=20,height=2)
+        self.waterSensorDataOne = tk.Label(text="TBA", relief=tk.SUNKEN, width=30,height=2)
         
-        self.waterSensorDataTwo = tk.Label(text="TBA", relief=tk.SUNKEN, width=20,height=2)
+        self.waterSensorDataTwo = tk.Label(text="TBA", relief=tk.SUNKEN, width=30,height=2)
 
         
         self.motorOneData = tk.Label(text="TBA", relief=tk.SUNKEN,width=5,height=2)
@@ -276,7 +276,6 @@ class App():
         self.updateClock()
     def update_data(self):
         global w
-        ser.close
         ser.open
         serr=""
         c= ""
@@ -288,6 +287,7 @@ class App():
             dataArray.append(i)
         #print dataArray
         w = 0
+        ser.close
         for i in range(19):
             self.dataOne(i)
         self.dataTwo()
@@ -322,15 +322,24 @@ class App():
                             color = "red"
                             self.stopTitle.configure(bg = color)
                             w+=1
+                            ser.open
+                            ser.write(b'2')
+                            ser.close
                         elif int(buf)>= int(limits[(2*c)]):
                             color = "yellow"
                             self.warningTitle.configure(bg = color)
                             w+=1
+                            ser.open
+                            ser.write(b'1')
+                            ser.close
                         else: 
                             color = "white"
                             if w == 0:
                                 self.warningTitle.configure(bg = "gray")
                                 self.stopTitle.configure(bg = "gray")
+                                ser.open
+                            	ser.write(b'0')
+                            	ser.close
                     except: 
                         print "bad AB"
                     if c == 0:
@@ -378,6 +387,7 @@ class App():
                         self.motorSevenData.configure(text=buf, bg = color)
                         motorColor = self.motorCanvasColor(buf)
                         self.motorControl.itemconfigure(self.H3, fill=motorColor)
+                        #fix this!!!!!
                         self.compassCanvas.update()
                     elif c == 10:
                         self.motorEightData.configure(text=buf, bg = color)
@@ -416,6 +426,7 @@ class App():
                         while dataArray[int(item)+a] != 'D': 
                             depthBuffer += dataArray[int(item)+a]
                             a +=1
+                        #consider deleting
                         if float(depthBuffer) >= 71:
                             color = "red"
                             self.stopTitle.configure(bg = color)
