@@ -96,6 +96,7 @@ void setup() {
 }
 
 void loop() {
+ while (Serial.available() == 0) {
 
   Serial1.write(1);
   Serial1.write(2);
@@ -297,9 +298,6 @@ void loop() {
     dataTwentyThree = val[45]<<8 | val[44]; }
 
 //}
-  if (dataTwentyTwo > 50 || dataTwentyThree >50) {
-    waterLeak();
-  }
   int dataFifteen = (dataFifteen);
   int dataSixteen = (dataSixteen* 5 / 1023);
   Serial.print(dataSixteen);
@@ -381,9 +379,27 @@ void loop() {
     Serial.print("m");
     Serial.print(dataTwentyThree);
     Serial.println("n");
-    
+
+  if (dataTwentyTwo > 50 || dataTwentyThree >50) {
+    waterLeak();
+  }
     delay(100);
 
+  
+  }
+  
+  if (Serial.available()>0){
+      char c = Serial.read();  //gets one byte from serial buffer
+      if (c == 2){
+        
+      }
+      if (c == 1){
+        
+      }
+      if (c == 0){
+        
+      }
+      }
   }
   
 void waterLeak(){
@@ -391,10 +407,10 @@ void waterLeak(){
   for(i=0; i<10; i++) {
     digitalWrite(13, LOW); 
     digitalWrite(12, LOW); 
-    delay(100); 
+    delay(1); 
     digitalWrite(13, HIGH);  
     digitalWrite(12, HIGH);    
-    delay(200);   
+    delay(2);   
   }
 }
 
