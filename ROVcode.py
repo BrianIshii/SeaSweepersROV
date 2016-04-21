@@ -72,20 +72,15 @@ class App():
         self.angle = tk.Label(text="TBA",relief=tk.SUNKEN,width=30,height=2)
         self.humidityData = tk.Label(text="TBA",relief=tk.SUNKEN,width=30,height=2)
         
-<<<<<<< HEAD
-        self.temperatureDataCelcius = tk.Label(text="TBA",relief=tk.SUNKEN,width=30,height=2)
-                        
+        self.temperatureDataCelcius = tk.Label(text="TBA",relief=tk.SUNKEN,width=30,height=2)               
         self.pressureData = tk.Label(text="TBA",relief=tk.SUNKEN,width=30,height=2)
-        
         self.waterSensorDataOne = tk.Label(text="TBA", relief=tk.SUNKEN, width=30,height=2)
-        
         self.waterSensorDataTwo = tk.Label(text="TBA", relief=tk.SUNKEN, width=30,height=2)
-=======
+
         self.temperatureDataCelcius = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2)
         self.pressureData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2)
         self.waterSensorDataOne = tk.Label(text="TBA", relief=tk.SUNKEN, width=20,height=2)
         self.waterSensorDataTwo = tk.Label(text="TBA", relief=tk.SUNKEN, width=20,height=2)
->>>>>>> 4ed8aaa46067f21b9766cde5ef5e0556c9162f10
 
         #motorData labels
         self.motorOneData = tk.Label(text="TBA", relief=tk.SUNKEN,width=5,height=2)
@@ -355,43 +350,42 @@ class App():
                         self.motorOneData.configure(text=buf, bg = color)
                         motorColor = self.motorCanvasColor(buf)
                         self.motorControl.itemconfigure(self.V1, fill=motorColor)
-                        self.compassCanvas.update()
+                        self.motorControl.update()
                     elif c == 4:
                         self.motorTwoData.configure(text=buf, bg = color)
                         motorColor = self.motorCanvasColor(buf)
                         self.motorControl.itemconfigure(self.V2, fill=motorColor)
-                        self.compassCanvas.update()
+                        self.motorControl.update()
                     elif c == 5:
                         self.motorThreeData.configure(text=buf, bg = color)
                         motorColor = self.motorCanvasColor(buf)                     
                         self.motorControl.itemconfigure(self.V3, fill=motorColor)
-                        self.compassCanvas.update()
+                        self.motorControl.update()
                     elif c == 6:
                         self.motorFourData.configure(text=buf, bg = color)
                         motorColor = self.motorCanvasColor(buf)
                         self.motorControl.itemconfigure(self.V4, fill=motorColor)
-                        self.compassCanvas.update()
+                        self.motorControl.update()
                     elif c == 7:
                         self.motorFiveData.configure(text=buf, bg = color)
                         motorColor = self.motorCanvasColor(buf)
                         self.motorControl.itemconfigure(self.H1, fill=motorColor)
-                        self.compassCanvas.update()
+                        self.motorControl.update()
                     elif c == 8:
                         self.motorSixData.configure(text=buf, bg = color)
                         motorColor = self.motorCanvasColor(buf)
                         self.motorControl.itemconfigure(self.H2, fill=motorColor)
-                        self.compassCanvas.update()
+                        self.motorControl.update()
                     elif c == 9:
                         self.motorSevenData.configure(text=buf, bg = color)
                         motorColor = self.motorCanvasColor(buf)
                         self.motorControl.itemconfigure(self.H3, fill=motorColor)
-                        #fix this!!!!!
-                        self.compassCanvas.update()
+                        self.motorControl.update()
                     elif c == 10:
                         self.motorEightData.configure(text=buf, bg = color)
                         motorColor = self.motorCanvasColor(buf)
                         self.motorControl.itemconfigure(self.H4, fill=motorColor)
-                        self.compassCanvas.update()
+                        self.motorControl.update()
                     elif c == 11:
                         self.voltData.configure(text=buf, bg = color)
                     elif c == 12:
