@@ -1,11 +1,11 @@
 /*
-  Receving Code
+  Receving Code Sensors
   Reads bytes from Transmitting Code and put thems back together
-  Applies the read bytes to our motor control board
+  Then sends the bytes through serial to a raspberry pi
 */
 
-unsigned char val[48];    // variable to read the value from the analog pin
-int dataOne;      // 0-1024 received from Serial1
+unsigned char val[48];
+int dataOne;
 int dataTwo;
 int dataThree;
 int dataFour;      
@@ -16,7 +16,7 @@ int dataEight;
 int dataNine;      
 int dataTen;
 int dataEleven;
-int dataTwelve;      // 0-1024 received from Serial1
+int dataTwelve;
 int dataThirteen;
 int dataFourteen;
 int dataFifteen;      
@@ -111,19 +111,19 @@ void loop() {
     val[1]=Serial1.read();         // most significant 2 bits   
      checksum0=Serial1.read();     // checksum
 
-//    val[2]=Serial1.read();
+//    val[2]=Serial1.read(); //we did not need to use data
 //    val[3]=Serial1.read();
 //     checksum1=Serial1.read();
 
-//    val[4]=Serial1.read();
+//    val[4]=Serial1.read(); //we did not need to use data
 //    val[5]=Serial1.read(); 
 //     checksum2=Serial1.read();
 
-    val[6]=Serial1.read();         // least significant 8 bits
-    val[7]=Serial1.read();         // most significant 2 bits   
-     checksum3=Serial1.read();     // checksum
+    val[6]=Serial1.read(); 
+    val[7]=Serial1.read();     
+     checksum3=Serial1.read();    
 
-//    val[8]=Serial1.read();
+//    val[8]=Serial1.read(); //we did not need to use data
 //    val[9]=Serial1.read();
 //     checksum4=Serial1.read();
 
@@ -139,9 +139,9 @@ void loop() {
     val[15]=Serial1.read(); 
      checksum7=Serial1.read();
 
-    val[16]=Serial1.read();         // least significant 8 bits
-    val[17]=Serial1.read();         // most significant 2 bits   
-     checksum8=Serial1.read();     // checksum
+    val[16]=Serial1.read();
+    val[17]=Serial1.read();   
+     checksum8=Serial1.read();     
 
     val[18]=Serial1.read();
     val[19]=Serial1.read();
@@ -158,9 +158,9 @@ void loop() {
     val[25]=Serial1.read(); 
      checksum12=Serial1.read();
 
-    val[26]=Serial1.read();         // least significant 8 bits
-    val[27]=Serial1.read();         // most significant 2 bits   
-     checksum13=Serial1.read();     // checksum
+    val[26]=Serial1.read(); 
+    val[27]=Serial1.read();    
+     checksum13=Serial1.read(); 
 
     val[28]=Serial1.read();
     val[29]=Serial1.read();
@@ -177,9 +177,9 @@ void loop() {
     val[35]=Serial1.read(); 
      checksum17=Serial1.read();
 
-    val[36]=Serial1.read();         // least significant 8 bits
-    val[37]=Serial1.read();         // most significant 2 bits   
-     checksum18=Serial1.read();     // checksum
+    val[36]=Serial1.read();
+    val[37]=Serial1.read();  
+     checksum18=Serial1.read(); 
 
     val[38]=Serial1.read();
     val[39]=Serial1.read();
@@ -198,8 +198,8 @@ void loop() {
      checksum22=Serial1.read();
    LastByte = Serial1.read();
 
-// get the checksum last
-
+// end of reading data
+//check the bytes
     checkit0 = val[0]+val[1]+checksum0;
 //    checkit1 = val[2]+val[3]+checksum1;
 //    checkit2 = val[4]+val[5]+checksum2; 
@@ -228,7 +228,7 @@ void loop() {
      
   
   }
-//if (LastByte == 2) {
+if (LastByte == 2) {
   if (checkit0==0)  {
     dataOne = val[1]<<8 | val[0]; }
 
@@ -297,8 +297,8 @@ void loop() {
   if (checkit22==0)  {
     dataTwentyThree = val[45]<<8 | val[44]; }
 
-//}
-  int dataFifteen = (dataFifteen);
+}
+  int dataFifteen = (dataFifteen); //trying to fix volt reading
   int dataSixteen = (dataSixteen* 5 / 1023);
   Serial.print(dataSixteen);
     Serial.print("A");
@@ -381,23 +381,23 @@ void loop() {
     Serial.println("n");
 
   if (dataTwentyTwo > 50 || dataTwentyThree >50) {
-    waterLeak();
+    waterLeak();//water leak function will turn on lights after sending the data
   }
     delay(100);
 
-  
   }
   
   if (Serial.available()>0){
-      char c = Serial.read();  //gets one byte from serial buffer
+      char c = Serial.read();  //gets one byte from serial from rasperberry 2 is red lights 1 is yellow and 0 is off
       if (c == 2){
-        
+        digitalWrite(13, LOW); 
       }
       if (c == 1){
-        
+        digitalWrite(12, LOW); 
       }
       if (c == 0){
-        
+        digitalWrite(13, HIGH);  
+        digitalWrite(12, HIGH);
       }
       }
   }
