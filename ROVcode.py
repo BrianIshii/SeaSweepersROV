@@ -227,20 +227,29 @@ class App():
         self.update_data()
         self.root.mainloop()
     def topDepthValue(self):
-        global depthBuffer
-        self.topDepthData.configure(text=depthBuffer)
-        self.depthCanvas.coords(self.topDepthLine,0,depthBuffer,200,depthBuffer )
-        self.depthCanvas.update()
+    	try:
+    		global depthBuffer
+    		self.topDepthData.configure(text=depthBuffer)
+        	self.depthCanvas.coords(self.topDepthLine,0,depthBuffer,200,depthBuffer )
+        	self.depthCanvas.update()
+        except:
+        	self.topDepthData.configure(text="ERR")
     def middleDepthValue(self):
-        global depthBuffer
-        self.middleDepthData.configure(text=depthBuffer)
-        self.depthCanvas.coords(self.middleDepthLine,0,depthBuffer,200,depthBuffer )
-        self.depthCanvas.update()
+        try:	
+        	global depthBuffer
+        	self.middleDepthData.configure(text=depthBuffer)
+        	self.depthCanvas.coords(self.middleDepthLine,0,depthBuffer,200,depthBuffer )
+        	self.depthCanvas.update()
+        except:
+        	self.middleDepthData.configure(text="ERR")
     def bottomDepthValue(self):
-        global depthBuffer
-        self.bottomDepthData.configure(text=depthBuffer)
-        self.depthCanvas.coords(self.bottomDepthLine,0,depthBuffer,200,depthBuffer )
-        self.depthCanvas.update()
+    	try:
+        	global depthBuffer
+        	self.bottomDepthData.configure(text=depthBuffer)
+        	self.depthCanvas.coords(self.bottomDepthLine,0,depthBuffer,200,depthBuffer )
+        	self.depthCanvas.update()
+        except:
+        	self.bottomDepthData.configure(text="ERR")
     def probeTempValue(self):
         global probeTempBuffer
         convertedTemp = self.tempConversion()
