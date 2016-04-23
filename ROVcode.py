@@ -31,6 +31,8 @@ waterOne = ""
 waterTwo = ""
 previousAngle = ""
 motorColor = "white"
+l=""
+z=0
 r=""
 e = ""
 g = ""
@@ -43,15 +45,18 @@ altitudeBuffer = ""
 class App():
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("SeaSweepers GANG BANG BANG")
+        self.root.title("SeaSweepers BRUCE the RILF")
+        self.root.option_add("*Font", "Rockwell 20")
+    	self.root.minsize(width=1440, height=900)
+    	self.root.maxsize(width=1440, height=900)
         self.root.configure(bg ="gray")
-        dataLabel = ['Volt (V)','Amp (A)','Inside Temp (C)','Humidity','Probe Temperature','Pressure','Front Leak','Back Leak', 'M1','M2','M3','M4','M5','M6','M7','M8']
+        dataLabel = ['Volt (V)','Amp (A)','Inside Temp (C)','Inside Temp (C)','Probe Temperature','Pressure', 'V1','V2','V3','V4','H5','H6','H7','H8']
         x=1
         c=2
         r=13
         for l in dataLabel:
-            if (x > 16):
-                self.l = tk.Label(text=l, bg ="gray", width=5,font=("Helvetica", 20)).grid(column=c,row=r)
+            if (x > 12):
+                self.l = tk.Label(text=l, bg ="gray", width=5).grid(column=c,row=r)
                 if c < 5:
                     c+=1
                 else:
@@ -59,76 +64,79 @@ class App():
                     r=15
                 x+=1
                 continue
-            self.l = tk.Label(text=l, bg ="gray",font=("Helvetica", 20)).grid(column=0,row=x,columnspan=2)
+            self.l = tk.Label(text=l, bg ="gray").grid(column=0,row=x,columnspan=2)
             x+=2
-        self.warningTitle = tk.Label(text="WARNING", bg="yellow", width=10,height=2,font=("Helvetica", 20))
-        self.stopTitle = tk.Label(text="STOP", bg="red", width=10,height=2,font=("Helvetica", 20))
+        self.warningTitle = tk.Label(text="WARNING", bg="yellow", width=10,height=2)
+        self.stopTitle = tk.Label(text="STOP", bg="red", width=10,height=2)
         self.title = tk.Label(text="Sea Sweepers", bg="gray")
         
-        self.voltData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2,font=("Helvetica", 20)) 
-        self.ampData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2,font=("Helvetica", 20))
+        self.voltData = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2) 
+        self.ampData = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)
         
-        self.temperatureData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2,font=("Helvetica", 20))
-        self.angle = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2,font=("Helvetica", 20))
-        self.humidityData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2,font=("Helvetica", 20))
+        self.temperatureData = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)
+        self.angle = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)
+        self.insideTempF = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)
         
-        self.temperatureDataCelcius = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2,font=("Helvetica", 20))               
-        self.pressureData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2,font=("Helvetica", 20))
-        self.waterSensorDataOne = tk.Label(text="TBA", relief=tk.SUNKEN, width=20,height=2,font=("Helvetica", 20))
-        self.waterSensorDataTwo = tk.Label(text="TBA", relief=tk.SUNKEN, width=20,height=2,font=("Helvetica", 20))
+        self.temperatureDataCelcius = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)               
+        self.pressureData = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)
+        self.waterSensorDataOne = tk.Label(text="TBD", relief=tk.SUNKEN, width=20,height=2)
+        self.waterSensorDataTwo = tk.Label(text="TBD", relief=tk.SUNKEN, width=20,height=2)
 
 
         #motorData labels
-        self.motorOneData = tk.Label(text="TBA", relief=tk.SUNKEN,width=5,height=2)
-        self.motorTwoData = tk.Label(text="TBA", relief=tk.SUNKEN,width=5,height=2)
-        self.motorThreeData = tk.Label(text="TBA", relief=tk.SUNKEN,width=5,height=2)
-        self.motorFourData = tk.Label(text="TBA", relief=tk.SUNKEN,width=5,height=2)
-        self.motorFiveData = tk.Label(text="TBA", relief=tk.SUNKEN,width=5,height=2)
-        self.motorSixData = tk.Label(text="TBA", relief=tk.SUNKEN,width=5,height=2)
-        self.motorSevenData = tk.Label(text="TBA", relief=tk.SUNKEN,width=5,height=2)
-        self.motorEightData = tk.Label(text="TBA", relief=tk.SUNKEN,width=5,height=2)
+        self.motorOneData = tk.Label(text="TBD", relief=tk.SUNKEN,width=5,height=2)
+        self.motorTwoData = tk.Label(text="TBD", relief=tk.SUNKEN,width=5,height=2)
+        self.motorThreeData = tk.Label(text="TBD", relief=tk.SUNKEN,width=5,height=2)
+        self.motorFourData = tk.Label(text="TBD", relief=tk.SUNKEN,width=5,height=2)
+        self.motorFiveData = tk.Label(text="TBD", relief=tk.SUNKEN,width=5,height=2)
+        self.motorSixData = tk.Label(text="TBD", relief=tk.SUNKEN,width=5,height=2)
+        self.motorSevenData = tk.Label(text="TBD", relief=tk.SUNKEN,width=5,height=2)
+        self.motorEightData = tk.Label(text="TBD", relief=tk.SUNKEN,width=5,height=2)
 
-        self.aTitle = tk.Label(text="TBA", bg ="gray")
-        self.aData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2)
+        self.aTitle = tk.Label(text="TBD", bg ="gray")
+        self.aData = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)
         
-        self.bTitle = tk.Label(text="TBA", bg ="gray")
-        self.bData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2)
+        self.bTitle = tk.Label(text="TBD", bg ="gray")
+        self.bData = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)
                 
         self.currentDepthTitle = tk.Label(text="Current Depth (m)", bg ="gray")
-        self.currentDepthData = tk.Label(text="TBA",relief=tk.SUNKEN,width=20,height=2)
+        self.currentDepthData = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)
         
         
-        self.topDepthTitle = tk.Label(text="Starting Depth", bg ="orange",font=("Helvetica", 20))
-        self.topDepthData = tk.Label(text="TBA",relief=tk.SUNKEN,width=10,height=2)
+        self.topDepthTitle = tk.Label(text="Starting Depth", bg ="orange")
+        self.topDepthData = tk.Label(text="TBD",relief=tk.SUNKEN,width=10,height=2)
                 
-        self.middleDepthTitle = tk.Label(text="Middle Depth", bg ="red",font=("Helvetica", 20))
-        self.middleDepthData = tk.Label(text="TBA",relief=tk.SUNKEN,width=10,height=2)        
+        self.middleDepthTitle = tk.Label(text="Middle Depth", bg ="red")
+        self.middleDepthData = tk.Label(text="TBD",relief=tk.SUNKEN,width=10,height=2)        
         
-        self.bottomDepthTitle = tk.Label(text="Bottom Depth", bg ="yellow",font=("Helvetica", 20))
-        self.bottomDepthData = tk.Label(text="TBA",relief=tk.SUNKEN,width=10,height=2)
+        self.bottomDepthTitle = tk.Label(text="Bottom Depth", bg ="yellow")
+        self.bottomDepthData = tk.Label(text="TBD",relief=tk.SUNKEN,width=10,height=2)
         
-        self.probeTempTitle = tk.Label(text="Probe Temp", bg ="gray",font=("Helvetica", 20))
-        self.probeData = tk.Label(text="TBA",relief=tk.SUNKEN,width=10,height=2)
-        self.probeDataF = tk.Label(text="TBA",relief=tk.SUNKEN,width=10,height=2)
+        self.probeTempTitle = tk.Label(text="Probe Temp", bg ="gray")
+        self.probeData = tk.Label(text="TBD",relief=tk.SUNKEN,width=10,height=2)
+        self.probeDataF = tk.Label(text="TBD",relief=tk.SUNKEN,width=10,height=2)
         self.C = tk.Label(text="Celcius", bg ="gray",width=10,height=2)
         self.F = tk.Label(text="Fahrenheit", bg ="gray",width=10,height=2)
         self.probeButton = tk.Button(text="top",width=7,highlightbackground="gray",command=self.probeTempValue)
                 
-        self.timerTitle = tk.Label(text="Timer", bg="gray",width=15,height=2,font=("Helvetica", 20))
-        self.timerButton = tk.Button(text= "Start", bg="gray", width=12,height=2,highlightbackground="gray",font=("Helvetica", 20), command=self.getTime)
-        self.timerData = tk.Label(text="00:00", relief=tk.SUNKEN, width=7,height=1,font=("Helvetica", 100))
+        self.timerTitle = tk.Label(text="Timer", bg="gray",width=15,height=2)
+        self.timerButton = tk.Button(text= "Start", bg="gray", width=12,height=2,highlightbackground="gray", command=self.getTime)
+        self.timerData = tk.Label(text="00:00", relief=tk.SUNKEN, width=7,height=1,font=("Rockwell", 100),bg="green")
         
         #depth buttons
-        self.topDepthButton = tk.Button(text="top",width=7,highlightbackground="gray",command=self.topDepthValue)
+        self.topDepthButton = tk.Button(text="top",width=7,highlightbackground="gray",command= self.topDepthValue)
         self.middleDepthButton = tk.Button(text="middle",width=7,highlightbackground="gray", command=self.middleDepthValue)
         self.bottomDepthButton = tk.Button(text="bottom",width=7,highlightbackground="gray", command=self.bottomDepthValue)
         
+        self.iceDepth = tk.Label(text="Ice Depth", bg ="gray")
+        self.oceanDepth = tk.Label(text="Ocean Depth", bg ="gray")
+        
         #depthCanvas for depth
-        self.depthCanvas = tk.Canvas(self.root, width=200, height = 400, background= "blue",bd=0,highlightthickness=1)
-        self.rov = self.depthCanvas.create_rectangle(50, 20, 10, 0, outline='black', fill='white')
-        self.topDepthLine = self.depthCanvas.create_line(0,0,200,0, fill = "orange",width=3, dash=(4, 4))
-        self.middleDepthLine = self.depthCanvas.create_line(0,0,200,0, fill = "red",width=3, dash=(4, 4))
-        self.bottomDepthLine = self.depthCanvas.create_line(0,0,200,0, fill = "yellow",width=3, dash=(4, 4))
+        self.depthCanvas = tk.Canvas(self.root, width=800, height = 500, background= "blue",bd=0,highlightthickness=1)
+        self.rov = self.depthCanvas.create_rectangle(40, 20, 0, 0, outline='black', fill='white')
+        self.topDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "orange",width=3, dash=(4, 4))
+        self.middleDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "red",width=3, dash=(4, 4))
+        self.bottomDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "yellow",width=3, dash=(4, 4))
         #self.textTenFeet = self.depthCanvas.create_text(10,110 ,text= "10")
         #self.textTwentyFeet = self.depthCanvas.create_text(10,210 ,text= "20")
         #self.textThirtyFeet = self.depthCanvas.create_text(10,310 ,text= "30")
@@ -175,7 +183,7 @@ class App():
         self.ampData.grid(              column=0,  row=4,  columnspan=2)
         self.temperatureData.grid(      column=0,  row=6,  columnspan=2)
         self.angle.grid(                column=2,  row=6,  columnspan=4)        
-        self.humidityData.grid(         column=0,  row=8,  columnspan=2)
+        self.insideTempF.grid(         column=0,  row=8,  columnspan=2)
         self.temperatureDataCelcius.grid(column=0, row=10, columnspan=2)
         self.pressureData.grid(         column=0,  row=12, columnspan=2)
         self.waterSensorDataOne.grid(    column=0, row=14, columnspan=2)
@@ -195,71 +203,71 @@ class App():
         self.bTitle.grid(               column=6,  row=15)
         self.bData.grid(                column=6,  row=16)
         
-        self.timerTitle.grid(           column=9,   row=2, columnspan= 3)
-        self.timerButton.grid(          column=12,  row=2, columnspan= 3)
-        self.timerData.grid(            column=9,   row=0, columnspan= 5, rowspan=2) 
         
-        self.currentDepthTitle.grid(    column=9,  row=3,  columnspan= 2)
-        self.currentDepthData.grid(     column=9,  row=4,  columnspan= 2)
-        self.topDepthTitle.grid(        column=9,  row=5)
-        self.topDepthButton.grid(       column=10, row=5)
-        self.topDepthData.grid(         column=9,  row=6)
-        self.middleDepthTitle.grid(     column=9,  row=7)
-        self.middleDepthButton.grid(    column=10, row=7)
-        self.middleDepthData.grid(      column=9,  row=8)
-        self.bottomDepthTitle.grid(     column=9,  row=9)
-        self.bottomDepthButton.grid(    column=10, row=9)
-        self.bottomDepthData.grid(      column=9,  row=10)
+    	#right side
+        self.timerTitle.grid(           column=10,   row=2, columnspan= 3)
+        self.timerButton.grid(          column=13,  row=2, columnspan= 3)
+        self.timerData.grid(            column=10,   row=0, columnspan= 5, rowspan=2) 
+        self.currentDepthTitle.grid(    column=10,  row=3,  columnspan= 2)
+        self.currentDepthData.grid(     column=10,  row=4,  columnspan= 2)
+        self.topDepthTitle.grid(        column=10,  row=5)
+        self.topDepthButton.grid(       column=11, row=5)
+        self.topDepthData.grid(         column=10,  row=6)
+        self.middleDepthTitle.grid(     column=10,  row=7)
+        self.middleDepthButton.grid(    column=11, row=7)
+        self.middleDepthData.grid(      column=10,  row=8)
+        self.bottomDepthTitle.grid(     column=10,  row=9)
+        self.bottomDepthButton.grid(    column=11, row=9)
+        self.bottomDepthData.grid(      column=10,  row=10)
         
         #probe right side
-        self.probeTempTitle.grid(       column=9,  row=11)
-        self.probeButton.grid(          column=10, row=11)        
-        self.probeData.grid(            column=9,  row=12)
-        self.probeDataF.grid(           column=10, row=12)
-        self.C.grid(                    column=9,  row=13)
-        self.F.grid(                    column=10, row=13)
+        self.probeTempTitle.grid(       column=10,  row=11)
+        self.probeButton.grid(          column=11, row=11)        
+        self.probeData.grid(            column=10,  row=12)
+        self.probeDataF.grid(           column=11, row=12)
+        self.C.grid(                    column=10,  row=13)
+        self.F.grid(                    column=11, row=13)
                
-        self.depthCanvas.grid(          column=7,   row=1, columnspan=2,  rowspan=10)
-        self.horizonCanvas.grid(        column=6,   row=1,                rowspan=10)
-        self.compassCanvas.grid(        column=2,   row=1, columnspan=4,  rowspan=5)
-        self.motorControl.grid(         column=2,   row=8, columnspan=4,  rowspan=5)
+        self.depthCanvas.grid(          column=2,   row=2, columnspan=8,  rowspan=11)
+        #self.horizonCanvas.grid(        column=6,   row=2,                rowspan=10)
+        self.compassCanvas.grid(        column=7,   row=13, columnspan=1,  rowspan=4)
+        self.motorControl.grid(         column=0,   row=13, columnspan=2,  rowspan=4)
 
         self.update_data()
         self.root.mainloop()
+        
+    #functions
     def topDepthValue(self):
-    	try:
-    		global depthBuffer
-    		self.topDepthData.configure(text=depthBuffer)
-        	self.depthCanvas.coords(self.topDepthLine,0,depthBuffer,200,depthBuffer )
-        	self.depthCanvas.update()
-        except:
-        	self.topDepthData.configure(text="ERR")
+    	global l 
+    	l = "t"
+    
     def middleDepthValue(self):
-        try:	
-        	global depthBuffer
-        	self.middleDepthData.configure(text=depthBuffer)
-        	self.depthCanvas.coords(self.middleDepthLine,0,depthBuffer,200,depthBuffer )
-        	self.depthCanvas.update()
-        except:
-        	self.middleDepthData.configure(text="ERR")
+    	global l 
+    	l = "m"
+    
     def bottomDepthValue(self):
-    	try:
-        	global depthBuffer
-        	self.bottomDepthData.configure(text=depthBuffer)
-        	self.depthCanvas.coords(self.bottomDepthLine,0,depthBuffer,200,depthBuffer )
-        	self.depthCanvas.update()
-        except:
-        	self.bottomDepthData.configure(text="ERR")
+    	global l 
+    	l = "b"
+    
     def probeTempValue(self):
         global probeTempBuffer
-        convertedTemp = self.tempConversion()
-        self.probeDataF.configure(text=convertedTemp)
-        self.probeData.configure(text=probeTempBuffer)
+        try:
+        	convertedTemp = self.tempConversion("p")
+        	self.probeDataF.configure(text=convertedTemp)
+        	self.probeData.configure(text=probeTempBuffer)
+        except:
+        	self.probeDataF.configure(text="ERR")
+        	self.probeData.configure(text="ERR")
+    
     def updateClock(self):
         now = time.time()
         global startTime
         timeElapsed = int(now) - int(startTime)
         minutes= int(timeElapsed / 60)
+        if minutes >13:
+        	self.timerData.configure(bg = "red")
+        elif minutes >12:
+        	self.timerData.configure(bg = "yellow")
         if minutes < 10:
             minutes = "0" + str(minutes)
         seconds= timeElapsed % 60
@@ -269,11 +277,13 @@ class App():
         self.timerData.configure(text=timeElapsed)
         self.root.after(1000, self.updateClock)        
         #timer function
+    
     def getTime(self):
         start = time.time()
         global startTime
         startTime = int(start)
         self.updateClock()
+    
     def update_data(self):
         global w
         ser.open
@@ -344,6 +354,11 @@ class App():
                         print "bad data" + str(c)
                     if c == 0:
                         self.temperatureData.configure(text=buf,bg = color)
+                    	global tempBuffer
+                        tempBuffer = buf                
+                        f = self.tempConversion("i")
+                        self.insideTempF.configure(text=f, bg = color)
+
                     elif c == 1:
                         self.pressureData.configure(text=buf, bg = color)
                     elif c == 2:
@@ -402,7 +417,8 @@ class App():
                     elif c == 14:
                         self.bData.configure(text=buf, bg = color)
                     elif c == 15:
-                        self.humidityData.configure(text=buf, bg = color)
+                        print "jo"
+                        #self.insideTempF.configure(text=buf, bg = color)
                     elif c == 16:
                         self.angle.configure(text=buf, bg = color)
                         self.compassData(buf)
@@ -411,6 +427,8 @@ class App():
                     elif c == 18:
                         self.waterSensorDataTwo.configure(text=buf, bg = color)
     def dataTwo(self):
+    	global z
+    	global l
         global color 
         global depthBuffer 
         first = 0
@@ -439,20 +457,35 @@ class App():
                         print "bad depthData"
                     try:
                         coords = int(depthBuffer)/100
-                        self.depthCanvas.coords(self.rov, 50, 20+ (10*coords), 10, 0+ (10*coords))
+                        self.depthCanvas.coords(self.rov, 40+z, 20+ (10*coords), z, 0+ (10*coords))
+                        z+=1
                         self.depthCanvas.update()
                         length = len(depthBuffer)
                         length = length - 2
                         depthBuffer = depthBuffer[:length] + "." + depthBuffer[length:]
                         #print depthBuffer
+                        if l == "t":
+                        	self.topDepthData.configure(text=depthBuffer)
+                        	self.depthCanvas.coords(self.topDepthLine,0,(10*coords),800,(10*coords))
+                        	l = ""
+                        elif l == "m":
+                        	self.middleDepthData.configure(text=depthBuffer)
+                        	self.depthCanvas.coords(self.middleDepthLine,0,(10*coords),800,(10*coords))
+                        	l = ""
+                        elif l == "b":
+                        	self.bottomDepthData.configure(text=depthBuffer)
+                        	self.depthCanvas.coords(self.bottomDepthLine,0,(10*coords),800,(10*coords))
+                        	l = ""
+                        else:
+                        	print"nil"
                         self.currentDepthData.configure(text=depthBuffer,bg = color)
                     except:
                         print "bad canvasData"
+                    #try:
+    					
     def compassData(self,angle):
-        #print angle
-        #print previousAngle
-        global previousAngle
-        global looops
+    	global previousAngle
+    	global looops
         try:
             if int(angle) >=0 and int(angle) < 20:
                 if int(previousAngle) <=360 and int(previousAngle) >340:
@@ -534,10 +567,15 @@ class App():
         		return "white"
         except:
         	print"bad motorCanvasColor"
-    def tempConversion(self):
-        global probeTempBuffer
-        print float(probeTempBuffer)
-        fahreinheit = ((float(probeTempBuffer)*1.8000)+32.00)
+    def tempConversion(self,t):
+    	if t == "p":
+        	global probeTempBuffer
+        	fahreinheit = ((float(probeTempBuffer)*1.8000)+32.00)
+        if t == "i":
+        	global tempBuffer
+        	fahreinheit = ((float(tempBuffer)*1.8000)+32.00)
+        fahreinheit = float(fahreinheit * 100)
+        fahreinheit = float(int(fahreinheit) / 100)
         return fahreinheit
         
 
