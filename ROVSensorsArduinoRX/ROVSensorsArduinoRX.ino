@@ -228,7 +228,7 @@ void loop() {
      
   
   }
-if (LastByte == 2) {
+//if (LastByte == 2) {
   if (checkit0==0)  {
     dataOne = val[1]<<8 | val[0]; }
 
@@ -297,10 +297,9 @@ if (LastByte == 2) {
   if (checkit22==0)  {
     dataTwentyThree = val[45]<<8 | val[44]; }
 
-}
+//}
   int dataFifteen = (dataFifteen); //trying to fix volt reading
   int dataSixteen = (dataSixteen* 5 / 1023);
-  Serial.print(dataSixteen);
     Serial.print("A");
     Serial.print(dataOne);
     Serial.print("B");
@@ -380,37 +379,37 @@ if (LastByte == 2) {
     Serial.print(dataTwentyThree);
     Serial.println("n");
 
-  if (dataTwentyTwo > 50 || dataTwentyThree >50) {
-    waterLeak();//water leak function will turn on lights after sending the data
-  }
+//  if (dataTwentyTwo > 50 || dataTwentyThree >50) {
+//    waterLeak();//water leak function will turn on lights after sending the data
+//  }
     delay(100);
 
   }
   
-  if (Serial.available()>0){
-      char c = Serial.read();  //gets one byte from serial from rasperberry 2 is red lights 1 is yellow and 0 is off
-      if (c == 2){
-        digitalWrite(13, LOW); 
-      }
-      if (c == 1){
-        digitalWrite(12, LOW); 
-      }
-      if (c == 0){
-        digitalWrite(13, HIGH);  
-        digitalWrite(12, HIGH);
-      }
-      }
-  }
-  
-void waterLeak(){
-    int i = 0;
-  for(i=0; i<10; i++) {
-    digitalWrite(13, LOW); 
-    digitalWrite(12, LOW); 
-    delay(1); 
-    digitalWrite(13, HIGH);  
-    digitalWrite(12, HIGH);    
-    delay(2);   
-  }
+//  if (Serial.available()>0){
+//      char c = Serial.read();  //gets one byte from serial from rasperberry 2 is red lights 1 is yellow and 0 is off
+//      if (c == 2){
+//        digitalWrite(13, LOW); 
+//      }
+//      if (c == 1){
+//        digitalWrite(12, LOW); 
+//      }
+//      if (c == 0){
+//        digitalWrite(13, HIGH);  
+//        digitalWrite(12, HIGH);
+//      }
+//      }
+//  }
+//  
+//void waterLeak(){
+//    int i = 0;
+//  for(i=0; i<10; i++) {
+//    digitalWrite(13, LOW); 
+//    digitalWrite(12, LOW); 
+//    delay(1); 
+//    digitalWrite(13, HIGH);  
+//    digitalWrite(12, HIGH);    
+//    delay(2);   
+//  }
 }
 

@@ -7,6 +7,7 @@ from serial import *
 serialPort = "/dev/cu.usbmodemFD121"
 baudRate = 115200
 ser = Serial(serialPort , baudRate, timeout=0, writeTimeout=0) #ensure non-blocking
+dataList = []
 serBuffer = ""
 tempBuffer= ""
 depthBuffer = ""
@@ -31,6 +32,7 @@ waterOne = ""
 waterTwo = ""
 previousAngle = ""
 motorColor = "white"
+timeInWater = "00:00"
 topDepthNumber = 0 #saved values for depthValues in dataTwo
 middleDepthNumber = 0
 bottomDepthNumber = 0
@@ -42,6 +44,7 @@ r=""
 e = ""
 g = ""
 b = ""
+coords=0
 looops = 1
 color = "white"
 w=0
@@ -132,10 +135,11 @@ class App():
         self.timerButton = tk.Button(text= "Start", bg="gray", width=12,height=2,highlightbackground="gray", command=self.getTime)
         self.timerData = tk.Label(text="00:00", relief=tk.SUNKEN, width=7,height=1,font=("Rockwell", 100),bg="green")
         
+        self.dataButton = tk.Button(text="compile data", bg="gray", width=12,height=2,highlightbackground="gray", command=self.getData)
         self.iceDepth = tk.Label(text="Ice Depth", bg ="gray")
         self.oceanDepth = tk.Label(text="Ocean Depth", bg ="gray")
-    	self.iceData = tk.Label(text="TBD", relief=tk.SUNKEN)
-        self.oceanData = tk.Label(text="TBD", relief=tk.SUNKEN)
+    	self.iceData = tk.Label(text="TBD", relief=tk.SUNKEN,width=5)
+        self.oceanData = tk.Label(text="TBD", relief=tk.SUNKEN,width=5)
         
         #depth buttons
         self.topDepthButton = tk.Button(text="top",width=7,highlightbackground="gray",command= self.topDepthValue)
@@ -221,6 +225,7 @@ class App():
     	#right side
         self.timerTitle.grid(           column=10,  row=2, columnspan= 2)
         self.timerButton.grid(          column=12,  row=2, columnspan= 3)
+        self.dataButton.grid(          	column=12,  row=3, columnspan= 3)
         self.timerData.grid(            column=10,  row=0, columnspan= 5, rowspan=2) 
         self.currentDepthTitle.grid(    column=10,  row=3, columnspan= 2)
         self.currentDepthData.grid(     column=10,  row=4, columnspan= 2)
@@ -256,18 +261,44 @@ class App():
         self.root.mainloop()
         
     #functions
+    def getData(self):
+    	global dataList
+    	newList = dataList[:]
+    	file = open('dataSheet.txt','a')
+    	file.truncate()
+    	for i in newList:
+    		file.write(i)
+    	print "done"
+		#file.close()
+
     def topDepthValue(self):
-    	global l 
-    	l = "t"
-    
+		global depthBuffer
+		global topDepthNumber
+		tb = depthBuffer
+		length = len(tb)
+		length = length - 2
+		labelDepth = tb[:length] + "." + tb[length:]
+		self.topDepthData.configure(text=labelDepth)
+		topDepthNumber = float(tb)
+		self.depthCanvas.update() 
     def middleDepthValue(self):
-    	global l 
-    	l = "m"
-    
+		global depthBuffer
+		global middleDepthNumber
+		length = len(depthBuffer)
+		length = length - 2
+		labelDepth = depthBuffer[:length] + "." + depthBuffer[length:]
+		self.middleDepthData.configure(text=labelDepth)
+		middleDepthNumber = float(depthBuffer)
+		self.depthCanvas.update()
     def bottomDepthValue(self):
-    	global l 
-    	l = "b"
-    
+		global depthBuffer
+		global bottomDepthNumber
+		length = len(depthBuffer)
+		length = length - 2
+		labelDepth = depthBuffer[:length] + "." + depthBuffer[length:]
+		self.bottomDepthData.configure(text=labelDepth)
+		bottomDepthNumber = float(depthBuffer)
+		self.depthCanvas.update()
     def probeTempValue(self):
         global probeTempBuffer
         try:
@@ -281,6 +312,7 @@ class App():
     def updateClock(self):
         now = time.time()
         global startTime
+        global timeInWater
         timeElapsed = int(now) - int(startTime)
         minutes= int(timeElapsed / 60)
         if minutes >13:
@@ -293,6 +325,7 @@ class App():
         if seconds < 10:
             seconds = "0" +str(seconds)
         timeElapsed = str(minutes)+":"+str(seconds)
+        timeInWater = timeElapsed
         self.timerData.configure(text=timeElapsed)
         self.root.after(1000, self.updateClock)        
         #timer function
@@ -306,6 +339,8 @@ class App():
         self.updateClock()
     
     def update_data(self):
+    	global dataList
+    	global timeInWater
         global w
         ser.open
         serr=""
@@ -314,6 +349,9 @@ class App():
         global dataArray
         dataArray = []
         data = ser.readline()
+        dataList.append(timeInWater)
+        dataList.append(data)
+        #print dataList
         for i in data:
             dataArray.append(i)
         #print dataArray
@@ -330,6 +368,7 @@ class App():
         global color 
         global motorColor
         global w
+        global coords
        # buffers = ['tempBuffer','pressureBuffer', 'probeTempBuffer','vOneBuffer',
          #'vTwoBuffer','vThreeBuffer','vFourBuffer','hOneBuffer','hTwoBuffer','hThreeBuffer',
          #'hFourBuffer','totalVoltBuffer','totalAmpBuffer','xAccelBuffer','yAccelBuffer',
@@ -353,24 +392,24 @@ class App():
                             color = "red"
                             self.stopTitle.configure(bg = color)
                             w+=1
-                            ser.open
-                            ser.write(b'2')
-                            ser.close
+                            #ser.open
+                            #ser.write(b'2')
+                            #ser.close
                         elif int(buf)>= int(limits[(2*c)]):
                             color = "yellow"
                             self.warningTitle.configure(bg = color)
                             w+=1
-                            ser.open
-                            ser.write(b'1')
-                            ser.close
+                            #ser.open
+                            #ser.write(b'1')
+                            #ser.close
                         else: 
                             color = "white"
                             if w == 0:
                                 self.warningTitle.configure(bg = "gray")
                                 self.stopTitle.configure(bg = "gray")
-                                ser.open
-                            	ser.write(b'0')
-                            	ser.close
+                                #ser.open
+                            	#ser.write(b'0')
+                            	#ser.close
                     except: 
                         print "bad data" + str(c)
                     if c == 0:
@@ -451,15 +490,15 @@ class App():
     	global middleDepthNumber
     	global bottomDepthNumber
     	global z #value for depth canvas movement horizontal
-    	global l #char for top middle bottom usage
+    	global coords
         global color 
         global depthBuffer 
         first = 0
-        depthBuffer = ""        
         for item in range(len(dataArray)):
             if first == 0:
                 if dataArray[item] == 'C':
                     first +=1
+                    depthBuffer = ''
                     #print item
                     a = 1
                     try:
@@ -478,45 +517,35 @@ class App():
                             #self.warningStop()
                     except: 
                         print "bad depthData"
-                    try:
-                    	coords = int(depthBuffer)/100
-                    	zz = int(z/6)
-                    	self.depthCanvas.coords(self.rov, 40+zz, 20+ (10*coords), zz, 0+ (10*coords))
-                    	zzz = z%6
-                    	if zzz == 0:
-							global lineCoordsX
-							global lineCoordsY #coords for line
-							item = depthCanvas.create_line(lineCoordsX, lineCoordsY, zz, (10*coords), fill = "white",width=3)
-							lineCoordsX=zz
-							lineCoordsY=(10*coords)
-                        z+=1
-                        length = len(depthBuffer)
-                        length = length - 2
-                        depthBuffer = depthBuffer[:length] + "." + depthBuffer[length:]
-                        #print depthBuffer
-                        try:
-                        	if l == "t":
-                        		self.topDepthData.configure(text=depthBuffer)
-                        		self.depthCanvas.coords(self.topDepthLine,0,(10*coords),800,(10*coords))
-                        		topDepthNumber = int(depthBuffer)
-                        	if l == "m":
-                        		if topDepthNumber < int(depthBuffer):
-                        			self.middleDepthData.configure(text=depthBuffer)
-                        			self.depthCanvas.coords(self.middleDepthLine,0,(10*coords),800,(10*coords))
-                        			middleDepthNumber = int(depthBuffer)
-                        	if l == "b":
-                        		if middleDepthNumber < int(depthBuffer):
-                        			self.bottomDepthData.configure(text=depthBuffer)
-                        			self.depthCanvas.coords(self.bottomDepthLine,0,(10*coords),800,(10*coords))
-                        			bottomDepthNumber = int(depthBuffer)
-                        	l = ""
-                        except:
-                            l = ""
-                            print"no work"
-                        self.depthCanvas.update()
-                        self.currentDepthData.configure(text=depthBuffer,bg = color)
-                    except:
-                        print "bad canvasData"
+                    #try:
+                    coords = int(depthBuffer)/100
+                    zz = int(z/6)
+                    self.depthCanvas.coords(self.rov, 40+zz, 20+ (10*coords), zz, 0+ (10*coords))
+                    self.depthCanvas.coords(self.topDepthLine,0,topDepthNumber,800,topDepthNumber)
+                    self.depthCanvas.coords(self.middleDepthLine,0,middleDepthNumber,800,middleDepthNumber)
+                    self.depthCanvas.coords(self.bottomDepthLine,0,bottomDepthNumber,800,bottomDepthNumber)
+                    ice = (topDepthNumber - middleDepthNumber)/100
+                    ocean = (middleDepthNumber - bottomDepthNumber)/100
+                    self.iceData.configure(text=ice)
+                    self.oceanData.configure(text=ocean)
+
+                    
+                    zzz = z%18
+                    	#try:
+                    if zzz == 0:
+						global lineCoordsX
+						global lineCoordsY #coords for line
+						item = self.depthCanvas.create_line(lineCoordsX, lineCoordsY, zz, (10*coords), fill = "white",width=3)
+						lineCoordsX=zz
+						lineCoordsY=(10*coords)						
+                    z+=1
+                    length = len(depthBuffer)
+                    length = length - 2
+                    labelDepth = depthBuffer[:length] + "." + depthBuffer[length:]
+                    self.currentDepthData.configure(text=labelDepth,bg = color)
+					
+                    #except:
+                    	#l = ""
                     #try:
     					
     def compassData(self,angle):
@@ -616,9 +645,12 @@ class App():
         		fahreinheit = ((float(tempBuffer)*1.8000)+32.00)
         	except:
         		print"bad inside temp"
-        fahreinheit = float(fahreinheit * 100)
-        fahreinheit = float(int(fahreinheit) / 100)
-        return fahreinheit
+        try:
+        	fahreinheit = float(fahreinheit * 100)
+        	fahreinheit = float(int(fahreinheit) / 100)
+        	return fahreinheit
+        except:
+        	return 0000
         
 
 app=App()
