@@ -4,7 +4,7 @@ import time
 import math
 from serial import *
 #for raspberry pi use "/dev/ttyACM0"
-serialPort = "/dev/cu.usbmodemFD121"
+serialPort = "/dev/cu.usbmodemFA131"
 baudRate = 115200
 ser = Serial(serialPort , baudRate, timeout=0, writeTimeout=0) #ensure non-blocking
 dataList = []
@@ -58,7 +58,7 @@ class App():
     	self.root.minsize(width=1440, height=880)
     	self.root.maxsize(width=1440, height=880)
         self.root.configure(bg ="gray")
-        dataLabel = ['Volt (V)','Amp (A)','Inside Temp (C)','Inside Temp (C)','Probe Temperature','Pressure', 'V1','V2','V3','V4','H5','H6','H7','H8']
+        dataLabel = ['Volt (V)','Amp (A)','Inside Temp (C)','Inside Temp (F)','Probe Temperature','Pressure', 'V1','V2','V3','V4','H5','H6','H7','H8']
         x=1
         c=2
         r=13
@@ -364,7 +364,7 @@ class App():
 
     def dataOne(self,c):
         head = ['A','B','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n']
-        limits = ['30','35','10000','200000','30', '35','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','10','13','22','24','100','100','100','100','100','100','1000','1000','50','100','50','100']
+        limits = ['30','35','10000','200000','3000', '3500','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','10','13','1000','1000','100','100','100','100','100','100','1000','1000','50','100','50','100']
         global color 
         global motorColor
         global w
@@ -413,14 +413,19 @@ class App():
                     except: 
                         print "bad data" + str(c)
                     if c == 0:
-                        self.temperatureData.configure(text=buf,bg = color)
-                    	global tempBuffer
-                        tempBuffer = buf                
-                        f = self.tempConversion("i")
-                        self.insideTempF.configure(text=f, bg = color)
-
+                    	try:
+                        	self.temperatureData.configure(text=buf,bg = color)
+                    		global tempBuffer
+                        	tempBuffer = buf                
+                        	f = self.tempConversion("i")
+                        	self.insideTempF.configure(text=f, bg = color)
+                        except:
+                        	print "bad temp"
                     elif c == 1:
-                        self.pressureData.configure(text=buf, bg = color)
+                    	try:
+                        	self.pressureData.configure(text=buf, bg = color)
+                        except:
+                        	print "bad pressure"
                     elif c == 2:
                         length = len(buf)
                         length = length - 2
@@ -469,9 +474,9 @@ class App():
                         self.motorControl.itemconfigure(self.H4, fill=motorColor)
                         self.motorControl.update()
                     elif c == 11:
-                        self.voltData.configure(text=buf, bg = color)
+                        self.voltData.configure(text="12", bg = color)
                     elif c == 12:
-                        self.ampData.configure(text=buf, bg = color)
+                        self.ampData.configure(text="1.0", bg = color)
                     elif c == 13:
                         self.aData.configure(text=buf, bg = color)
                     elif c == 14:
@@ -506,10 +511,10 @@ class App():
                             depthBuffer += dataArray[int(item)+a]
                             a +=1
                         #consider deleting
-                        if float(depthBuffer) >= 71:
+                        if float(depthBuffer) >= 500:
                             color = "red"
                             self.stopTitle.configure(bg = color)
-                        elif float(depthBuffer)>=71:
+                        elif float(depthBuffer)>=500:
                             color = "yellow"
                             self.warningTitle.configure(bg = color)
                         else: 
@@ -518,9 +523,9 @@ class App():
                     except: 
                         print "bad depthData"
                     #try:
-                    coords = int(depthBuffer)/100
+                    coords = int(depthBuffer)
                     zz = int(z/6)
-                    self.depthCanvas.coords(self.rov, 40+zz, 20+ (10*coords), zz, 0+ (10*coords))
+                    self.depthCanvas.coords(self.rov, 40+zz, 20+ (coords), zz, 0+ (coords))
                     self.depthCanvas.coords(self.topDepthLine,0,topDepthNumber,800,topDepthNumber)
                     self.depthCanvas.coords(self.middleDepthLine,0,middleDepthNumber,800,middleDepthNumber)
                     self.depthCanvas.coords(self.bottomDepthLine,0,bottomDepthNumber,800,bottomDepthNumber)
@@ -535,9 +540,9 @@ class App():
                     if zzz == 0:
 						global lineCoordsX
 						global lineCoordsY #coords for line
-						item = self.depthCanvas.create_line(lineCoordsX, lineCoordsY, zz, (10*coords), fill = "white",width=3)
+						item = self.depthCanvas.create_line(lineCoordsX, lineCoordsY, zz, (coords), fill = "white",width=3)
 						lineCoordsX=zz
-						lineCoordsY=(10*coords)						
+						lineCoordsY=(coords)						
                     z+=1
                     length = len(depthBuffer)
                     length = length - 2
