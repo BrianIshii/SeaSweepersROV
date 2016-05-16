@@ -158,6 +158,7 @@ void loop() {
   // VIEW IN SERIAL MONTIOR:
 
   //A2
+  Serial2.print("A");
   Serial2.print(Joystick1A); Serial2.print(" ");
   Serial2.print(Joystick1B); Serial2.print(" ");
   Serial2.print(Joystick2A); Serial2.print(" ");
