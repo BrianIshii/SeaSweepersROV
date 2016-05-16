@@ -158,12 +158,12 @@ void loop() {
   // VIEW IN SERIAL MONTIOR:
 
   //A2
-  Serial.print(Joystick1A); Serial.print(" ");
-  Serial.print(Joystick1B); Serial.print(" ");
-  Serial.print(Joystick2A); Serial.print(" ");
-  Serial.print(Joystick2B); Serial.print(" ");
-  Serial.print(Joystick3A); Serial.print(" ");
-  Serial.print(Joystick3B); Serial.print("      ");
-  Serial.println(ServoVal);
+  Serial2.print(Joystick1A); Serial2.print(" ");
+  Serial2.print(Joystick1B); Serial2.print(" ");
+  Serial2.print(Joystick2A); Serial2.print(" ");
+  Serial2.print(Joystick2B); Serial2.print(" ");
+  Serial2.print(Joystick3A); Serial2.print(" ");
+  Serial2.print(Joystick3B); Serial2.print(" ");
+  Serial2.println(ServoVal);
 //  //  delay(20);
 }
