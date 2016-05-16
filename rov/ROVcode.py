@@ -58,7 +58,8 @@ class App():
     	self.root.minsize(width=1440, height=880)
     	self.root.maxsize(width=1440, height=880)
         self.root.configure(bg ="gray")
-        dataLabel = ['Volt (V)','Amp (A)','Inside Temp (C)','Inside Temp (F)','Probe Temperature','Pressure', 'V1','V2','V3','V4','H5','H6','H7','H8']
+        dataLabel = ['Volt (V)','Amp (A)','Inside Temp (C)','Inside Temp (F)','Probe Temperature','Pressure', 
+        'V1','V2','V3','V4','H5','H6','H7','H8']
         x=1
         c=2
         r=13
@@ -150,9 +151,12 @@ class App():
         #depthCanvas for depth
         self.depthCanvas = tk.Canvas(self.root, width=800, height = 500, background= "blue",bd=0,highlightthickness=1)
         self.rov = self.depthCanvas.create_rectangle(40, 20, 0, 0, outline='black', fill='white')
-        self.topDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "orange",width=3, dash=(4, 4))
-        self.middleDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "red",width=3, dash=(4, 4))
-        self.bottomDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "yellow",width=3, dash=(4, 4))
+        self.topDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "orange",width=3, dash=(8, 8))
+        self.middleDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "red",width=3, dash=(8, 8))
+        self.bottomDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "yellow",width=3, dash=(8, 8))
+        self.finishLineWhite = self.depthCanvas.create_line(720, 0, 720, 500, fill = "white",width=8, dash=(20, 20))
+        self.finishLineBlack = self.depthCanvas.create_line(720, 20, 720, 500, fill = "black",width=8, dash=(20, 20))
+
         #self.textTenFeet = self.depthCanvas.create_text(10,110 ,text= "10")
         #self.textTwentyFeet = self.depthCanvas.create_text(10,210 ,text= "20")
         #self.textThirtyFeet = self.depthCanvas.create_text(10,310 ,text= "30")
@@ -351,7 +355,7 @@ class App():
         data = ser.readline()
         dataList.append(timeInWater)
         dataList.append(data)
-        #print dataList
+        print dataList
         for i in data:
             dataArray.append(i)
         #print dataArray
@@ -363,8 +367,11 @@ class App():
         self.root.after(100, self.update_data)
 
     def dataOne(self,c):
-        head = ['A','B','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b','c','d','e','f','g','h','i','j','k','l','m','n']
-        limits = ['30','35','10000','200000','3000', '3500','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','1000','10','13','1000','1000','100','100','100','100','100','100','1000','1000','50','100','50','100']
+        head = ['A','B','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+        'a','b','c','d','e','f','g','h','i','j','k','l','m','n']
+        limits = ['30','35','10000','200000','3000', '3500','1000','1000','1000','1000','1000','1000','1000',
+        '1000','1000','1000','1000','1000','1000','1000','1000','1000','10','13','1000','1000','100','100',
+        '100','100','100','100','1000','1000','50','100','50','100']
         global color 
         global motorColor
         global w
@@ -427,69 +434,120 @@ class App():
                         except:
                         	print "bad pressure"
                     elif c == 2:
-                        length = len(buf)
-                        length = length - 2
-                        buf = buf[:length] + "." + buf[length:]
-                        self.temperatureDataCelcius.configure(text=buf, bg = color)
-                        global probeTempBuffer
-                        probeTempBuffer = buf
+                    	try:
+                        	length = len(buf)
+                        	length = length - 2
+                        	buf = buf[:length] + "." + buf[length:]
+                        	self.temperatureDataCelcius.configure(text=buf, bg = color)
+                        	global probeTempBuffer
+                        	probeTempBuffer = buf
+                        except:
+                        	print"bad probe temp"
                     elif c == 3:
-                        self.motorOneData.configure(text=buf, bg = color)
-                        motorColor = self.motorCanvasColor(buf)
-                        self.motorControl.itemconfigure(self.V1, fill=motorColor)
-                        self.motorControl.update()
+                		try:
+                			self.motorOneData.configure(text=buf, bg = color)
+                			motorColor = self.motorCanvasColor(buf)
+                			self.motorControl.itemconfigure(self.V1, fill=motorColor)
+                			self.motorControl.update()
+                		except:
+                			print "bad motor one data"
                     elif c == 4:
-                        self.motorTwoData.configure(text=buf, bg = color)
-                        motorColor = self.motorCanvasColor(buf)
-                        self.motorControl.itemconfigure(self.V2, fill=motorColor)
-                        self.motorControl.update()
+                    	try:
+                    		self.motorTwoData.configure(text=buf, bg = color)
+                    		motorColor = self.motorCanvasColor(buf)
+                    		self.motorControl.itemconfigure(self.V2, fill=motorColor)
+                    		self.motorControl.update()
+                    	except:
+                    		print "bad motor two data"
                     elif c == 5:
-                        self.motorThreeData.configure(text=buf, bg = color)
-                        motorColor = self.motorCanvasColor(buf)                     
-                        self.motorControl.itemconfigure(self.V3, fill=motorColor)
-                        self.motorControl.update()
+                    	try:
+                    		self.motorThreeData.configure(text=buf, bg = color)
+                    		motorColor = self.motorCanvasColor(buf)                     
+                    		self.motorControl.itemconfigure(self.V3, fill=motorColor)
+                    		self.motorControl.update()
+                    	except:
+                    		print "bad motor three data"
                     elif c == 6:
-                        self.motorFourData.configure(text=buf, bg = color)
-                        motorColor = self.motorCanvasColor(buf)
-                        self.motorControl.itemconfigure(self.V4, fill=motorColor)
-                        self.motorControl.update()
+                    	try:
+                    		self.motorFourData.configure(text=buf, bg = color)
+                    		motorColor = self.motorCanvasColor(buf)
+                    		self.motorControl.itemconfigure(self.V4, fill=motorColor)
+                    		self.motorControl.update()
+                    	except:
+                    		print "bad motor four data"
                     elif c == 7:
-                        self.motorFiveData.configure(text=buf, bg = color)
-                        motorColor = self.motorCanvasColor(buf)
-                        self.motorControl.itemconfigure(self.H1, fill=motorColor)
-                        self.motorControl.update()
+                    	try:
+                    		self.motorFiveData.configure(text=buf, bg = color)
+                    		motorColor = self.motorCanvasColor(buf)
+                    		self.motorControl.itemconfigure(self.H1, fill=motorColor)
+                    		self.motorControl.update()
+                    	except:
+                    		print "bad motor five data"
                     elif c == 8:
-                        self.motorSixData.configure(text=buf, bg = color)
-                        motorColor = self.motorCanvasColor(buf)
-                        self.motorControl.itemconfigure(self.H2, fill=motorColor)
-                        self.motorControl.update()
+                    	try:
+                    		self.motorSixData.configure(text=buf, bg = color)
+                    		motorColor = self.motorCanvasColor(buf)
+                    		self.motorControl.itemconfigure(self.H2, fill=motorColor)
+                    		self.motorControl.update()
+                    	except:
+                    		print "bad motor six data"
                     elif c == 9:
-                        self.motorSevenData.configure(text=buf, bg = color)
-                        motorColor = self.motorCanvasColor(buf)
-                        self.motorControl.itemconfigure(self.H3, fill=motorColor)
-                        self.motorControl.update()
+                    	try:
+                    		self.motorSevenData.configure(text=buf, bg = color)
+                    		motorColor = self.motorCanvasColor(buf)
+                    		self.motorControl.itemconfigure(self.H3, fill=motorColor)
+                    		self.motorControl.update()
+                    	except:
+                    		print "bad motor seven data"
                     elif c == 10:
-                        self.motorEightData.configure(text=buf, bg = color)
-                        motorColor = self.motorCanvasColor(buf)
-                        self.motorControl.itemconfigure(self.H4, fill=motorColor)
-                        self.motorControl.update()
+                    	try:
+                    		self.motorEightData.configure(text=buf, bg = color)
+                    		motorColor = self.motorCanvasColor(buf)
+                    		self.motorControl.itemconfigure(self.H4, fill=motorColor)
+                    		self.motorControl.update()
+                    	except:
+                    		print "bad motor eight data"
                     elif c == 11:
-                        self.voltData.configure(text="12", bg = color)
+                    	try:
+                    		self.voltData.configure(text="12", bg = color)
+                    	except:
+                    		print "bad volt data"
                     elif c == 12:
-                        self.ampData.configure(text="1.0", bg = color)
+                    	try:
+                    		self.ampData.configure(text="1.0", bg = color)
+                    	except:
+                    		print "bad amp data"
                     elif c == 13:
-                        self.aData.configure(text=buf, bg = color)
+                    	try:
+                        	self.aData.configure(text=buf, bg = color)
+                        except:
+                        	print "bad a data"
                     elif c == 14:
-                        self.bData.configure(text=buf, bg = color)
+                    	try:
+                        	self.bData.configure(text=buf, bg = color)
+                        except:
+                        	print "bad b data"
                     elif c == 15:
-                        self.cData.configure(text=buf, bg = color)
+                    	try:
+                        	self.cData.configure(text=buf, bg = color)
+                        except:
+                        	print "bad c data"
                     elif c == 16:
-                        self.angle.configure(text=buf, bg = color)
-                        self.compassData(buf)
+                    	try:
+                        	self.angle.configure(text=buf, bg = color)
+                        	self.compassData(buf)
+                        except:
+                        	print "bad compass data"
                     elif c == 17:
-                        self.waterSensorDataOne.configure(text=buf, bg = color)
+                    	try:
+                        	self.waterSensorDataOne.configure(text=buf, bg = color)
+                        except:
+                        	print "bad water sensor data"
                     elif c == 18:
-                        self.waterSensorDataTwo.configure(text=buf, bg = color)
+                    	try:
+                        	self.waterSensorDataTwo.configure(text=buf, bg = color)
+                        except:
+                        	print "bad water sensor data"
     def dataTwo(self):
     	global topDepthNumber
     	global middleDepthNumber
@@ -498,6 +556,7 @@ class App():
     	global coords
         global color 
         global depthBuffer 
+        global timeInWater
         first = 0
         for item in range(len(dataArray)):
             if first == 0:
@@ -522,31 +581,39 @@ class App():
                             #self.warningStop()
                     except: 
                         print "bad depthData"
-                    #try:
-                    coords = int(depthBuffer)
-                    zz = int(z/6)
-                    self.depthCanvas.coords(self.rov, 40+zz, 20+ (coords), zz, 0+ (coords))
-                    self.depthCanvas.coords(self.topDepthLine,0,topDepthNumber,800,topDepthNumber)
-                    self.depthCanvas.coords(self.middleDepthLine,0,middleDepthNumber,800,middleDepthNumber)
-                    self.depthCanvas.coords(self.bottomDepthLine,0,bottomDepthNumber,800,bottomDepthNumber)
-                    ice = (topDepthNumber - middleDepthNumber)/100
-                    ocean = (middleDepthNumber - bottomDepthNumber)/100
-                    self.iceData.configure(text=ice)
-                    self.oceanData.configure(text=ocean)
+                    try:
+                    	coords = int(depthBuffer)
+                    	if timeInWater != ("00:00"):
+                    		zz = int(z/4)
+                    		self.depthCanvas.coords(self.rov, 40+zz, 20+ (coords), zz, 0+ (coords))
+                    		self.depthCanvas.coords(self.topDepthLine,0,topDepthNumber,800,topDepthNumber)
+                    		self.depthCanvas.coords(self.middleDepthLine,0,middleDepthNumber,800,middleDepthNumber)
+                    		self.depthCanvas.coords(self.bottomDepthLine,0,bottomDepthNumber,800,bottomDepthNumber)
+                    		#zzz = z%15
+                    		if zz % 4 == 0:
+								global lineCoordsX
+								global lineCoordsY #coords for line
+								item = self.depthCanvas.create_line(lineCoordsX, lineCoordsY, zz, (coords), fill = "white",width=1)
+								lineCoordsX=zz
+								lineCoordsY=(coords)						
+                    		z+=1
+                    		minute = timeInWater[:2]+timeInWater[3:]
+                    		if (int(minute) % 100) == 0:
+                    			item = self.depthCanvas.create_line(zz, 0, zz, 500, fill = "white",width=1)
+                    	ice = (topDepthNumber - middleDepthNumber)/100
+                    	ocean = (middleDepthNumber - bottomDepthNumber)/100
+                    	self.iceData.configure(text=ice)
+                    	self.oceanData.configure(text=ocean)
 
-                    
-                    zzz = z%18
-                    	#try:
-                    if zzz == 0:
-						global lineCoordsX
-						global lineCoordsY #coords for line
-						item = self.depthCanvas.create_line(lineCoordsX, lineCoordsY, zz, (coords), fill = "white",width=3)
-						lineCoordsX=zz
-						lineCoordsY=(coords)						
-                    z+=1
+
+
+                    except:
+                    	print"bad depth"
+                    	
                     length = len(depthBuffer)
                     length = length - 2
                     labelDepth = depthBuffer[:length] + "." + depthBuffer[length:]
+                    	
                     self.currentDepthData.configure(text=labelDepth,bg = color)
 					
                     #except:
