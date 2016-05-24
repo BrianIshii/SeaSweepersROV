@@ -42,6 +42,7 @@ unsigned char handshake3;
 void setup() {
   Serial.begin(115200);
   Serial1.begin(115200);
+  Serial2.begin(115200);
   pinMode(19, INPUT);
   pinMode(18, OUTPUT);
   delay(1000);
