@@ -158,12 +158,35 @@ void loop() {
   // VIEW IN SERIAL MONTIOR:
 
   //A2
-  Serial2.print(Joystick1A); Serial2.print(" ");
-  Serial2.print(Joystick1B); Serial2.print(" ");
-  Serial2.print(Joystick2A); Serial2.print(" ");
-  Serial2.print(Joystick2B); Serial2.print(" ");
-  Serial2.print(Joystick3A); Serial2.print(" ");
-  Serial2.print(Joystick3B); Serial2.print(" ");
-  Serial2.println(ServoVal);
-//  //  delay(20);
+    Serial2.write(255);
+    Serial2.write(255);
+    Serial2.write(255);
+    
+    Serial2.write(data[0]);
+    Serial2.write(data[1]);
+    Serial2.write(checksum0);
+
+    Serial2.write(data[2]);
+    Serial2.write(data[3]); //bytes sent
+    Serial2.write(checksum1);
+
+    Serial2.write(data[4]);
+    Serial2.write(data[5]);
+    Serial2.write(checksum2);
+
+    Serial2.write(data[6]);
+    Serial2.write(data[7]);
+    Serial2.write(checksum3);
+
+    Serial2.write(data[8]);
+    Serial2.write(data[9]); //bytes sent
+    Serial2.write(checksum4);
+
+    Serial2.write(data[10]);
+    Serial2.write(data[11]);
+    Serial2.write(checksum5);
+
+    Serial2.write(data[12]);
+    Serial2.write(data[13]);  //servp
+    Serial2.write(checksum6);
 }
