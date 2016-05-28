@@ -1,18 +1,23 @@
+#code for SeaSweepersROV GUI 'BRUCE'
 # for python 3.x use 'tkinter' rather than 'Tkinter'
 import Tkinter as tk
 import time
 import math
 from serial import *
-#for raspberry pi use "/dev/ttyACM0"
+
+#Setting up Serial port
+#for raspberry pi use serialPort = "/dev/ttyACM0"
 serialPort = "/dev/cu.usbmodemFA131"
 baudRate = 115200
-ser = Serial(serialPort , baudRate, timeout=0, writeTimeout=0) #ensure non-blocking
-dataList = []
+ser = Serial(serialPort , baudRate, timeout=0, writeTimeout=0) #ensure non-blocking, code will not run if the port is not connected
+
+#assigned variables
+dataList = [] #empty dataList for receiving data
 serBuffer = ""
 tempBuffer= ""
 depthBuffer = ""
-pressureBuffer = ""
 probeTempBuffer = ""
+#not in use yet
 vOneBuffer = ""
 vTwoBuffer = ""
 vThreeBuffer = ""
@@ -21,15 +26,12 @@ hOneBuffer = ""
 hTwoBuffer = ""
 hThreeBuffer = ""
 hFourBuffer = ""
-totalVoltBuffer = ""
-totalAmpBuffer = ""
 xAccelBuffer = ""
 yAccelBuffer = ""
 zAccelBuffer = ""
+#
 angleBuffer = 0
 dataArray=[]
-waterOne = ""
-waterTwo = ""
 previousAngle = ""
 motorColor = "white"
 timeInWater = "00:00"
@@ -48,13 +50,13 @@ coords=0
 looops = 1
 color = "white"
 w=0
-
 altitudeBuffer = ""
 class App():
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("SeaSweepers BRUCE the RILF")
-        self.root.option_add("*Font", "Rockwell 20")
+        self.root.option_add("*Font", "Rockwell 20") #Use with MACBOOK
+        #self.root.option_add("*Font", "Rockwell 10") what we used in comp
     	self.root.minsize(width=1440, height=880)
     	self.root.maxsize(width=1440, height=880)
         self.root.configure(bg ="gray")
@@ -75,22 +77,22 @@ class App():
                 continue
             self.l = tk.Label(text=l, bg ="gray").grid(column=0,row=x,columnspan=2)
             x+=2
+            
         self.warningTitle = tk.Label(text="WARNING", bg="yellow", width=10,height=2)
         self.stopTitle = tk.Label(text="STOP", bg="red", width=10,height=2)
-        self.title = tk.Label(text="Sea Sweepers", bg="gray")
         
         self.voltData = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2) 
         self.ampData = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)
         
         self.temperatureData = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)
-        self.angle = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)
         self.insideTempF = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)
         
-        self.temperatureDataCelcius = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)               
+        self.probeTemperatureDataCelcius = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)               
         self.pressureData = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)
         self.waterLeak = tk.Label(text="Water Leak", bg ="gray", width=10)
         self.waterSensorDataOne = tk.Label(text="TBD", relief=tk.SUNKEN, width=20,height=2)
         self.waterSensorDataTwo = tk.Label(text="TBD", relief=tk.SUNKEN, width=20,height=2)
+        self.angle = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)
 
 
         #motorData labels
@@ -197,42 +199,42 @@ class App():
 
         #grid layout
         #left column
-        self.warningTitle.grid(         column=0,  row=0)
-        self.stopTitle.grid(            column=1,  row=0)
-        self.voltData.grid(             column=0,  row=2,  columnspan=2)
-        self.ampData.grid(              column=0,  row=4,  columnspan=2)
-        self.temperatureData.grid(      column=0,  row=6,  columnspan=2)
-        self.angle.grid(                column=2,  row=6,  columnspan=4)        
-        self.insideTempF.grid(         column=0,  row=8,  columnspan=2)
-        self.temperatureDataCelcius.grid(column=0, row=10, columnspan=2)
-        self.pressureData.grid(         column=0,  row=12, columnspan=2)
-        self.waterLeak.grid(            column=6, row=0) 
-        self.waterSensorDataOne.grid(   column=2, row=0, columnspan=4)
-        self.waterSensorDataTwo.grid(   column=7, row=0, columnspan=2)
+        self.warningTitle.grid(          column=0,  row=0)
+        self.stopTitle.grid(             column=1,  row=0)
+        self.voltData.grid(              column=0,  row=2,  columnspan=2)
+        self.ampData.grid(               column=0,  row=4,  columnspan=2)
+        self.temperatureData.grid(       column=0,  row=6,  columnspan=2)
+        self.angle.grid(                 column=2,  row=6,  columnspan=4)        
+        self.insideTempF.grid(           column=0,  row=8,  columnspan=2)
+        self.probeTemperatureDataCelcius.grid(column=0,  row=10, columnspan=2)
+        self.pressureData.grid(          column=0,  row=12, columnspan=2)
+        self.waterLeak.grid(             column=6,  row=0) 
+        self.waterSensorDataOne.grid(    column=2,  row=0,  columnspan=4)
+        self.waterSensorDataTwo.grid(    column=7,  row=0,  columnspan=2)
         #motor grid
-        self.motorOneData.grid(         column=2,  row=14)
-        self.motorTwoData.grid(         column=3,  row=14)
-        self.motorThreeData.grid(       column=4,  row=14)
-        self.motorFourData.grid(        column=5,  row=14)
-        self.motorFiveData.grid(        column=2,  row=16)
-        self.motorSixData.grid(         column=3,  row=16)
-        self.motorSevenData.grid(       column=4,  row=16)
-        self.motorEightData.grid(       column=5,  row=16)
+        self.motorOneData.grid(          column=2,  row=14)
+        self.motorTwoData.grid(          column=3,  row=14)
+        self.motorThreeData.grid(        column=4,  row=14)
+        self.motorFourData.grid(         column=5,  row=14)
+        self.motorFiveData.grid(         column=2,  row=16)
+        self.motorSixData.grid(          column=3,  row=16)
+        self.motorSevenData.grid(        column=4,  row=16)
+        self.motorEightData.grid(        column=5,  row=16)
 
-        self.aTitle.grid(               column=6,  row=13)
-        self.aData.grid(                column=6,  row=14)
-        self.bTitle.grid(               column=6,  row=15)
-        self.bData.grid(                column=6,  row=16)
-    	self.cTitle.grid(               column=9,  row=15)
-        self.cData.grid(                column=9,  row=16)   
+        self.aTitle.grid(                column=6,  row=13)
+        self.aData.grid(                 column=6,  row=14)
+        self.bTitle.grid(                column=6,  row=15)
+        self.bData.grid(                 column=6,  row=16)
+    	self.cTitle.grid(                column=9,  row=15)
+        self.cData.grid(                 column=9,  row=16)   
         
     	#right side
-        self.timerTitle.grid(           column=10,  row=2, columnspan= 2)
-        self.timerButton.grid(          column=12,  row=2, columnspan= 3)
-        self.dataButton.grid(          	column=12,  row=3, columnspan= 3)
-        self.timerData.grid(            column=10,  row=0, columnspan= 5, rowspan=2) 
-        self.currentDepthTitle.grid(    column=10,  row=3, columnspan= 2)
-        self.currentDepthData.grid(     column=10,  row=4, columnspan= 2)
+        self.timerTitle.grid(           column=10,  row=2,  columnspan= 2)
+        self.timerButton.grid(          column=12,  row=2,  columnspan= 3)
+        self.dataButton.grid(          	column=12,  row=3,  columnspan= 3)
+        self.timerData.grid(            column=10,  row=0,  columnspan= 5, rowspan=2) 
+        self.currentDepthTitle.grid(    column=10,  row=3,  columnspan= 2)
+        self.currentDepthData.grid(     column=10,  row=4,  columnspan= 2)
         self.topDepthTitle.grid(        column=10,  row=5)
         self.topDepthButton.grid(       column=11,  row=5)
         self.topDepthData.grid(         column=10,  row=6)
@@ -337,6 +339,7 @@ class App():
     def getTime(self):
     	global z
     	z=0
+    	self.depthCanvas.delete()
         start = time.time()
         global startTime
         startTime = int(start)
@@ -355,7 +358,7 @@ class App():
         data = ser.readline()
         dataList.append(timeInWater)
         dataList.append(data)
-        print dataList
+        #print dataList
         for i in data:
             dataArray.append(i)
         #print dataArray
@@ -438,7 +441,7 @@ class App():
                         	length = len(buf)
                         	length = length - 2
                         	buf = buf[:length] + "." + buf[length:]
-                        	self.temperatureDataCelcius.configure(text=buf, bg = color)
+                        	self.probeTemperatureDataCelcius.configure(text=buf, bg = color)
                         	global probeTempBuffer
                         	probeTempBuffer = buf
                         except:

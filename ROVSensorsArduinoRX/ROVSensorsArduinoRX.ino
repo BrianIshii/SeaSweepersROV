@@ -3,6 +3,10 @@
   Reads bytes from Transmitting Code and put thems back together
   Then sends the bytes through serial to a raspberry pi
 */
+//variables for motorSense
+unsigned char motorFirstByte;
+int x;
+
 
 unsigned char val[48];
 int dataOne;
@@ -88,6 +92,7 @@ unsigned char checkit22;
 void setup() {
   Serial.begin(115200);
   Serial1.begin(115200);
+  Serial2.begin(115200);
   pinMode(19, INPUT);
   pinMode(18, OUTPUT);
   pinMode(13, OUTPUT);
@@ -135,37 +140,6 @@ void loop() {
     val[13]=Serial1.read();
      checksum6=Serial1.read();
 
-    val[14]=Serial1.read();
-    val[15]=Serial1.read(); 
-     checksum7=Serial1.read();
-
-    val[16]=Serial1.read();
-    val[17]=Serial1.read();   
-     checksum8=Serial1.read();     
-
-    val[18]=Serial1.read();
-    val[19]=Serial1.read();
-     checksum9=Serial1.read();
-
-    val[20]=Serial1.read();
-    val[21]=Serial1.read(); 
-     checksum10=Serial1.read();
-    val[22]=Serial1.read();
-    val[23]=Serial1.read();
-     checksum11=Serial1.read();
-
-    val[24]=Serial1.read();
-    val[25]=Serial1.read(); 
-     checksum12=Serial1.read();
-
-    val[26]=Serial1.read(); 
-    val[27]=Serial1.read();    
-     checksum13=Serial1.read(); 
-
-    val[28]=Serial1.read();
-    val[29]=Serial1.read();
-     checksum14=Serial1.read();
-
     val[30]=Serial1.read();
     val[31]=Serial1.read(); 
      checksum15=Serial1.read();
@@ -197,6 +171,8 @@ void loop() {
     val[45]=Serial1.read(); 
      checksum22=Serial1.read();
    LastByte = Serial1.read();
+//
+//
 
 // end of reading data
 //check the bytes
@@ -228,6 +204,42 @@ void loop() {
      
   
   }
+  if (Serial2.available()>21){
+    motorFirstByte = Serial2.read();
+    if (motorFirstByte == 1){
+    val[14]=Serial2.read();
+    val[15]=Serial2.read(); 
+    checksum7=Serial2.read();
+    
+    val[16]=Serial2.read();
+    val[17]=Serial2.read();   
+    checksum8=Serial2.read();
+
+    val[18]=Serial2.read();
+    val[19]=Serial2.read();
+    checksum9=Serial2.read();
+
+    val[20]=Serial2.read();
+    val[21]=Serial2.read(); 
+    checksum10=Serial2.read();
+
+    val[22]=Serial2.read();
+    val[23]=Serial2.read();
+    checksum11=Serial2.read();
+
+    val[24]=Serial2.read();
+    val[25]=Serial2.read(); 
+    checksum12=Serial2.read();
+
+    val[26]=Serial2.read(); 
+    val[27]=Serial2.read();    
+    checksum13=Serial2.read();
+
+    val[28]=Serial2.read();
+    val[29]=Serial2.read();
+    checksum14=Serial2.read();
+    }
+}
 //if (LastByte == 2) {
   if (checkit0==0)  {
     dataOne = val[1]<<8 | val[0]; }
