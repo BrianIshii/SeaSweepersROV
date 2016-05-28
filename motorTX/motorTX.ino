@@ -3,7 +3,7 @@
   Reads potentiometers and sends them through serial
 */
 
-int data [14];    // to send bytes
+int data [16];    // to send bytes
 int start [2];
 
 int Pin1A = A5;           
@@ -27,6 +27,10 @@ int Joystick3B;   // forward-back   fdsafdsaf
 int ServoPot = A6;
 int ServoVal;
 
+int LightPot = A7;
+int LightVal;
+
+
 unsigned char checksum0;
 unsigned char checksum1;
 unsigned char checksum2;
@@ -34,6 +38,7 @@ unsigned char checksum3;
 unsigned char checksum4;
 unsigned char checksum5;
 unsigned char checksum6;
+unsigned char checksum7;
 unsigned char handshake;
 unsigned char handshake2;
 unsigned char handshake3;
@@ -89,6 +94,10 @@ void loop() {
   data[12] = ServoVal & 0xFF;
   data[13] = (ServoVal >> 8);
 
+  LightVal = analogRead(LightPot);
+  data[14] = LightVal & 0xFF;
+  data[15] = (LightVal >> 8);
+
   // CREATE CHECKSUMS:
 
   checksum0 = ~(data[0] + data[1]) + 1;
@@ -104,6 +113,8 @@ void loop() {
   checksum5 = ~(data[10] + data[11]) + 1;
 
   checksum6 = ~(data[12] + data[13]) + 1;
+
+  checksum7 = ~(data[14] + data[15]) + 1;
   // WRITE VALUES AND CHECKSUMS TO SERIAL:
 
   while (Serial1.available() < 3) {
@@ -148,6 +159,10 @@ void loop() {
     Serial1.write(data[12]);
     Serial1.write(data[13]);  //servp
     Serial1.write(checksum6);
+    
+    Serial1.write(data[14]);
+    Serial1.write(data[15]);  //light
+    Serial1.write(checksum7);
 
     Serial1.write(2);
 
@@ -158,13 +173,6 @@ void loop() {
   // VIEW IN SERIAL MONTIOR:
 
   //A2
-  Serial2.print("A");
-  Serial2.print(Joystick1A); Serial2.print(" ");
-  Serial2.print(Joystick1B); Serial2.print(" ");
-  Serial2.print(Joystick2A); Serial2.print(" ");
-  Serial2.print(Joystick2B); Serial2.print(" ");
-  Serial2.print(Joystick3A); Serial2.print(" ");
-  Serial2.print(Joystick3B); Serial2.print(" ");
-  Serial2.println(ServoVal);
+
 //  //  delay(20);
 }

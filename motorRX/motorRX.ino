@@ -9,7 +9,9 @@ Servo myservo;
 int ServoVal;
 int beautiful;
 
-unsigned char val[14];    // variable to read the value from the analog pin
+int LightVal;
+
+unsigned char val[16];    // variable to read the value from the analog pin
 int Joystick1A;      // 0-1024 received from serial
 int Joystick1B;
 int Joystick2A;
@@ -24,6 +26,7 @@ unsigned char checksum3;
 unsigned char checksum4;
 unsigned char checksum5;
 unsigned char checksum6;
+unsigned char checksum7;
 unsigned char FirstByte;
 unsigned char LastByte;
 
@@ -34,6 +37,7 @@ unsigned char checkit3;
 unsigned char checkit4;
 unsigned char checkit5;
 unsigned char checkit6;
+unsigned char checkit7;
 
 //ALL MOTORS:
 int V1Direction = 31;
@@ -59,6 +63,9 @@ int H3PWM = 7;     //MOTOR H3 back left
 
 int H4Direction = 39;
 int H4PWM = 6;     //MOTOR H4 back right
+
+int Light = 13;  // pin for light
+
 
 
 int Vertical;
@@ -92,6 +99,15 @@ void setup() {
   pinMode(43, OUTPUT);
   pinMode(45, OUTPUT);
 
+  digitalWrite (30, HIGH);
+  digitalWrite (32, HIGH);
+  digitalWrite (34, HIGH);
+  digitalWrite (36, HIGH);
+  digitalWrite (38, HIGH);     //Driving HIGH for SLP pins
+  digitalWrite (40, HIGH);
+  digitalWrite (42, HIGH);
+  digitalWrite (44, HIGH);
+
 
   myservo.attach(11);
 }
@@ -108,7 +124,7 @@ void loop() {
     //Serial.println("bye");
   }
 
-  if (Serial1.available()>21) {  
+  if (Serial1.available()>23) {  
   //  Serial.println("hi");
 
   FirstByte=Serial1.read();
@@ -142,6 +158,10 @@ void loop() {
     val[13]=Serial1.read();
      checksum6=Serial1.read();
 
+    val[14]=Serial1.read();
+    val[15]=Serial1.read();
+     checksum7=Serial1.read();
+
    LastByte = Serial1.read();
 
 // get the checksum last
@@ -153,6 +173,7 @@ void loop() {
     checkit4 = val[8]+val[9]+checksum4;
     checkit5 = val[10]+val[11]+checksum5; 
     checkit6 = val[12]+val[13]+checksum6;
+    checkit7 = val[14]+val[15]+checksum7;
   }
 if (LastByte == 2) {
   if (checkit0==0)  {
@@ -175,6 +196,9 @@ if (LastByte == 2) {
 
   if (checkit6==0)  {
     ServoVal = val[13]<<8 | val[12]; }
+
+  if (checkit7==0)  {
+    LightVal = val[15]<<8 | val[14]; }
 
 }
 //else (Serial.println("Goodbye"));
@@ -233,6 +257,8 @@ if (ServoVal < 0) {
 if ((ServoVal != 67)) {
 beautiful = map(ServoVal, 0, 1023, 60, 170); //maps number for use with servo, 180 degrees
 myservo.write(beautiful); }
+
+analogWrite (Light, LightVal);
 
 if (((Joystick1A < 570) && (Joystick1A > 430)) && ((Joystick2A < 570) && (Joystick2A > 430))) {
   analogWrite (V1PWM, 0);
