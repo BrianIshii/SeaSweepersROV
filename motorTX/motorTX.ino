@@ -178,40 +178,42 @@ void loop() {
 
   // VIEW IN SERIAL MONTIOR:
 
-
-  handshake4 = Serial2.read();
-  handshake5 = Serial2.read();
-  handshake6 = Serial2.read();    
-  if ((handshake4 == 1) && (handshake5 == 2) && (handshake6 == 3)) {
-    Serial2.write(1);
-    Serial2.write(2);
-    Serial2.write(3);
+  if (Serial2.available() > 2) {
+    handshake4 = Serial2.read();
+    handshake5 = Serial2.read();
+    handshake6 = Serial2.read();    
+    if ((handshake4 == 1) && (handshake5 == 2) && (handshake6 == 3)) {
+      Serial2.write(1);
+      Serial2.write(2);
+      Serial2.write(3);
     
-    Serial2.write(data[0]);
-    Serial2.write(data[1]);
-    Serial2.write(checksum0);
+      Serial2.write(data[0]);
+      Serial2.write(data[1]);
+      Serial2.write(checksum0);
 
-    Serial2.write(data[2]);
-    Serial2.write(data[3]); //bytes sent
-    Serial2.write(checksum1);
+      Serial2.write(data[2]);
+      Serial2.write(data[3]); //bytes sent
+      Serial2.write(checksum1);
 
-    Serial2.write(data[4]);
-    Serial2.write(data[5]);
-    Serial2.write(checksum2);
+      Serial2.write(data[4]);
+      Serial2.write(data[5]);
+      Serial2.write(checksum2);
 
-    Serial2.write(data[6]);
-    Serial2.write(data[7]);
-    Serial2.write(checksum3);
+      Serial2.write(data[6]);
+      Serial2.write(data[7]);
+      Serial2.write(checksum3);
 
-    Serial2.write(data[8]);
-    Serial2.write(data[9]); //bytes sent
-    Serial2.write(checksum4);
+      Serial2.write(data[8]);
+      Serial2.write(data[9]); //bytes sent
+      Serial2.write(checksum4);
 
-    Serial2.write(data[10]);
-    Serial2.write(data[11]);
-    Serial2.write(checksum5);
+      Serial2.write(data[10]);
+      Serial2.write(data[11]);
+      Serial2.write(checksum5);
 
-    Serial2.write(data[12]);
-    Serial2.write(data[13]);  //servp
-    Serial2.write(checksum6);
+      Serial2.write(data[12]);
+      Serial2.write(data[13]);  //servp
+      Serial2.write(checksum6);
+    }
+  }
 }
