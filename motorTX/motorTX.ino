@@ -42,6 +42,9 @@ unsigned char checksum7;
 unsigned char handshake;
 unsigned char handshake2;
 unsigned char handshake3;
+unsigned char handshake4;
+unsigned char handshake5;
+unsigned char handshake6;
 
 
 void setup() {
@@ -50,6 +53,8 @@ void setup() {
   Serial2.begin(115200);
   pinMode(19, INPUT);
   pinMode(18, OUTPUT);
+  pinMode(17, INPUT);
+  pinMode(16, OUTPUT);
   delay(1000);
 }
 
@@ -174,11 +179,13 @@ void loop() {
   // VIEW IN SERIAL MONTIOR:
 
 
-
-//  //  delay(20);
-    Serial2.write(255);
-    Serial2.write(255);
-    Serial2.write(255);
+  handshake4 = Serial2.read();
+  handshake5 = Serial2.read();
+  handshake6 = Serial2.read();    
+  if ((handshake4 == 1) && (handshake5 == 2) && (handshake6 == 3)) {
+    Serial2.write(1);
+    Serial2.write(2);
+    Serial2.write(3);
     
     Serial2.write(data[0]);
     Serial2.write(data[1]);
