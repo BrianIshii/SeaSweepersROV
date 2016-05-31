@@ -10,6 +10,7 @@ int ServoVal;
 int beautiful;
 
 int LightVal;
+int beautiful2;
 
 unsigned char val[16];    // variable to read the value from the analog pin
 int Joystick1A;      // 0-1024 received from serial
@@ -266,7 +267,13 @@ if ((ServoVal != 67)) {
 beautiful = map(ServoVal, 0, 1023, 60, 170); //maps number for use with servo, 180 degrees
 myservo.write(beautiful); }
 
-analogWrite (Light, (LightVal/4));
+if (LightVal < 400) {
+  analogWrite (Light, 0);
+}
+if (LightVal >= 400); {
+  beautiful2 = map(LightVal, 400, 1023, 0, 255);
+  analogWrite (Light, beautiful2);
+}
 
 if (((Joystick1A < 570) && (Joystick1A > 430)) && ((Joystick2A < 570) && (Joystick2A > 430))) {
   analogWrite (V1PWM, 0);
