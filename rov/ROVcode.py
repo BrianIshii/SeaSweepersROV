@@ -180,12 +180,6 @@ class App():
 		self.compassLineTwo = self.compassCanvas.create_line(100,100,10,60,arrow=tk.LAST, arrowshape=(50,55,3))
 		self.middle = self.compassCanvas.create_oval(95,95,105,105, outline='black', fill='white')		
 
-
-		#horizonCanvas
-		self.horizonCanvas = tk.Canvas(self.root, width=200, height = 400, background="gray",highlightthickness=1, bd=0)
-		self.horizonLine = self.horizonCanvas.create_line(0,100,200,200, activefill="white")#delete
-		self.sky = self.horizonCanvas.create_rectangle(0,0,202,200, fill="blue", outline='black')
-
 		#motorControl
 		self.motorControl = tk.Canvas(self.root, width=200, height = 200, background= "gray")
 		self.hexagon = self.motorControl.create_polygon(25,75,75,25,125,25,175,75,175,135,125,185,75,185,25,135, outline='black', fill='black')
@@ -195,13 +189,10 @@ class App():
 		self.V4 = self.motorControl.create_oval(140,150,160,170, outline='black', fill='white')		
 		self.H1 = self.motorControl.create_polygon(50,80,80,50,90,60,60,90,50,80, outline='black', fill='white')
 		self.H1R = self.motorControl.create_polygon(65,65,80,50,90,60,75,75,65,65,outline='black',fill='green')
-		
 		self.H2 = self.motorControl.create_polygon(150,80,120,50,110,60,140,90,150,80, outline='black', fill='white')
-		self.H2R = self.motorControl.create_polygon(135,65,120,50,110,60,125,75,135,65,outline='black',fill='green')
-				
+		self.H2R = self.motorControl.create_polygon(135,65,120,50,110,60,125,75,135,65,outline='black',fill='green')		
 		self.H3 = self.motorControl.create_polygon(50,120,80,150,90,140,60,110,50,120, outline='black', fill='white')
 		self.H3R = self.motorControl.create_polygon(65,135,80,150,90,140,75,125,65,135,outline='black',fill='green')
-				
 		self.H4 = self.motorControl.create_polygon(150,120,120,150,110,140,140,110,150,120, outline='black', fill='white')	
 		self.H4R = self.motorControl.create_polygon(135,135,120,150,110,140,125,125,135,135,outline='black',fill='green')
 
