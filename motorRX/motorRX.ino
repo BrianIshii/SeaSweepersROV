@@ -10,6 +10,7 @@ int ServoVal;
 int beautiful;
 
 int LightVal;
+int beautiful2;
 
 unsigned char val[16];    // variable to read the value from the analog pin
 int Joystick1A;      // 0-1024 received from serial
@@ -85,7 +86,7 @@ void setup() {
   pinMode(3, OUTPUT);
   pinMode(4, OUTPUT);
   pinMode(5, OUTPUT);
-  pinMode(6, OUTPUT);
+  pinMode(6, OUTPUT);  //PWM
   pinMode(7, OUTPUT);
   pinMode(8, OUTPUT);
   pinMode(9, OUTPUT);
@@ -93,19 +94,27 @@ void setup() {
   pinMode(31, OUTPUT);
   pinMode(33, OUTPUT);
   pinMode(35, OUTPUT);
-  pinMode(37, OUTPUT);
+  pinMode(37, OUTPUT);  //DIR
   pinMode(39, OUTPUT);
   pinMode(41, OUTPUT);
   pinMode(43, OUTPUT);
   pinMode(45, OUTPUT);
 
+  pinMode(30, OUTPUT);
   digitalWrite (30, HIGH);
+  pinMode(32, OUTPUT);
   digitalWrite (32, HIGH);
+  pinMode(34, OUTPUT);
   digitalWrite (34, HIGH);
+  pinMode(36, OUTPUT);
   digitalWrite (36, HIGH);
+  pinMode(38, OUTPUT);
   digitalWrite (38, HIGH);     //Driving HIGH for SLP pins
+  pinMode(40, OUTPUT);
   digitalWrite (40, HIGH);
+  pinMode(42, OUTPUT);
   digitalWrite (42, HIGH);
+  pinMode(33, OUTPUT);
   digitalWrite (44, HIGH);
 
 
@@ -258,7 +267,13 @@ if ((ServoVal != 67)) {
 beautiful = map(ServoVal, 0, 1023, 60, 170); //maps number for use with servo, 180 degrees
 myservo.write(beautiful); }
 
-analogWrite (Light, LightVal);
+if (LightVal < 400) {
+  analogWrite (Light, 0);
+}
+if (LightVal >= 400); {
+  beautiful2 = map(LightVal, 400, 1023, 0, 255);
+  analogWrite (Light, beautiful2);
+}
 
 if (((Joystick1A < 570) && (Joystick1A > 430)) && ((Joystick2A < 570) && (Joystick2A > 430))) {
   analogWrite (V1PWM, 0);
