@@ -104,7 +104,7 @@ void setup() {
   pinMode(18, OUTPUT);
   pinMode(17, INPUT);
   pinMode(16, OUTPUT);
-  pinMode(13, OUTPUT);
+  pinMode(11, OUTPUT);
   pinMode(12, OUTPUT);
   delay(1000);
 }
@@ -446,10 +446,10 @@ void loop() {
     
     if (waterSenseOne > 50 || waterSenseTwo >50) {
       digitalWrite(12,LOW);
-      digitalWrite(13,LOW);
+      digitalWrite(11,LOW);
       } else {
       digitalWrite(12,HIGH);
-      digitalWrite(13,HIGH);
+      digitalWrite(11,HIGH);
       }
     delay(200);
 

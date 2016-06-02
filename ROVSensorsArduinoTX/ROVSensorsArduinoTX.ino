@@ -1,15 +1,7 @@
 #include <OneWire.h> 
 
-
 #include <Wire.h>
 #include "MS5837.h"
-
-//compass sensor needs wire.h too
-#include <Adafruit_Sensor.h>
-#include <Adafruit_LSM303_U.h>
-/* Assign a unique ID to this sensor at the same time */
-Adafruit_LSM303_Mag_Unified mag = Adafruit_LSM303_Mag_Unified(12345);
-Adafruit_LSM303_Accel_Unified accel = Adafruit_LSM303_Accel_Unified(54321);
 
 //temp probe
 int DS18S20_Pin = 2;
@@ -20,7 +12,7 @@ MS5837 sensor;
 //code for inside temp sensor
 #include "DHT.h" //library
 #define DHTPIN 7  // what digital pin we're connected to for temperature sensor
-#define DHTTYPE DHT21   // DHT 21 (AM2301)
+#define DHTTYPE DHT11   // DHT 21 (AM2301)
 DHT dht(DHTPIN, DHTTYPE); //set varaibles
 
 
@@ -90,18 +82,18 @@ unsigned char handshake3;
 void setup() {
   Serial.begin(115200);
   Serial1.begin(115200);
-    if(!mag.begin())
-  {
-    /* There was a problem detecting the LSM303 ... check your connections */
-    Serial.println("Ooops, no LSM303 detected ... Check your wiring!");
-    while(1);
-  }
-  if(!accel.begin())
-  {
-    /* There was a problem detecting the ADXL345 ... check your connections */
-    Serial.println("Ooops, no LSM303 detected ... Check your wiring!");
-    while(1);
-  }
+//    if(!mag.begin())
+//  {
+//    /* There was a problem detecting the LSM303 ... check your connections */
+//    Serial.println("Ooops, no LSM303 detected ... Check your wiring!");
+//    while(1);
+//  }
+//  if(!accel.begin())
+//  {
+//    /* There was a problem detecting the ADXL345 ... check your connections */
+//    Serial.println("Ooops, no LSM303 detected ... Check your wiring!");
+//    while(1);
+//  }
 
   
   //pressure sensor
@@ -209,26 +201,26 @@ void loop() {
   data[33] = (totalAmp >> 8);
 
 ////compass
-  sensors_event_t accelEvent; 
-  sensors_event_t magEvent; 
-  
-  accel.getEvent(&accelEvent);
-  mag.getEvent(&magEvent);
+//  sensors_event_t accelEvent; 
+//  sensors_event_t magEvent; 
+//  
+//  accel.getEvent(&accelEvent);
+//  mag.getEvent(&magEvent);
 
-  int XAcceleration = accelEvent.acceleration.x;
+  int XAcceleration = 2;
   data[34] = XAcceleration & 0xFF;
   data[35] = (XAcceleration >> 8);
 
-  int YAcceleration = accelEvent.acceleration.y;
+  int YAcceleration = 2;
   data[36] = YAcceleration & 0xFF;
   data[37] = (YAcceleration >> 8);
 
-  int ZAcceleration = accelEvent.acceleration.z;
+  int ZAcceleration = 2;
   data[38] = ZAcceleration & 0xFF;
   data[39] = (ZAcceleration >> 8);
 
   float Pi = 3.14159;
-  int angle = (atan2(magEvent.magnetic.y,magEvent.magnetic.x) * 180) / Pi; //variable for compass
+  int angle = 20; //variable for compass
     if (angle < 0)
   {
     angle = 360 + angle;
