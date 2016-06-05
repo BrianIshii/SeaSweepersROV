@@ -1,5 +1,6 @@
 #include <OneWire.h> 
 
+
 #include <Wire.h>
 #include "MS5837.h"
 
@@ -12,7 +13,7 @@ MS5837 sensor;
 //code for inside temp sensor
 #include "DHT.h" //library
 #define DHTPIN 7  // what digital pin we're connected to for temperature sensor
-#define DHTTYPE DHT11   // DHT 21 (AM2301)
+#define DHTTYPE DHT21   // DHT 21 (AM2301)
 DHT dht(DHTPIN, DHTTYPE); //set varaibles
 
 
@@ -22,28 +23,12 @@ int data [46];
 //starting bytes
 int start [2];    
 //analog pins
-int sensorPinZero = A0;
-int sensorPinOne = A1;
-int sensorPinFour = A4;
-int sensorPinFive = A5;
-int sensorPinEight = A8;
-int sensorPinNine = A9;
-int sensorPinTen = A10;
-int sensorPinEleven = A11;
-int sensorPinTwelve = A12;
-int sensorPinThirteen = A13;
-int sensorPinFourteen = A14;
-int sensorPinFifteen = A15;
+int totalVoltPin = A0;
+int totalAmpPin = A1;
+int waterSenseOnePin = A4;
+int waterSenseTwoPin = A5;
 
 // variable to store the value coming from the sensor
-int currentV1 = 0;  
-int currentV2 = 0;  
-int currentV3 = 0;  
-int currentV4 = 0;  
-int currentH1 = 0;
-int currentH2 = 0;
-int currentH3 = 0;
-int currentH4 = 0;
 int totalVolt = 0;
 int totalAmp = 0;
 
@@ -51,29 +36,21 @@ int totalAmp = 0;
 int waterOne = 0;
 int waterTwo = 0;
 
-unsigned char checksum0;
+unsigned char insideTemperatureCheck;
 unsigned char checksum1;
 unsigned char checksum2;
-unsigned char checksum3;
+unsigned char depthCheck;
 unsigned char checksum4;
-unsigned char checksum5;
-unsigned char checksum6;
-unsigned char checksum7;
-unsigned char checksum8;
-unsigned char checksum9;
-unsigned char checksum10;
-unsigned char checksum11;
-unsigned char checksum12;
-unsigned char checksum13;
-unsigned char checksum14;
-unsigned char checksum15;
-unsigned char checksum16;
-unsigned char checksum17;
-unsigned char checksum18;
-unsigned char checksum19;
-unsigned char checksum20;
-unsigned char checksum21;
-unsigned char checksum22;
+unsigned char pressureCheck;
+unsigned char probeTemperatureCheck;
+unsigned char totalVoltCheck;
+unsigned char totalAmpCheck;
+unsigned char xAccelCheck;
+unsigned char yAccelCheck;
+unsigned char zAccelCheck;
+unsigned char angleCheck;
+unsigned char waterSenseOneCheck;
+unsigned char waterSenseTwoCheck;
 unsigned char handshake;
 unsigned char handshake2;
 unsigned char handshake3;
@@ -82,26 +59,11 @@ unsigned char handshake3;
 void setup() {
   Serial.begin(115200);
   Serial1.begin(115200);
-//    if(!mag.begin())
-//  {
-//    /* There was a problem detecting the LSM303 ... check your connections */
-//    Serial.println("Ooops, no LSM303 detected ... Check your wiring!");
-//    while(1);
-//  }
-//  if(!accel.begin())
-//  {
-//    /* There was a problem detecting the ADXL345 ... check your connections */
-//    Serial.println("Ooops, no LSM303 detected ... Check your wiring!");
-//    while(1);
-//  }
-
-  
-  //pressure sensor
-  Wire.begin();
+  Wire.begin();  //pressure sensor
   sensor.init();
   sensor.setFluidDensity(997);
-  //inside temp sensor
-   dht.begin();
+   dht.begin();   //inside temp sensor
+
 } 
 
 void loop() {
@@ -156,56 +118,15 @@ void loop() {
   data[12] = probeTemperature & 0xFF;
   data[13] = (probeTemperature >> 8);
 
-//currents
-
-  currentV1 = analogRead(sensorPinEight);
-  data[14] = currentV1 & 0xFF;
-  data[15] = (currentV1 >> 8);
-
-  currentV2 = analogRead(sensorPinNine);
-  data[16] = currentV2 & 0xFF;
-  data[17] = (currentV2 >> 8);
-
-  currentV3 = analogRead(sensorPinTen);
-  data[18] = currentV3 & 0xFF;
-  data[19] = (currentV3 >> 8);
-
-  currentV4 = analogRead(sensorPinEleven);
-  data[20] = currentV4 & 0xFF;
-  data[21] = (currentV4 >> 8);
-
-  currentH1 = analogRead(sensorPinTwelve);
-  data[22] = currentH1 & 0xFF;
-  data[23] = (currentH1 >> 8);
-
-  currentH2 = analogRead(sensorPinThirteen);
-  data[24] = currentH2 & 0xFF;
-  data[25] = (currentH2 >> 8);
-
-  currentH3 = analogRead(sensorPinFourteen);
-  data[26] = currentH3 & 0xFF;
-  data[27] = (currentH3 >> 8);
-
-  currentH4 = analogRead(sensorPinFifteen);
-  data[28] = currentH4 & 0xFF;
-  data[29] = (currentH4 >> 8);
-
 //volts and amps
 
-  totalVolt = analogRead(sensorPinZero);
+  totalVolt = analogRead(totalVoltPin);
   data[30] = totalVolt & 0xFF;
   data[31] = (totalVolt >> 8);
 
-  totalAmp = analogRead(sensorPinOne);
+  totalAmp = analogRead(totalAmpPin);
   data[32] = totalAmp & 0xFF;
   data[33] = (totalAmp >> 8);
-
-////compass
-//  sensors_event_t accelEvent; 
-//  sensors_event_t magEvent; 
-//  
-//  accel.getEvent(&accelEvent);
-//  mag.getEvent(&magEvent);
 
   int XAcceleration = 2;
   data[34] = XAcceleration & 0xFF;
@@ -220,7 +141,7 @@ void loop() {
   data[39] = (ZAcceleration >> 8);
 
   float Pi = 3.14159;
-  int angle = 20; //variable for compass
+  int angle = 55; //variable for compass
     if (angle < 0)
   {
     angle = 360 + angle;
@@ -230,61 +151,45 @@ void loop() {
 
 int waterOne = 0;
 int waterTwo = 0;
-  waterOne = analogRead(sensorPinFour);
+  waterOne = analogRead(waterSenseOnePin);
   data[42] = waterOne & 0xFF;
   data[43] = (waterOne >> 8);
 
-  waterTwo = analogRead(sensorPinFive);
+  waterTwo = analogRead(waterSenseTwoPin);
   data[44] = waterTwo & 0xFF;
   data[45] = (waterTwo >> 8);
   
   // CREATE CHECKSUMS:
 
-  checksum0 = ~(data[0] + data[1]) + 1;
+  insideTemperatureCheck = ~(data[0] + data[1]) + 1;
 
   checksum1 = ~(data[2] + data[3]) + 1;
 
   checksum2 = ~(data[4] + data[5]) + 1;
 
-  checksum3 = ~(data[6] + data[7]) + 1;
+  depthCheck = ~(data[6] + data[7]) + 1;
 
   //checksum4 = ~(data[8] + data[9]) + 1;
 
-  checksum5 = ~(data[10] + data[11]) + 1;
+  pressureCheck = ~(data[10] + data[11]) + 1;
   
-  checksum6 = ~(data[12] + data[13]) + 1;
+  probeTemperatureCheck = ~(data[12] + data[13]) + 1;
 
-  checksum7 = ~(data[14] + data[15]) + 1;
+  totalVoltCheck = ~(data[30] + data[31]) + 1;
 
-  checksum8 = ~(data[16] + data[17]) + 1;
+  totalAmpCheck = ~(data[32] + data[33]) + 1;
 
-  checksum9 = ~(data[18] + data[19]) + 1;
+  xAccelCheck = ~(data[34] + data[35]) + 1;
 
-  checksum10 = ~(data[20] + data[21]) + 1;
+  yAccelCheck = ~(data[36] + data[37]) + 1;
 
-  checksum11 = ~(data[22] + data[23]) + 1;
-
-  checksum12 = ~(data[24] + data[25]) + 1;
+  zAccelCheck = ~(data[38] + data[39]) + 1;
   
-  checksum13 = ~(data[26] + data[27]) + 1;
+  angleCheck = ~(data[40] + data[41]) + 1;
 
-  checksum14 = ~(data[28] + data[29]) + 1;
+  waterSenseOneCheck = ~(data[42] + data[43]) + 1;
 
-  checksum15 = ~(data[30] + data[31]) + 1;
-
-  checksum16 = ~(data[32] + data[33]) + 1;
-
-  checksum17 = ~(data[34] + data[35]) + 1;
-
-  checksum18 = ~(data[36] + data[37]) + 1;
-
-  checksum19 = ~(data[38] + data[39]) + 1;
-  
-  checksum20 = ~(data[40] + data[41]) + 1;
-
-  checksum21 = ~(data[42] + data[43]) + 1;
-
-  checksum22 = ~(data[44] + data[45]) + 1;
+  waterSenseTwoCheck = ~(data[44] + data[45]) + 1;
 
   // WRITE VALUES AND CHECKSUMS TO SERIAL:
 //  Serial.print(insideTemperature);
@@ -300,22 +205,6 @@ int waterTwo = 0;
 //  Serial.print(pressure);
 //  Serial.print(" ");
 //  Serial.print(probeTemperature);
-//  Serial.print(" ");
-//  Serial.print(currentV1);
-//  Serial.print(" ");
-//  Serial.print(currentV2);
-//  Serial.print(" ");
-//  Serial.print(currentV3);
-//  Serial.print(" ");
-//  Serial.print(currentV4);
-//  Serial.print(" ");
-//  Serial.print(currentH1);
-//  Serial.print(" "); 
-//  Serial.print(currentH2);
-//  Serial.print(" "); 
-//  Serial.print(currentH3);
-//  Serial.print(" ");  
-//  Serial.print(currentH4);
 //  Serial.print(" ");
 //  Serial.print(totalVolt);
 //  Serial.print(" ");
@@ -348,97 +237,52 @@ int waterTwo = 0;
 
     Serial1.write(data[0]);    
     Serial1.write(data[1]);
-    Serial1.write(checksum0);
-//
-//    Serial1.write(data[2]);
-//    Serial1.write(data[3]); 
-//    Serial1.write(checksum1);
-        
-//    Serial1.write(data[4]);
-//    Serial1.write(data[5]);
-//    Serial1.write(checksum2);
+    Serial1.write(insideTemperatureCheck);
     
     Serial1.write(data[6]);
     Serial1.write(data[7]);
-    Serial1.write(checksum3);
-    
-//    Serial1.write(data[8]);
-//    Serial1.write(data[9]); 
-//    Serial1.write(checksum4);
+    Serial1.write(depthCheck);
     
     Serial1.write(data[10]);
     Serial1.write(data[11]);
-    Serial1.write(checksum5);
+    Serial1.write(pressureCheck);
     
     Serial1.write(data[12]);
     Serial1.write(data[13]);
-    Serial1.write(checksum6);
-    
-    Serial1.write(data[14]);    
-    Serial1.write(data[15]);
-    Serial1.write(checksum7);
-    
-    Serial1.write(data[16]);
-    Serial1.write(data[17]); 
-    Serial1.write(checksum8);
-
-    Serial1.write(data[18]);
-    Serial1.write(data[19]);
-    Serial1.write(checksum9);
-
-    Serial1.write(data[20]);
-    Serial1.write(data[21]);
-    Serial1.write(checksum10);
-  
-    Serial1.write(data[22]);  
-    Serial1.write(data[23]); 
-    Serial1.write(checksum11);
-
-    Serial1.write(data[24]);
-    Serial1.write(data[25]);
-    Serial1.write(checksum12);
-
-    Serial1.write(data[26]);
-    Serial1.write(data[27]);
-    Serial1.write(checksum13);
-
-    Serial1.write(data[28]);
-    Serial1.write(data[29]);
-    Serial1.write(checksum14);
+    Serial1.write(probeTemperatureCheck);
 
     Serial1.write(data[30]);
     Serial1.write(data[31]);
-    Serial1.write(checksum15);
+    Serial1.write(totalVoltCheck);
 
     Serial1.write(data[32]);
     Serial1.write(data[33]);
-    Serial1.write(checksum16);
+    Serial1.write(totalAmpCheck);
 
     Serial1.write(data[34]);
     Serial1.write(data[35]);
-    Serial1.write(checksum17);
+    Serial1.write(xAccelCheck);
 
     Serial1.write(data[36]);    
     Serial1.write(data[37]); 
-    Serial1.write(checksum18);
+    Serial1.write(yAccelCheck);
     
     Serial1.write(data[38]);
     Serial1.write(data[39]);
-    Serial1.write(checksum19);
+    Serial1.write(zAccelCheck);
 
     Serial1.write(data[40]);
     Serial1.write(data[41]);
-    Serial1.write(checksum20);
+    Serial1.write(angleCheck);
     
     Serial1.write(data[42]);
     Serial1.write(data[43]);
-    Serial1.write(checksum21);
+    Serial1.write(waterSenseOneCheck);
     
     Serial1.write(data[44]);
     Serial1.write(data[45]);
-    Serial1.write(checksum22);
+    Serial1.write(waterSenseTwoCheck);
     
-    Serial1.write(2);
     delay(50);     // delay in between reads for stability
   }
 

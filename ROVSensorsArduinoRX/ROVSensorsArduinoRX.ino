@@ -286,8 +286,8 @@ void loop() {
         joyFiveCheckit = val[22] + val[23] + joyFiveCheck;
         joySixCheckit = val[24] + val[25] + joySixCheck;
         servoCheckit = val[26] + val[27] + servoCheck;
-        lightCheckit = val[28] + val[29] + lightCheck;
-        servoDataCheckit = val[46] +val[47] + servoDataCheck;
+        //lightCheckit = val[28] + val[29] + lightCheck;
+        //servoDataCheckit = val[46] +val[47] + servoDataCheck;
         
       }
     }
@@ -380,12 +380,11 @@ void loop() {
       waterSenseTwo = val[45] << 8 | val[44];
     }
     
-    if (servoDataCheckit == 0)  {
-      servoData = val[47] << 8 | val[46];
-    }
+    //if (servoDataCheckit == 0)  {
+    //  servoData = val[47] << 8 | val[46];
+    //}
 
-    int lightData = (lightData); //trying to fix volt reading
-    int totalVoltData = (totalVoltData * 5 / 1023);
+    //int totalVoltData = (totalVoltData * 5 / 1023);
     Serial.print("A");
     Serial.print(insideTemperatureData);
     Serial.print("B");
@@ -429,7 +428,7 @@ void loop() {
     Serial.print("U");
     Serial.print(servoDataReal);
     Serial.print("V");
-//
+
 //    Serial.print("W");
 //    Serial.print(lightData);
 //    Serial.print("X");
@@ -474,7 +473,6 @@ void loop() {
       digitalWrite(11,HIGH);
       }
     delay(200);
-
-  }
+    }
 }
 
