@@ -27,7 +27,7 @@ int joyStickFourData;
 int joyStickFiveData;
 int joyStickSixData;
 int servoDataReal;
-int hFourData;
+int lightData;
 int totalVoltData;
 int totalAmpData;
 int xAccelData;
@@ -45,14 +45,14 @@ unsigned char depthCheck;
 unsigned char checksum4;
 unsigned char pressureCheck;
 unsigned char probeTemperatureCheck;
-unsigned char vOneCheck;
-unsigned char vTwoCheck;
-unsigned char vThreeCheck;
-unsigned char vFourCheck;
-unsigned char hOneCheck;
-unsigned char hTwoCheck;
-unsigned char hThreeCheck;
-unsigned char hFourCheck;
+unsigned char joyOneCheck;
+unsigned char joyTwoCheck;
+unsigned char joyThreeCheck;
+unsigned char joyFourCheck;
+unsigned char joyFiveCheck;
+unsigned char joySixCheck;
+unsigned char servoCheck;
+unsigned char lightCheck;
 unsigned char totalvoltCheck;
 unsigned char totalAmpCheck;
 unsigned char xAccelCheck;
@@ -75,15 +75,15 @@ unsigned char depthCheckit;
 unsigned char checkit4;
 unsigned char pressureCheckit;
 unsigned char probeTemperatureCheckit;
-unsigned char vOneCheckit;
-unsigned char vTwoCheckit;
-unsigned char vThreeCheckit;
+unsigned char joyOneCheckit;
+unsigned char joyTwoCheckit;
+unsigned char joyThreeCheckit;
 
-unsigned char vFourCheckit;
-unsigned char hOneCheckit;
-unsigned char hTwoCheckit;
-unsigned char hThreeCheckit;
-unsigned char hFourCheckit;
+unsigned char joyFourCheckit;
+unsigned char joyFiveCheckit;
+unsigned char joySixCheckit;
+unsigned char servoCheckit;
+unsigned char lightCheckit;
 unsigned char totalVoltCheckit;
 unsigned char totalAmpCheckit;
 unsigned char xAccelCheckit;
@@ -106,6 +106,28 @@ void setup() {
   pinMode(16, OUTPUT);
   pinMode(11, OUTPUT);
   pinMode(12, OUTPUT);
+  digitalWrite(12,LOW);
+  digitalWrite(11,LOW);
+  delay(10);
+  digitalWrite(12,HIGH);
+  digitalWrite(11,HIGH);
+  delay(10);
+  digitalWrite(12,LOW);
+  digitalWrite(11,LOW);
+  delay(10);
+  digitalWrite(12,HIGH);
+  digitalWrite(11,HIGH);
+  delay(10);  
+  digitalWrite(12,LOW);
+  digitalWrite(11,LOW);
+  delay(10);
+  digitalWrite(12,HIGH);
+  digitalWrite(11,HIGH);
+  delay(10);  
+  digitalWrite(12,LOW);
+  digitalWrite(11,LOW);
+  delay(10);
+      
   delay(1000);
 }
 
@@ -190,14 +212,14 @@ void loop() {
         //    checkit4 = val[8]+val[9]+checksum4;
         pressureCheckit = val[10] + val[11] + pressureCheck;
         probeTemperatureCheckit = val[12] + val[13] + probeTemperatureCheck;
-//        vOneCheckit = val[14] + val[15] + vOneCheck; //moved down
-//        vTwoCheckit = val[16] + val[17] + vTwoCheck;
-//        vThreeCheckit = val[18] + val[19] + vThreeCheck;
-//        vFourCheckit = val[20] + val[21] + vFourCheck;
-//        hOneCheckit = val[22] + val[23] + hOneCheck;
-//        hTwoCheckit = val[24] + val[25] + hTwoCheck;
-//        hThreeCheckit = val[26] + val[27] + hThreeCheck;
-//        hFourCheckit = val[28] + val[29] + hFourCheck;
+//        joyOneCheckit = val[14] + val[15] + joyOneCheck; //moved down
+//        joyTwoCheckit = val[16] + val[17] + joyTwoCheck;
+//        joyThreeCheckit = val[18] + val[19] + joyThreeCheck;
+//        joyFourCheckit = val[20] + val[21] + joyFourCheck;
+//        joyFiveCheckit = val[22] + val[23] + joyFiveCheck;
+//        joySixCheckit = val[24] + val[25] + joySixCheck;
+//        servoCheckit = val[26] + val[27] + servoCheck;
+//        lightCheckit = val[28] + val[29] + lightCheck;
         totalVoltCheckit = val[30] + val[31] + totalvoltCheck;
         totalAmpCheckit = val[32] + val[33] + totalAmpCheck;
         xAccelCheckit = val[34] + val[35] + xAccelCheck;
@@ -222,49 +244,49 @@ void loop() {
 
         val[14] = Serial2.read();
         val[15] = Serial2.read();
-        vOneCheck = Serial2.read();
+        joyOneCheck = Serial2.read();
 
         val[16] = Serial2.read();
         val[17] = Serial2.read();
-        vTwoCheck = Serial2.read();
+        joyTwoCheck = Serial2.read();
 
         val[18] = Serial2.read();
         val[19] = Serial2.read();
-        vThreeCheck = Serial2.read();
+        joyThreeCheck = Serial2.read();
 
         val[20] = Serial2.read();
         val[21] = Serial2.read();
-        vFourCheck = Serial2.read();
+        joyFourCheck = Serial2.read();
 
         val[22] = Serial2.read();
         val[23] = Serial2.read();
-        hOneCheck = Serial2.read();
+        joyFiveCheck = Serial2.read();
 
         val[24] = Serial2.read();
         val[25] = Serial2.read();
-        hTwoCheck = Serial2.read();
+        joySixCheck = Serial2.read();
 
         val[26] = Serial2.read();
         val[27] = Serial2.read();
-        hThreeCheck = Serial2.read();
+        servoCheck = Serial2.read();
         
 
 //        val[28] = Serial2.read();
 //        val[29] = Serial2.read();
-//        hFourCheck = Serial2.read();
+//        lightCheck = Serial2.read();
 //
 //        val[46] = Serial2.read();
 //        val[47] = Serial2.read();
 //        servoDataCheck = Serial2.read();
 
-        vOneCheckit = val[14] + val[15] + vOneCheck;
-        vTwoCheckit = val[16] + val[17] + vTwoCheck;
-        vThreeCheckit = val[18] + val[19] + vThreeCheck;
-        vFourCheckit = val[20] + val[21] + vFourCheck;
-        hOneCheckit = val[22] + val[23] + hOneCheck;
-        hTwoCheckit = val[24] + val[25] + hTwoCheck;
-        hThreeCheckit = val[26] + val[27] + hThreeCheck;
-        hFourCheckit = val[28] + val[29] + hFourCheck;
+        joyOneCheckit = val[14] + val[15] + joyOneCheck;
+        joyTwoCheckit = val[16] + val[17] + joyTwoCheck;
+        joyThreeCheckit = val[18] + val[19] + joyThreeCheck;
+        joyFourCheckit = val[20] + val[21] + joyFourCheck;
+        joyFiveCheckit = val[22] + val[23] + joyFiveCheck;
+        joySixCheckit = val[24] + val[25] + joySixCheck;
+        servoCheckit = val[26] + val[27] + servoCheck;
+        lightCheckit = val[28] + val[29] + lightCheck;
         servoDataCheckit = val[46] +val[47] + servoDataCheck;
         
       }
@@ -294,36 +316,36 @@ void loop() {
       probeTemperatureData = val[13] << 8 | val[12];
     }
 
-    if (vOneCheckit == 0)  {
+    if (joyOneCheckit == 0)  {
       joyStickOneData = val[15] << 8 | val[14];
     }
 
-    if (vTwoCheckit == 0)  {
+    if (joyTwoCheckit == 0)  {
       joyStickTwoData = val[17] << 8 | val[16];
     }
 
-    if (vThreeCheckit == 0)  {
+    if (joyThreeCheckit == 0)  {
       joyStickThreeData = val[19] << 8 | val[18];
     }
 
-    if (vFourCheckit == 0)  {
+    if (joyFourCheckit == 0)  {
       joyStickFourData = val[21] << 8 | val[20];
     }
 
-    if (hOneCheckit == 0)  {
+    if (joyFiveCheckit == 0)  {
       joyStickFiveData = val[23] << 8 | val[22];
     }
 
-    if (hTwoCheckit == 0)  {
+    if (joySixCheckit == 0)  {
       joyStickSixData = val[25] << 8 | val[24];
     }
 
-    if (hThreeCheckit == 0)  {
+    if (servoCheckit == 0)  {
       servoDataReal = val[27] << 8 | val[26];
     }
 
-    if (hFourCheckit == 0)  {
-      hFourData = val[29] << 8 | val[28];
+    if (lightCheckit == 0)  {
+      lightData = val[29] << 8 | val[28];
     }
 
     if (totalVoltCheckit == 0)  {
@@ -362,7 +384,7 @@ void loop() {
       servoData = val[47] << 8 | val[46];
     }
 
-    int hFourData = (hFourData); //trying to fix volt reading
+    int lightData = (lightData); //trying to fix volt reading
     int totalVoltData = (totalVoltData * 5 / 1023);
     Serial.print("A");
     Serial.print(insideTemperatureData);
@@ -409,7 +431,7 @@ void loop() {
     Serial.print("V");
 //
 //    Serial.print("W");
-//    Serial.print(hFourData);
+//    Serial.print(lightData);
 //    Serial.print("X");
 
     Serial.print("Y");
@@ -454,21 +476,5 @@ void loop() {
     delay(200);
 
   }
-
-  //  if (Serial.available()>0){
-  //      char c = Serial.read();  //gets one byte from serial from rasperberry 2 is red lights 1 is yellow and 0 is off
-  //      if (c == 2){
-  //        digitalWrite(13, LOW);
-  //      }
-  //      if (c == 1){
-  //        digitalWrite(12, LOW);
-  //      }
-  //      if (c == 0){
-  //        digitalWrite(13, HIGH);
-  //        digitalWrite(12, HIGH);
-  //      }
-  //      }
-  //  }
-  //
 }
 

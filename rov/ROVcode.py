@@ -8,7 +8,7 @@ from serial import *
 #Setting up Serial port
 #for raspberry pi use serialPort = "/dev/ttyACM0"
 #serialPort = "/dev/cu.usbmodemFD121"
-serialPort = "/dev/cu.usbmodem105"
+serialPort = "/dev/cu.usbmodem106"
 baudRate = 115200
 ser = Serial(serialPort , baudRate, timeout=0, writeTimeout=0) #ensure non-blocking, code will not run if the port is not connected
 
@@ -17,6 +17,7 @@ dataList = [] #empty dataList for receiving data
 serBuffer = ""
 tempBuffer= ""
 depthBuffer = ""
+tickerForDepth = 0
 probeTempBuffer = ""
 #not in use yet
 joyStickOneBuffer = ""
@@ -148,7 +149,7 @@ class App():
 		
 		#depthCanvas for depth
 		self.depthCanvas = tk.Canvas(self.root, width=800, height = 500, background= "blue",bd=0,highlightthickness=1)
-		self.rov = self.depthCanvas.create_rectangle(40, 20, 0, 0, outline='black', fill='white')
+		self.rov2 = self.depthCanvas.create_polygon(0, 0, 40, 0, 40,5, 30,5, 30,15, 40,15, 40,20, 0,20, 0,15, 10,15, 10,5, 0,5, 0,0,outline='black', fill='black')
 		self.topDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "orange",width=3, dash=(8, 8))
 		self.middleDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "red",width=3, dash=(8, 8))
 		self.bottomDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "yellow",width=3, dash=(8, 8))
@@ -517,6 +518,7 @@ class App():
 		global middleDepthNumber
 		global bottomDepthNumber
 		global z #value for depth canvas movement horizontal
+		global tickerForDepth #will replace z
 		global coords
 		global color 
 		global depthBuffer 
@@ -533,57 +535,40 @@ class App():
 						while dataArray[int(item)+a] != 'D': 
 							depthBuffer += dataArray[int(item)+a]
 							a +=1
-						#consider deleting
-						if float(depthBuffer) >= 500:
-							color = "red"
-							self.stopTitle.configure(bg = color)
-						elif float(depthBuffer)>=500:
-							color = "yellow"
-							self.warningTitle.configure(bg = color)
-						else: 
-							color = "white"
-							#self.warningStop()
 					except: 
 						print "bad depthData"
 					try:
 						coords = int(depthBuffer)
 						if timeInWater != ("00:00"):
-							zz = int(z/4)
-							self.depthCanvas.coords(self.rov, 40+zz, 20+ (coords), zz, 0+ (coords))
+							second = timeInWater[4:]
+							if (second != tickerForDepth):
+								self.depthCanvas.coords(self.rov2, 0+z, 0+(coords), 40+z, 0+(coords), 40+z,5+(coords), 30+z,5+(coords), 30+z,15+(coords), 40+z,15+(coords), 40+z,20+(coords), 0+z,20+(coords), 0+z,15+(coords), 10+z,15+(coords), 10+z,5+(coords), 0+z,5+(coords), 0+z,0+(coords))
+								global lineCoordsX
+								global lineCoordsY #coords for line
+								item = self.depthCanvas.create_line(lineCoordsX, lineCoordsY, z, (coords), fill = "white",width=1)
+								lineCoordsX=z
+								lineCoordsY=(coords)			
+								tickerForDepth = second		
+								z+=1	
+							
 							self.depthCanvas.coords(self.topDepthLine,0,topDepthNumber,800,topDepthNumber)
 							self.depthCanvas.coords(self.middleDepthLine,0,middleDepthNumber,800,middleDepthNumber)
 							self.depthCanvas.coords(self.bottomDepthLine,0,bottomDepthNumber,800,bottomDepthNumber)
-							#zzz = z%15
-							if zz % 4 == 0:
-								global lineCoordsX
-								global lineCoordsY #coords for line
-								item = self.depthCanvas.create_line(lineCoordsX, lineCoordsY, zz, (coords), fill = "white",width=1)
-								lineCoordsX=zz
-								lineCoordsY=(coords)						
-							z+=1
 							minute = timeInWater[:2]+timeInWater[3:]
 							if (int(minute) % 100) == 0:
-								item = self.depthCanvas.create_line(zz, 0, zz, 500, fill = "white",width=1)
+								item = self.depthCanvas.create_line(z, 450, z, 500, fill = "white",width=1)
 						ice = (topDepthNumber - middleDepthNumber)/100
 						ocean = (middleDepthNumber - bottomDepthNumber)/100
 						self.iceData.configure(text=ice)
 						self.oceanData.configure(text=ocean)
-
-
-
 					except:
 						print"bad depth"
 						
 					length = len(depthBuffer)
 					length = length - 2
 					labelDepth = depthBuffer[:length] + "." + depthBuffer[length:]
-						
 					self.currentDepthData.configure(text=labelDepth,bg = color)
 					
-					#except:
-						#l = ""
-					#try:
-						
 	def compassData(self,angle):
 		global previousAngle
 		global looops
@@ -710,7 +695,7 @@ class App():
 			joyStickFiveBuffer = self.joyStickMap(int(joyStickFiveBuffer))
 			joyStickSixBuffer = self.joyStickMap(int(joyStickSixBuffer))
 		except:
-			print"bad joy"
+			print"bad joystick conversion"
 		try:
 			if (joyStickOneBuffer > 50) or (joyStickOneBuffer < -50):
 				vOne = joyStickOneBuffer
@@ -743,7 +728,7 @@ class App():
 				hThree = -int(joyStickSixBuffer)
 				hFour = -int(joyStickSixBuffer)
 		except:
-			print"bad conversion joystick"
+			print"bad joystick read"
 		try:
 			self.motorOneData.configure(text=vOne)
 			self.motorTwoData.configure(text=vTwo)
@@ -755,8 +740,7 @@ class App():
 			self.motorSevenData.configure(text=hThree)
 			self.motorEightData.configure(text=hFour)
 		except:
-			print "bad label motor"
-		#self.aData.configure(text=joyStickSixBuffer)
+			print "bad labeling motors"
 		try:
 			hOne = int(hOne)/17
 			hTwo = int(hTwo)/17
@@ -773,7 +757,7 @@ class App():
 			self.motorControl.itemconfigure(self.V3R, extent=vThree)
 			self.motorControl.itemconfigure(self.V4R, extent=vFour)
 		except:
-			print "bad conversion joystick canvas"
+			print "bad joystick canvas"
 		#motorColor = self.motorCanvasColor(vOne)
 		#self.motorControl.itemconfigure(self.V1, fill=motorColor)
 		#self.motorControl.itemconfigure(self.V2, fill=motorColor)
