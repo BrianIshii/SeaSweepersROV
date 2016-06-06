@@ -27,7 +27,7 @@ joyStickFourBuffer = ""
 joyStickFiveBuffer = ""
 joyStickSixBuffer = ""
 servoBuffer = ""
-hFourBuffer = ""
+lightBuffer = ""
 xAccelBuffer = ""
 yAccelBuffer = ""
 zAccelBuffer = ""
@@ -150,6 +150,7 @@ class App():
 		#depthCanvas for depth
 		self.depthCanvas = tk.Canvas(self.root, width=800, height = 500, background= "blue",bd=0,highlightthickness=1)
 		self.rov2 = self.depthCanvas.create_polygon(0, 0, 40, 0, 40,5, 30,5, 30,15, 40,15, 40,20, 0,20, 0,15, 10,15, 10,5, 0,5, 0,0,outline='black', fill='black')
+		self.light = self.depthCanvas.create_arc(0, -10, 90, 30,start=0,outline='blue', fill='white',extent=0)		
 		self.topDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "orange",width=3, dash=(8, 8))
 		self.middleDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "red",width=3, dash=(8, 8))
 		self.bottomDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "yellow",width=3, dash=(8, 8))
@@ -455,14 +456,8 @@ class App():
 						joyStickSixBuffer = buf
 						self.joyStickConversion()
 					elif c == 9:
-						try:
-							s1 = buf
-							#self.motorSevenData.configure(text=s1, bg = color)
-							#motorColor = self.motorCanvasColor(buf)
-							#self.motorControl.itemconfigure(self.H3, fill=motorColor)
-							#print "done"
-						except:
-							print "bad motor seven data"
+						global lightBuffer
+						lightBuffer = buf
 					elif c == 10:
 						try:
 							print"hi"
@@ -523,6 +518,7 @@ class App():
 		global color 
 		global depthBuffer 
 		global timeInWater
+		global lightBuffer
 		first = 0
 		for item in range(len(dataArray)):
 			if first == 0:
@@ -543,6 +539,12 @@ class App():
 							second = timeInWater[4:]
 							if (second != tickerForDepth):
 								self.depthCanvas.coords(self.rov2, 0+z, 0+(coords), 40+z, 0+(coords), 40+z,5+(coords), 30+z,5+(coords), 30+z,15+(coords), 40+z,15+(coords), 40+z,20+(coords), 0+z,20+(coords), 0+z,15+(coords), 10+z,15+(coords), 10+z,5+(coords), 0+z,5+(coords), 0+z,0+(coords))
+								lightBuffer = int(lightBuffer)
+								if (lightBuffer == 0):
+									self.light = self.depthCanvas.create_arc(0+z, -10+(coords), 90+z, 30+(coords),start=0,outline='blue', fill='white',extent=0)		
+								else:
+									lightValue = int(lightBuffer)/100
+									self.light = self.depthCanvas.create_arc(0+z, -10+(coords), 90+z, 30+(coords),start=-30-lightValue,outline='blue', fill='white',extent=60+(2*lightValue))		
 								global lineCoordsX
 								global lineCoordsY #coords for line
 								item = self.depthCanvas.create_line(lineCoordsX, lineCoordsY, z, (coords), fill = "white",width=1)
