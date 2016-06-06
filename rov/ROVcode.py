@@ -8,7 +8,7 @@ from serial import *
 #Setting up Serial port
 #for raspberry pi use serialPort = "/dev/ttyACM0"
 #serialPort = "/dev/cu.usbmodemFD121"
-serialPort = "/dev/cu.usbmodem106"
+serialPort = "/dev/cu.usbmodem110"
 baudRate = 115200
 ser = Serial(serialPort , baudRate, timeout=0, writeTimeout=0) #ensure non-blocking, code will not run if the port is not connected
 
@@ -31,6 +31,7 @@ lightBuffer = ""
 xAccelBuffer = ""
 yAccelBuffer = ""
 zAccelBuffer = ""
+angle = 0
 #
 angleBuffer = 0
 dataArray=[]
@@ -44,6 +45,10 @@ l=""#char for top middle bottom usage in dataTwo
 z=0 #value for depth canvas movement horizontal in data Two
 lineCoordsX=0
 lineCoordsY=0
+lightX1=0
+lightX2=0
+lightY1=0
+lightY2=0
 r=""
 e = ""
 g = ""
@@ -105,7 +110,7 @@ class App():
 		self.motorSevenData = tk.Label(text="TBD", relief=tk.SUNKEN,width=5,height=2)
 		self.motorEightData = tk.Label(text="TBD", relief=tk.SUNKEN,width=5,height=2)
 		#extra data points 
-		self.aTitle = tk.Label(text="X", bg ="gray")
+		self.aTitle = tk.Label(text="Servo Claw", bg ="gray") #used for servo
 		self.aData = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)
 		self.bTitle = tk.Label(text="Y", bg ="gray")
 		self.bData = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)	   
@@ -150,20 +155,25 @@ class App():
 		#depthCanvas for depth
 		self.depthCanvas = tk.Canvas(self.root, width=800, height = 500, background= "blue",bd=0,highlightthickness=1)
 		self.rov2 = self.depthCanvas.create_polygon(0, 0, 40, 0, 40,5, 30,5, 30,15, 40,15, 40,20, 0,20, 0,15, 10,15, 10,5, 0,5, 0,0,outline='black', fill='black')
-		self.light = self.depthCanvas.create_arc(0, -10, 90, 30,start=0,outline='blue', fill='white',extent=0)		
+		self.light = self.depthCanvas.create_arc(0, -10, 90, 30,start=-30,outline='blue', fill='white',extent=60)		
 		self.topDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "orange",width=3, dash=(8, 8))
 		self.middleDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "red",width=3, dash=(8, 8))
 		self.bottomDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "yellow",width=3, dash=(8, 8))
 		self.finishLineWhite = self.depthCanvas.create_line(720, 0, 720, 500, fill = "white",width=8, dash=(20, 20))
 		self.finishLineBlack = self.depthCanvas.create_line(720, 20, 720, 500, fill = "black",width=8, dash=(20, 20))
-		
+		#servoCanvas
+		self.servoCanvas = tk.Canvas(self.root, width=200, height = 150, background= "blue")
+		self.servoClawRight = self.servoCanvas.create_polygon(0,0, 20,0, 20,10, 30,10, 30,30, 20,30, 20,100, 0,100, outline='black', fill='black')
+		self.servoClawLeft = self.servoCanvas.create_polygon(200,0, 180,0, 180,10, 170,10, 170,30, 180,30, 180,100, 200,100, outline='black', fill='black')
+		self.rovBase = self.servoCanvas.create_polygon(0,100,200,100,200,150,0,150,outline='black', fill='black')
+
 		#compassCanvas
 		self.compassCanvas = tk.Canvas(self.root, width=200, height = 200, background= "gray")
 		self.compass = self.compassCanvas.create_oval(10, 10, 190, 190, outline='black', fill='white')
-		self.compassArcNegativeFour = self.compassCanvas.create_arc(10, 10, 190, 190,start=90, fill='red',extent=0)
-		self.compassArcNegativeThree = self.compassCanvas.create_arc(10, 10, 190, 190,start=90, fill='orange',extent=0)
-		self.compassArcNegativeTwo = self.compassCanvas.create_arc(10, 10, 190, 190,start=90, fill='yellow',extent=0)
 		self.compassArcNegativeOne = self.compassCanvas.create_arc(10, 10, 190, 190,start=90, fill='green',extent=0)
+		self.compassArcNegativeTwo = self.compassCanvas.create_arc(10, 10, 190, 190,start=90, fill='yellow',extent=0)
+		self.compassArcNegativeThree = self.compassCanvas.create_arc(10, 10, 190, 190,start=90, fill='orange',extent=0)
+		self.compassArcNegativeFour = self.compassCanvas.create_arc(10, 10, 190, 190,start=90, fill='red',extent=0)
 		self.compassArc = self.compassCanvas.create_arc(10, 10, 190, 190,start=90, fill='green',extent=0)
 		self.compassArcTwo = self.compassCanvas.create_arc(10, 10, 190, 190,start=90, fill='yellow',extent=0)
 		self.compassArcThree = self.compassCanvas.create_arc(10, 10, 190, 190,start=90, fill='orange',extent=0)
@@ -176,9 +186,13 @@ class App():
 		self.motorControl = tk.Canvas(self.root, width=200, height = 200, background= "gray")
 		self.hexagon = self.motorControl.create_polygon(25,75,75,25,125,25,175,75,175,135,125,185,75,185,25,135, outline='black', fill='black')
 		self.V1 = self.motorControl.create_oval(40,40,60,60, outline='black', fill='white')
+		self.V1R = self.motorControl.create_arc(40,40,60,60, start=90, fill='green',extent=0)#tk.CHORDS?		
 		self.V2 = self.motorControl.create_oval(140,40,160,60, outline='black', fill='white')		
-		self.V3 = self.motorControl.create_oval(40,150,60,170, outline='black', fill='white')		
-		self.V4 = self.motorControl.create_oval(140,150,160,170, outline='black', fill='white')		
+		self.V2R = self.motorControl.create_arc(140,40,160,60, start=90, fill='green',extent=0)		
+		self.V3 = self.motorControl.create_oval(40,150,60,170, outline='black', fill='white')
+		self.V3R = self.motorControl.create_arc(40,150,60,170, start=90, fill='green',extent=0)				
+		self.V4 = self.motorControl.create_oval(140,150,160,170, outline='black', fill='white')	
+		self.V4R = self.motorControl.create_arc(140,150,160,170, start=90, fill='green',extent=0)			
 		self.H1 = self.motorControl.create_polygon(50,80,80,50,90,60,60,90,50,80, outline='black', fill='white')
 		self.H1R = self.motorControl.create_polygon(65,65,80,50,90,60,75,75,65,65,outline='black',fill='green')
 		self.H2 = self.motorControl.create_polygon(150,80,120,50,110,60,140,90,150,80, outline='black', fill='white')
@@ -197,7 +211,7 @@ class App():
 		self.temperatureData.grid(		 column=0,	row=6,	columnspan=2)
 		self.angle.grid(				 column=2,	row=6,	columnspan=4)		 
 		self.insideTempF.grid(			 column=0,	row=8,	columnspan=2)
-		self.probeTemperatureDataCelcius.grid(column=0,	 row=10, columnspan=2)
+		self.probeTemperatureDataCelcius.grid(column=0,row=10,columnspan=2)
 		self.pressureData.grid(			 column=0,	row=12, columnspan=2)
 		self.waterLeak.grid(			 column=6,	row=0) 
 		self.waterSensorDataOne.grid(	 column=2,	row=0,	columnspan=4)
@@ -213,42 +227,43 @@ class App():
 		self.motorEightData.grid(		 column=5,	row=16)
 		#extras
 		self.aTitle.grid(				 column=6,	row=13)
-		self.aData.grid(				 column=6,	row=14)
-		self.bTitle.grid(				 column=6,	row=15)
-		self.bData.grid(				 column=6,	row=16)
+		#self.aData.grid(				 column=6,	row=14)
+		#self.bTitle.grid(				 column=6,	row=15)
+		#self.bData.grid(				 column=6,	row=16)
 		self.cTitle.grid(				 column=9,	row=15)
 		self.cData.grid(				 column=9,	row=16)	  
 		#right side
-		self.timerTitle.grid(			column=10,	row=2,	columnspan= 2)
-		self.timerButton.grid(			column=12,	row=2,	columnspan= 3)
-		self.dataButton.grid(			column=12,	row=3,	columnspan= 3)
-		self.timerData.grid(			column=10,	row=0,	columnspan= 5, rowspan=2) 
-		self.currentDepthTitle.grid(	column=10,	row=3,	columnspan= 2)
-		self.currentDepthData.grid(		column=10,	row=4,	columnspan= 2)
-		self.topDepthTitle.grid(		column=10,	row=5)
-		self.topDepthButton.grid(		column=11,	row=5)
-		self.topDepthData.grid(			column=10,	row=6)
-		self.middleDepthTitle.grid(		column=10,	row=7)
-		self.middleDepthButton.grid(	column=11,	row=7)
-		self.middleDepthData.grid(		column=10,	row=8)
-		self.bottomDepthTitle.grid(		column=10,	row=9)
-		self.bottomDepthButton.grid(	column=11,	row=9)
-		self.bottomDepthData.grid(		column=10,	row=10)
-		self.iceDepth.grid(				column=12,	row=6)
-		self.iceData.grid(				column=12,	row=7)
-		self.oceanDepth.grid(			column=12,	row=8)
-		self.oceanData.grid(			column=12,	row=9)
+		self.timerTitle.grid(			 column=10,	row=2,	columnspan= 2)
+		self.timerButton.grid(			 column=12,	row=2,	columnspan= 3)
+		self.dataButton.grid(			 column=12,	row=3,	columnspan= 3)
+		self.timerData.grid(			 column=10,	row=0,	columnspan= 5, rowspan=2) 
+		self.currentDepthTitle.grid(	 column=10,	row=3,	columnspan= 2)
+		self.currentDepthData.grid(		 column=10,	row=4,	columnspan= 2)
+		self.topDepthTitle.grid(		 column=10,	row=5)
+		self.topDepthButton.grid(		 column=11,	row=5)
+		self.topDepthData.grid(			 column=10,	row=6)
+		self.middleDepthTitle.grid(		 column=10,	row=7)
+		self.middleDepthButton.grid(	 column=11,	row=7)
+		self.middleDepthData.grid(		 column=10,	row=8)
+		self.bottomDepthTitle.grid(		 column=10,	row=9)
+		self.bottomDepthButton.grid(	 column=11,	row=9)
+		self.bottomDepthData.grid(		 column=10,	row=10)
+		self.iceDepth.grid(				 column=12,	row=6)
+		self.iceData.grid(				 column=12,	row=7)
+		self.oceanDepth.grid(			 column=12,	row=8)
+		self.oceanData.grid(			 column=12,	row=9)
 		#probe right side
-		self.probeTempTitle.grid(		column=10,	row=11)
-		self.probeButton.grid(			column=11,	row=11)		   
-		self.probeData.grid(			column=10,	row=12)
-		self.probeDataF.grid(			column=11,	row=12)
-		self.C.grid(					column=10,	row=13)
-		self.F.grid(					column=11,	row=13)
+		self.probeTempTitle.grid(		 column=10,	row=11)
+		self.probeButton.grid(			 column=11,	row=11)		   
+		self.probeData.grid(			 column=10,	row=12)
+		self.probeDataF.grid(			 column=11,	row=12)
+		self.C.grid(					 column=10,	row=13)
+		self.F.grid(					 column=11,	row=13)
 		#canvases
-		self.depthCanvas.grid(			column=2,	row=2, columnspan=8,  rowspan=11)
-		self.compassCanvas.grid(		column=7,	row=13, columnspan=1,  rowspan=4)
-		self.motorControl.grid(			column=0,	row=13, columnspan=2,  rowspan=4)
+		self.depthCanvas.grid(			 column=2,	row=2,  columnspan=8,  rowspan=11)
+		self.compassCanvas.grid(		 column=7,	row=13, columnspan=1,  rowspan=4)
+		self.motorControl.grid(			 column=0,	row=13, columnspan=2,  rowspan=4)
+		self.servoCanvas.grid(           column=6,  row=14,                rowspan=3)
 
 		self.update_data()
 		self.root.mainloop()
@@ -359,8 +374,8 @@ class App():
 	def dataOne(self,c):
 		head = ['A','B','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
 		'a','b','c','d','e','f','g','h','i','j','k','l','m','n']
-		limits = ['30','35','10000','200000','3000', '3500','1000','1000','1000','1000','1000','1000','1000',
-		'1000','1000','1000','1000','1000','1000','1000','1000','1000','10','13','1000','1000','100','100',
+		limits = ['30','35','10000','200000','3000', '3500','10000','10000','10000','10000','10000','10000','10000',
+		'10000','10000','10000','10000','10000','10000','10000','10000','1000','10','13','1000','1000','100','100',
 		'100','100','100','100','1000','1000','50','100','50','100']
 		global color 
 		global motorColor
@@ -436,12 +451,10 @@ class App():
 					elif c == 3:
 						global joyStickOneBuffer
 						joyStickOneBuffer = buf
-						#self.joyStickConversion()
-
 					elif c == 4:
 						global joyStickTwoBuffer
 						joyStickTwoBuffer = buf
-						self.joyStickConversion()
+						#self.joyStickConversion()
 					elif c == 5:
 						global joyStickThreeBuffer
 						joyStickThreeBuffer = buf
@@ -452,20 +465,19 @@ class App():
 						global joyStickFiveBuffer
 						joyStickFiveBuffer = buf
 					elif c == 8:
+						#global lightBuffer
 						global joyStickSixBuffer
 						joyStickSixBuffer = buf
+						#lightBuffer = buf
 						self.joyStickConversion()
 					elif c == 9:
+						global servoBuffer
+						servoBuffer = buf
+						self.servoMove()
+					elif c == 10:
 						global lightBuffer
 						lightBuffer = buf
-					elif c == 10:
-						try:
-							print"hi"
-							#motorColor = self.motorCanvasColor(buf)
-							#self.motorControl.itemconfigure(self.H4, fill=motorColor)
-							#self.motorControl.update()
-						except:
-							print "bad motor eight data"
+						self.lightOn()
 					elif c == 11:
 						try:
 							self.voltData.configure(text="12", bg = color)
@@ -495,7 +507,7 @@ class App():
 					elif c == 16:
 						try:
 							self.angle.configure(text=buf, bg = color)
-							self.compassData(buf)
+							#self.compassData(buf)
 						except:
 							print "bad compass data"
 					elif c == 17:
@@ -519,6 +531,10 @@ class App():
 		global depthBuffer 
 		global timeInWater
 		global lightBuffer
+		global lightX1
+		global lightX2
+		global lightY1
+		global lightY2
 		first = 0
 		for item in range(len(dataArray)):
 			if first == 0:
@@ -539,12 +555,7 @@ class App():
 							second = timeInWater[4:]
 							if (second != tickerForDepth):
 								self.depthCanvas.coords(self.rov2, 0+z, 0+(coords), 40+z, 0+(coords), 40+z,5+(coords), 30+z,5+(coords), 30+z,15+(coords), 40+z,15+(coords), 40+z,20+(coords), 0+z,20+(coords), 0+z,15+(coords), 10+z,15+(coords), 10+z,5+(coords), 0+z,5+(coords), 0+z,0+(coords))
-								lightBuffer = int(lightBuffer)
-								if (lightBuffer == 0):
-									self.light = self.depthCanvas.create_arc(0+z, -10+(coords), 90+z, 30+(coords),start=0,outline='blue', fill='white',extent=0)		
-								else:
-									lightValue = int(lightBuffer)/100
-									self.light = self.depthCanvas.create_arc(0+z, -10+(coords), 90+z, 30+(coords),start=-30-lightValue,outline='blue', fill='white',extent=60+(2*lightValue))		
+								self.depthCanvas.coords(self.light, lightX1+z, lightY1+(coords), lightX2+z, lightY2+(coords))		
 								global lineCoordsX
 								global lineCoordsY #coords for line
 								item = self.depthCanvas.create_line(lineCoordsX, lineCoordsY, z, (coords), fill = "white",width=1)
@@ -574,20 +585,11 @@ class App():
 	def compassData(self,angle):
 		global previousAngle
 		global looops
-		try:
-			if int(angle) >=0 and int(angle) < 20:
-				if int(previousAngle) <=360 and int(previousAngle) >340:
-					looops +=1
-			if int(angle) <=360 and int(angle) >340:
-				if int(previousAngle) >=0 and int(previousAngle) < 20:
-					looops -=1
-			#print looops
-		except:
-			print "bad compassData"
 		try: 
 			pi = int(angle)
 			previousAngle = ""
 			previousAngle += angle
+			looops = (int(angle)/360)+4
 		except:
 			angle = previousAngle
 		angleBuffer = "" # empty the buffer
@@ -600,7 +602,7 @@ class App():
 		y2= (100-math.cos(num2)*50)
 		self.compassCanvas.coords(self.compassLineOne, 100,100,x,y)
 		self.compassCanvas.coords(self.compassLineTwo, 100,100,x2,y2)
-		if looops == 1:
+		if looops == 4:
 			self.compassCanvas.itemconfigure(self.compassArc, extent=r)
 			self.compassCanvas.itemconfigure(self.compassArcTwo, extent=0)
 			self.compassCanvas.itemconfigure(self.compassArcThree, extent=0)
@@ -609,39 +611,39 @@ class App():
 			self.compassCanvas.itemconfigure(self.compassArcNegativeTwo, extent=0)
 			self.compassCanvas.itemconfigure(self.compassArcNegativeThree, extent=0)
 			self.compassCanvas.itemconfigure(self.compassArcNegativeFour, extent=0)
-		if looops == 2:
+		if looops == 5:
 			self.compassCanvas.itemconfigure(self.compassArc, extent=359)
 			self.compassCanvas.itemconfigure(self.compassArcTwo, extent=r)
 			self.compassCanvas.itemconfigure(self.compassArcThree, extent=0)
 			self.compassCanvas.itemconfigure(self.compassArcFour, extent=0)
-		if looops == 3:
+		if looops == 6:
 			self.compassCanvas.itemconfigure(self.compassArcTwo, extent=359)
 			self.compassCanvas.itemconfigure(self.compassArcThree, extent=r)
 			self.compassCanvas.itemconfigure(self.compassArcFour, extent=0)
-		if looops == 4:
+		if looops == 7:
 			self.compassCanvas.itemconfigure(self.compassArcTwo, extent=359)
 			self.compassCanvas.itemconfigure(self.compassArcFour, extent=r)		
-		if pi <0 and pi>-360:
+		if looops == 3:
 			self.compassCanvas.itemconfigure(self.compassArc, extent=0)
-			self.compassCanvas.itemconfigure(self.compassArcNegativeFour, extent=359)
-			self.compassCanvas.itemconfigure(self.compassArcNegativeThree, extent=359)
-			self.compassCanvas.itemconfigure(self.compassArcNegativeTwo, extent=359)
-			self.compassCanvas.itemconfigure(self.compassArcNegativeOne, extent=r)
-		if pi <=-360 and pi>-720:
-			self.compassCanvas.itemconfigure(self.compassArcNegativeFour, extent=359)
-			self.compassCanvas.itemconfigure(self.compassArcNegativeThree, extent=359)
-			self.compassCanvas.itemconfigure(self.compassArcNegativeTwo, extent=r)
-			self.compassCanvas.itemconfigure(self.compassArcNegativeOne, extent=0)
-		if pi <=-720 and pi>-1080:
-			self.compassCanvas.itemconfigure(self.compassArcNegativeFour, extent=359)
-			self.compassCanvas.itemconfigure(self.compassArcNegativeThree, extent=r)
-			self.compassCanvas.itemconfigure(self.compassArcNegativeTwo, extent=0)
-			self.compassCanvas.itemconfigure(self.compassArcNegativeOne, extent=0)
-		if pi <=-1080 and pi>-1440:
-			self.compassCanvas.itemconfigure(self.compassArcNegativeFour, extent=r)
+			self.compassCanvas.itemconfigure(self.compassArcNegativeFour, extent=0)
 			self.compassCanvas.itemconfigure(self.compassArcNegativeThree, extent=0)
 			self.compassCanvas.itemconfigure(self.compassArcNegativeTwo, extent=0)
-			self.compassCanvas.itemconfigure(self.compassArcNegativeOne, extent=0)
+			self.compassCanvas.itemconfigure(self.compassArcNegativeOne, extent=r)
+		if looops == 2:
+			self.compassCanvas.itemconfigure(self.compassArcNegativeFour, extent=0)
+			self.compassCanvas.itemconfigure(self.compassArcNegativeThree, extent=0)
+			self.compassCanvas.itemconfigure(self.compassArcNegativeOne, extent=359)
+			self.compassCanvas.itemconfigure(self.compassArcNegativeTwo, extent=r)
+		if looops == 1:
+			self.compassCanvas.itemconfigure(self.compassArcNegativeFour, extent=0)
+			self.compassCanvas.itemconfigure(self.compassArcNegativeThree, extent=r)
+			self.compassCanvas.itemconfigure(self.compassArcNegativeTwo, extent=359)
+			self.compassCanvas.itemconfigure(self.compassArcNegativeOne, extent=359)
+		if looops == 0:
+			self.compassCanvas.itemconfigure(self.compassArcNegativeFour, extent=r)
+			self.compassCanvas.itemconfigure(self.compassArcNegativeThree, extent=359)
+			self.compassCanvas.itemconfigure(self.compassArcNegativeTwo, extent=359)
+			self.compassCanvas.itemconfigure(self.compassArcNegativeOne, extent=359)
 		self.compassCanvas.update()
 	def motorCanvasColor(self, buf):
 		try:
@@ -674,6 +676,38 @@ class App():
 			return fahreinheit
 		except:
 			return 0000
+	def servoMove(self):
+		global servoBuffer
+		try:
+			move = int(servoBuffer)/14
+			self.servoCanvas.coords(self.servoClawRight, 0+move,0, 20+move,0, 20+move,10, 30+move,10, 30+move,30, 20+move,30, 20+move,100, 0+move,100)
+			self.servoCanvas.coords(self.servoClawLeft, 200-move,0, 180-move,0, 180-move,10, 170-move,10, 170-move,30, 180-move,30, 180-move,100, 200-move,100)
+		except:
+			print"bad servo conversion"
+
+	def lightOn(self):
+		global lightBuffer
+		global lightX1
+		global lightX2
+		global lightY1
+		global lightY2
+		try:
+			beam = int(lightBuffer)
+		except:
+			print "bad beam"
+		if (beam == 0):
+			self.depthCanvas.itemconfigure(self.light, extent=0)
+		elif (beam > 0):
+			lightBeam = beam/10
+			st = -(lightBeam/2)
+			yVal = self.map(beam,0,1023,0,20)
+			xVal = self.map(beam,0,1023,0,45)
+			lightX1=45-(xVal)
+			lightX2=45+(xVal)
+			lightY1=10-(yVal)
+			lightY2=10+(yVal)
+			self.depthCanvas.itemconfigure(self.light,start= st,extent =lightBeam)								
+
 	def joyStickConversion(self):
 		global joyStickOneBuffer
 		global joyStickTwoBuffer
@@ -681,6 +715,7 @@ class App():
 		global joyStickFourBuffer
 		global joyStickFiveBuffer
 		global joyStickSixBuffer
+		global angle
 		vOne = 0
 		vTwo = 0
 		vThree = 0
@@ -690,45 +725,52 @@ class App():
 		hThree = 0
 		hFour = 0
 		try:
-			joyStickOneBuffer = self.joyStickMap(int(joyStickOneBuffer))
-			joyStickTwoBuffer = self.joyStickMap(int(joyStickTwoBuffer))
-			joyStickThreeBuffer = self.joyStickMap(int(joyStickThreeBuffer))
-			joyStickFourBuffer = self.joyStickMap(int(joyStickFourBuffer))
-			joyStickFiveBuffer = self.joyStickMap(int(joyStickFiveBuffer))
-			joyStickSixBuffer = self.joyStickMap(int(joyStickSixBuffer))
+			joyStickOne = self.joyStickMap(int(joyStickOneBuffer))
+			joyStickTwo = self.joyStickMap(int(joyStickTwoBuffer))
+			joyStickThree = self.joyStickMap(int(joyStickThreeBuffer))
+			joyStickFour = self.joyStickMap(int(joyStickFourBuffer))
+			joyStickFive = self.joyStickMap(int(joyStickFiveBuffer))
+			joyStickSix = self.joyStickMap(int(joyStickSixBuffer))
 		except:
 			print"bad joystick conversion"
 		try:
-			if (joyStickOneBuffer > 50) or (joyStickOneBuffer < -50):
-				vOne = joyStickOneBuffer
-				vTwo = joyStickOneBuffer
-				vThree = joyStickOneBuffer
-				vFour = joyStickOneBuffer
-			elif (joyStickThreeBuffer > 50) or (joyStickThreeBuffer < -50):
-				vOne = joyStickThreeBuffer
-				vTwo = joyStickThreeBuffer
-				vThree = joyStickThreeBuffer
-				vFour = joyStickThreeBuffer
-			elif (joyStickFourBuffer > 15) or (joyStickFourBuffer < -15):
-				vOne = joyStickFourBuffer
-				vTwo = joyStickFourBuffer
-				vThree = -int(joyStickFourBuffer)
-				vFour = -int(joyStickFourBuffer)	
-			if (joyStickTwoBuffer > 50) or (joyStickTwoBuffer < -50):
-				hOne = joyStickTwoBuffer
-				hTwo = joyStickTwoBuffer
-				hThree = joyStickTwoBuffer
-				hFour = joyStickTwoBuffer
-			elif (joyStickFiveBuffer > 50) or (joyStickFiveBuffer < -50):
-				hOne = int(joyStickFiveBuffer)
-				hTwo = -joyStickFiveBuffer
-				hThree = -int(joyStickFiveBuffer)
-				hFour = joyStickFiveBuffer
-			elif (joyStickSixBuffer > 15) or (joyStickSixBuffer < -15):
-				hOne = joyStickSixBuffer
-				hTwo = joyStickSixBuffer
-				hThree = -int(joyStickSixBuffer)
-				hFour = -int(joyStickSixBuffer)
+			if (joyStickOne > 50) or (joyStickOne < -50):
+				vOne = joyStickOne
+				vTwo = joyStickOne
+				vThree = joyStickOne
+				vFour = joyStickOne
+			elif (joyStickThree > 50) or (joyStickThree < -50):
+				vOne = joyStickThree
+				vTwo = joyStickThree
+				vThree = joyStickThree
+				vFour = joyStickThree
+			elif (joyStickFour > 15) or (joyStickFour < -15):
+				vOne = joyStickFour
+				vTwo = joyStickFour
+				vThree = -int(joyStickFour)
+				vFour = -int(joyStickFour)	
+			if (joyStickTwo > 50) or (joyStickTwo < -50):
+				hOne = joyStickTwo
+				hTwo = joyStickTwo
+				hThree = joyStickTwo
+				hFour = joyStickTwo
+			elif (joyStickFive > 50) or (joyStickFive < -50):
+				hOne = int(joyStickFive)
+				hTwo = -joyStickFive
+				hThree = -int(joyStickFive)
+				hFour = joyStickFive
+			elif (joyStickSix > 15) or (joyStickSix < -15):
+				hOne = joyStickSix
+				hTwo = joyStickSix
+				hThree = -int(joyStickSix)
+				hFour = -int(joyStickSix)
+				if (joyStickSix > 0):
+					angle += 10
+				elif (joyStickSix < 0):
+					angle -= 10
+				angle = str(angle)
+				self.compassData(angle)
+				angle = int(angle)
 		except:
 			print"bad joystick read"
 		try:
