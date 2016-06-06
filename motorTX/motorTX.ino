@@ -214,6 +214,10 @@ void loop() {
       Serial2.write(data[12]);
       Serial2.write(data[13]);  //servp
       Serial2.write(checksum6);
+      
+      Serial2.write(data[14]);
+      Serial2.write(data[15]);  //light
+      Serial2.write(checksum7);
     }
   }
 }

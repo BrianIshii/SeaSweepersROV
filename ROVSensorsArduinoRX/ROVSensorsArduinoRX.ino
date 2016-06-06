@@ -106,29 +106,30 @@ void setup() {
   pinMode(16, OUTPUT);
   pinMode(11, OUTPUT);
   pinMode(12, OUTPUT);
+  
   digitalWrite(12,LOW);
   digitalWrite(11,LOW);
-  delay(10);
+  delay(550);
+  digitalWrite(12,HIGH);
+  digitalWrite(11,LOW);
+  delay(250);
+  digitalWrite(12,LOW);
+  digitalWrite(11,HIGH);
+  delay(250);
+  digitalWrite(12,HIGH);
+  digitalWrite(11,LOW);
+  delay(400);  
+  digitalWrite(12,LOW);
+  digitalWrite(11,HIGH);
+  delay(800);
   digitalWrite(12,HIGH);
   digitalWrite(11,HIGH);
-  delay(10);
+  delay(325);  
   digitalWrite(12,LOW);
-  digitalWrite(11,LOW);
-  delay(10);
+  digitalWrite(11,LOW);      
+  delay(2000);
   digitalWrite(12,HIGH);
   digitalWrite(11,HIGH);
-  delay(10);  
-  digitalWrite(12,LOW);
-  digitalWrite(11,LOW);
-  delay(10);
-  digitalWrite(12,HIGH);
-  digitalWrite(11,HIGH);
-  delay(10);  
-  digitalWrite(12,LOW);
-  digitalWrite(11,LOW);
-  delay(10);
-      
-  delay(1000);
 }
 
 void loop() {
@@ -174,6 +175,7 @@ void loop() {
         val[30] = Serial1.read();
         val[31] = Serial1.read();
         totalvoltCheck = Serial1.read();
+        
         val[32] = Serial1.read();
         val[33] = Serial1.read();
         totalAmpCheck = Serial1.read();
@@ -271,9 +273,9 @@ void loop() {
         servoCheck = Serial2.read();
         
 
-//        val[28] = Serial2.read();
-//        val[29] = Serial2.read();
-//        lightCheck = Serial2.read();
+        val[28] = Serial2.read();
+        val[29] = Serial2.read();
+        lightCheck = Serial2.read();
 //
 //        val[46] = Serial2.read();
 //        val[47] = Serial2.read();
@@ -286,7 +288,7 @@ void loop() {
         joyFiveCheckit = val[22] + val[23] + joyFiveCheck;
         joySixCheckit = val[24] + val[25] + joySixCheck;
         servoCheckit = val[26] + val[27] + servoCheck;
-        //lightCheckit = val[28] + val[29] + lightCheck;
+        lightCheckit = val[28] + val[29] + lightCheck;
         //servoDataCheckit = val[46] +val[47] + servoDataCheck;
         
       }
@@ -429,9 +431,9 @@ void loop() {
     Serial.print(servoDataReal);
     Serial.print("V");
 
-//    Serial.print("W");
-//    Serial.print(lightData);
-//    Serial.print("X");
+    Serial.print("W");
+    Serial.print(lightData);
+    Serial.print("X");
 
     Serial.print("Y");
     Serial.print(totalVoltData);
