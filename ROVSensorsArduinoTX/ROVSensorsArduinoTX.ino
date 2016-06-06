@@ -3,12 +3,9 @@
 
 #include <Wire.h>
 #include "MS5837.h"
-#include "DS18S20.h"
-#include "DS18B20.h"
-#include "OneWireDefs.h"
 //temp probe
-int DS18B20_Pin = 2;
-OneWire ds(DS18B20_Pin);
+int DS18S20_Pin = 2;
+OneWire ds(DS18S20_Pin);
 //pressure sensor
 MS5837 sensor;
 
