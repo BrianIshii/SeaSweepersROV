@@ -7,8 +7,8 @@ from serial import *
 
 #Setting up Serial port
 #for raspberry pi use serialPort = "/dev/ttyACM0"
-#serialPort = "/dev/cu.usbmodemFD121"
-serialPort = "/dev/cu.usbmodem110"
+serialPort = "/dev/cu.usbmodemFD121"
+#serialPort = "/dev/cu.usbmodemFA131"
 baudRate = 115200
 ser = Serial(serialPort , baudRate, timeout=0, writeTimeout=0) #ensure non-blocking, code will not run if the port is not connected
 
@@ -101,20 +101,20 @@ class App():
 		self.angle = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)
 
 		#motorData labels
-		self.motorOneData = tk.Label(text="TBD", relief=tk.SUNKEN,width=5,height=2)
-		self.motorTwoData = tk.Label(text="TBD", relief=tk.SUNKEN,width=5,height=2)
-		self.motorThreeData = tk.Label(text="TBD", relief=tk.SUNKEN,width=5,height=2)
-		self.motorFourData = tk.Label(text="TBD", relief=tk.SUNKEN,width=5,height=2)
-		self.motorFiveData = tk.Label(text="TBD", relief=tk.SUNKEN,width=5,height=2)
-		self.motorSixData = tk.Label(text="TBD", relief=tk.SUNKEN,width=5,height=2)
-		self.motorSevenData = tk.Label(text="TBD", relief=tk.SUNKEN,width=5,height=2)
-		self.motorEightData = tk.Label(text="TBD", relief=tk.SUNKEN,width=5,height=2)
+		self.motorOneData = tk.Label(text="TBD", relief=tk.SUNKEN,width=6,height=2)
+		self.motorTwoData = tk.Label(text="TBD", relief=tk.SUNKEN,width=6,height=2)
+		self.motorThreeData = tk.Label(text="TBD", relief=tk.SUNKEN,width=6,height=2)
+		self.motorFourData = tk.Label(text="TBD", relief=tk.SUNKEN,width=6,height=2)
+		self.motorFiveData = tk.Label(text="TBD", relief=tk.SUNKEN,width=6,height=2)
+		self.motorSixData = tk.Label(text="TBD", relief=tk.SUNKEN,width=6,height=2)
+		self.motorSevenData = tk.Label(text="TBD", relief=tk.SUNKEN,width=6,height=2)
+		self.motorEightData = tk.Label(text="TBD", relief=tk.SUNKEN,width=6,height=2)
 		#extra data points 
 		self.aTitle = tk.Label(text="Servo Claw", bg ="gray") #used for servo
 		self.aData = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)
 		self.bTitle = tk.Label(text="Y", bg ="gray")
 		self.bData = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)	   
-		self.cTitle = tk.Label(text="Z", bg ="gray")
+		self.cTitle = tk.Label(text="          ", bg ="gray")
 		self.cData = tk.Label(text="TBD",relief=tk.SUNKEN,width=5,height=2)
 		
 		#depth Datas and Labels	mission 1
@@ -183,7 +183,7 @@ class App():
 		self.middle = self.compassCanvas.create_oval(95,95,105,105, outline='black', fill='white')		
 
 		#motorControl canvas
-		self.motorControl = tk.Canvas(self.root, width=200, height = 200, background= "gray")
+		self.motorControl = tk.Canvas(self.root, width=200, height = 200, background= "blue")
 		self.hexagon = self.motorControl.create_polygon(25,75,75,25,125,25,175,75,175,135,125,185,75,185,25,135, outline='black', fill='black')
 		self.V1 = self.motorControl.create_oval(40,40,60,60, outline='black', fill='white')
 		self.V1R = self.motorControl.create_arc(40,40,60,60, start=90, fill='green',extent=0)#tk.CHORDS?		
@@ -201,7 +201,9 @@ class App():
 		self.H3R = self.motorControl.create_polygon(65,135,80,150,90,140,75,125,65,135,outline='black',fill='green')
 		self.H4 = self.motorControl.create_polygon(150,120,120,150,110,140,140,110,150,120, outline='black', fill='white')	
 		self.H4R = self.motorControl.create_polygon(135,135,120,150,110,140,125,125,135,135,outline='black',fill='green')
-
+		#error display
+		self.errorLog = tk.Text(self.root, width=45, height=4)
+		self.messageLog = tk.Text(self.root, width=45, height=4)		
 		#grid layout
 		#left column
 		self.warningTitle.grid(			 column=0,	row=0)
@@ -230,8 +232,8 @@ class App():
 		#self.aData.grid(				 column=6,	row=14)
 		#self.bTitle.grid(				 column=6,	row=15)
 		#self.bData.grid(				 column=6,	row=16)
-		self.cTitle.grid(				 column=9,	row=15)
-		self.cData.grid(				 column=9,	row=16)	  
+		#self.cTitle.grid(				 column=9,	row=15)
+		#self.cData.grid(				 column=9,	row=16)	  
 		#right side
 		self.timerTitle.grid(			 column=10,	row=2,	columnspan= 2)
 		self.timerButton.grid(			 column=12,	row=2,	columnspan= 3)
@@ -264,7 +266,8 @@ class App():
 		self.compassCanvas.grid(		 column=7,	row=13, columnspan=1,  rowspan=4)
 		self.motorControl.grid(			 column=0,	row=13, columnspan=2,  rowspan=4)
 		self.servoCanvas.grid(           column=6,  row=14,                rowspan=3)
-
+		self.errorLog.grid(             column=9,   row=13, columnspan=4,  rowspan=2)
+		self.messageLog.grid(           column=9,   row=15, columnspan=4,  rowspan=2)
 		self.update_data()
 		self.root.mainloop()
 		
@@ -693,20 +696,20 @@ class App():
 		global lightY2
 		try:
 			beam = int(lightBuffer)
+			if (beam == 0):
+				self.depthCanvas.itemconfigure(self.light, extent=0)
+			elif (beam > 0):
+				lightBeam = beam/10
+				st = -(lightBeam/2)
+				yVal = self.map(beam,0,1023,0,20)
+				xVal = self.map(beam,0,1023,0,45)
+				lightX1=45-(xVal)
+				lightX2=45+(xVal)
+				lightY1=10-(yVal)
+				lightY2=10+(yVal)
+				self.depthCanvas.itemconfigure(self.light,start= st,extent =lightBeam)
 		except:
-			print "bad beam"
-		if (beam == 0):
-			self.depthCanvas.itemconfigure(self.light, extent=0)
-		elif (beam > 0):
-			lightBeam = beam/10
-			st = -(lightBeam/2)
-			yVal = self.map(beam,0,1023,0,20)
-			xVal = self.map(beam,0,1023,0,45)
-			lightX1=45-(xVal)
-			lightX2=45+(xVal)
-			lightY1=10-(yVal)
-			lightY2=10+(yVal)
-			self.depthCanvas.itemconfigure(self.light,start= st,extent =lightBeam)								
+			print "bad beam"							
 
 	def joyStickConversion(self):
 		global joyStickOneBuffer
