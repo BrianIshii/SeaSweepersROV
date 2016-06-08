@@ -77,7 +77,7 @@ int Yaw;
 
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial1.begin(115200);
   pinMode(19, INPUT);
   pinMode(18, OUTPUT);
@@ -119,6 +119,7 @@ void setup() {
 
 
   myservo.attach(11);
+  delay(1000);
 }
 
 void loop() {
@@ -133,12 +134,13 @@ void loop() {
     //Serial.println("bye");
   }
 
-  if (Serial1.available()>23) {  
-  //  Serial.println("hi");
+  if (Serial1.available()>26) {  
+    //Serial.println("hi");
 
   FirstByte=Serial1.read();
 
   if (FirstByte == 1) {
+    //Serial.print("HII");
     val[0]=Serial1.read();         // least significant 8 bits
     val[1]=Serial1.read();         // most significant 2 bits   
      checksum0=Serial1.read();     // checksum
@@ -172,9 +174,8 @@ void loop() {
      checksum7=Serial1.read();
 
    LastByte = Serial1.read();
-
+  //Serial.print("HI");
 // get the checksum last
-
     checkit0 = val[0]+val[1]+checksum0;
     checkit1 = val[2]+val[3]+checksum1;
     checkit2 = val[4]+val[5]+checksum2; 
@@ -184,7 +185,7 @@ void loop() {
     checkit6 = val[12]+val[13]+checksum6;
     checkit7 = val[14]+val[15]+checksum7;
   }
-if (LastByte == 2) {
+//if (LastByte == 2) {
   if (checkit0==0)  {
     Joystick1A = val[1]<<8 | val[0]; }
 
@@ -209,7 +210,7 @@ if (LastByte == 2) {
   if (checkit7==0)  {
     LightVal = val[15]<<8 | val[14]; }
 
-}
+//}
 //else (Serial.println("Goodbye"));
 //    Serial.print(Joystick1A);
 //    Serial.print(" ");
@@ -221,10 +222,11 @@ if (LastByte == 2) {
 //    Serial.print(" ");
 //    Serial.print(Joystick3A);
 //    Serial.print(" ");
-    Serial.print(Joystick3B);
-    Serial.print(" ");
-    Serial.println(ServoVal);
-    delay(20);
+//    Serial.print(Joystick3B);
+//    Serial.print(" ");
+//    Serial.print(LightVal);
+//    Serial.print(" ");
+//    Serial.println(ServoVal);
 
   
   }
@@ -580,5 +582,6 @@ if (((Joystick1B > 570) && ((Joystick3A < 570) && (Joystick3A > 430))) && ((Joys
   digitalWrite (H4Direction, LOW);
 
   }
+    delay(20);
 
 }

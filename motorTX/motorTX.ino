@@ -106,6 +106,23 @@ void loop() {
 
   // CREATE CHECKSUMS:
 
+//  Serial.print(Joystick1A);
+//  Serial.print(" ");
+//  Serial.print(Joystick1B);
+//    Serial.print(" ");
+//
+//  Serial.print(Joystick2A);
+//    Serial.print(" ");
+//Serial.print(Joystick2B);
+//    Serial.print(" ");
+//Serial.print(Joystick3A);
+//    Serial.print(" ");
+//Serial.print(Joystick3B);
+//    Serial.print(" ");
+//Serial.print(ServoVal);
+//    Serial.print(" ");
+//Serial.println(LightVal);
+
   checksum0 = ~(data[0] + data[1]) + 1;
 
   checksum1 = ~(data[2] + data[3]) + 1;
@@ -126,18 +143,17 @@ void loop() {
   while (Serial1.available() < 3) {
     ; //wait for request from receiver
   }
-  //  if (Serial1.available() < 1) {
-  //    Serial.println("bye");
-  //  }
+    if (Serial1.available() < 1) {
+//      Serial.println("bye");
+    }
 
   handshake = Serial1.read();
   handshake2 = Serial1.read();
   handshake3 = Serial1.read();
 
   if ((handshake == 1) && (handshake2 == 2) && (handshake3 == 3)) {
-
+    Serial.print("hi");
     Serial1.write(1);
-
     Serial1.write(data[0]);
     Serial1.write(data[1]);
     Serial1.write(checksum0);
