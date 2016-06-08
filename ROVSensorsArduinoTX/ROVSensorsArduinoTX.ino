@@ -15,8 +15,9 @@ MS5837 sensor;
 #define DHTTYPE DHT21   // DHT 21 (AM2301)
 DHT dht(DHTPIN, DHTTYPE); //set varaibles
 
-
-
+//voltage setup
+int val11; 
+int val2; 
 // bytes to send
 int data [46];    
 //starting bytes
@@ -118,12 +119,16 @@ void loop() {
   data[13] = (probeTemperature >> 8);
 
 //volts and amps
-
-  totalVolt = analogRead(totalVoltPin);
+  float t; 
+   val11=analogRead(1); 
+  t=val11/4.092; 
+  val11=(int)t;// 
+  val2=((val11%100)/10);
+  totalVolt = val2;
   data[30] = totalVolt & 0xFF;
   data[31] = (totalVolt >> 8);
 
-  totalAmp = analogRead(totalAmpPin);
+  totalAmp = 12;
   data[32] = totalAmp & 0xFF;
   data[33] = (totalAmp >> 8);
 
@@ -221,15 +226,15 @@ int waterTwo = 0;
   Serial.print(" ");
   Serial.println(waterTwo);
 //  
-//    while (Serial1.available() < 2) {
-//    ; //wait for request from receiver
-//  }
-//  handshake = Serial1.read();
-//  handshake2 = Serial1.read();
-//  handshake3 = Serial1.read();
-//
-//  if ((handshake == 1) && (handshake2 == 2) && (handshake3 == 3)) {    
-//    
+    while (Serial1.available() < 3) {
+    ; //wait for request from receiver
+  }
+  handshake = Serial1.read();
+  handshake2 = Serial1.read();
+  handshake3 = Serial1.read();
+
+  if ((handshake == 1) && (handshake2 == 2) && (handshake3 == 3)) {    
+    Serial.print("HI");
     Serial1.write(255);
     Serial1.write(255);
     Serial1.write(255);
@@ -283,7 +288,7 @@ int waterTwo = 0;
     Serial1.write(waterSenseTwoCheck);
     
     delay(50);     // delay in between reads for stability
-  //}
+  }
 
 }
 //function for getting probe temp
