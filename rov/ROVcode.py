@@ -702,13 +702,13 @@ class App():
 		global lightY2
 		try:
 			beam = int(lightBuffer)
-			if (beam == 0):
+			if (beam <= 445):
 				self.depthCanvas.itemconfigure(self.light, extent=0)
-			elif (beam > 0):
+			elif (beam > 445):
 				lightBeam = beam/10
 				st = -(lightBeam/2)
-				yVal = self.map(beam,0,1023,0,20)
-				xVal = self.map(beam,0,1023,0,45)
+				yVal = self.map(beam,400,1023,0,20)
+				xVal = self.map(beam,400,1023,0,45)
 				lightX1=45-(xVal)
 				lightX2=45+(xVal)
 				lightY1=10-(yVal)
