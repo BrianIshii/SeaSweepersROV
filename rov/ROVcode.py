@@ -7,8 +7,8 @@ from serial import *
 
 #Setting up Serial port
 #for raspberry pi use serialPort = "/dev/ttyACM0"
-serialPort = "/dev/cu.usbmodemFD121"
-#serialPort = "/dev/cu.usbmodemFA131"
+#serialPort = "/dev/cu.usbmodemFD121"
+serialPort = "/dev/cu.usbmodemFA131"
 baudRate = 115200
 ser = Serial(serialPort , baudRate, timeout=0, writeTimeout=0) #ensure non-blocking, code will not run if the port is not connected
 
@@ -43,6 +43,7 @@ middleDepthNumber = 0
 bottomDepthNumber = 0
 l=""#char for top middle bottom usage in dataTwo
 z=0 #value for depth canvas movement horizontal in data Two
+zz=0
 lineCoordsX=0
 lineCoordsY=0
 lightX1=0
@@ -109,6 +110,7 @@ class App():
 		self.motorSixData = tk.Label(text="TBD", relief=tk.SUNKEN,width=6,height=2)
 		self.motorSevenData = tk.Label(text="TBD", relief=tk.SUNKEN,width=6,height=2)
 		self.motorEightData = tk.Label(text="TBD", relief=tk.SUNKEN,width=6,height=2)
+		
 		#extra data points 
 		self.aTitle = tk.Label(text="Servo Claw", bg ="gray") #used for servo
 		self.aData = tk.Label(text="TBD",relief=tk.SUNKEN,width=20,height=2)
@@ -159,8 +161,9 @@ class App():
 		self.topDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "orange",width=3, dash=(8, 8))
 		self.middleDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "red",width=3, dash=(8, 8))
 		self.bottomDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "yellow",width=3, dash=(8, 8))
-		self.finishLineWhite = self.depthCanvas.create_line(720, 0, 720, 500, fill = "white",width=8, dash=(20, 20))
-		self.finishLineBlack = self.depthCanvas.create_line(720, 20, 720, 500, fill = "black",width=8, dash=(20, 20))
+		self.finishLineWhite = self.depthCanvas.create_line(760, 0, 760, 500, fill = "white",width=8, dash=(20, 20))
+		self.finishLineBlack = self.depthCanvas.create_line(760, 20, 760, 500, fill = "black",width=8, dash=(20, 20))
+		
 		#servoCanvas
 		self.servoCanvas = tk.Canvas(self.root, width=200, height = 150, background= "blue")
 		self.servoClawRight = self.servoCanvas.create_polygon(0,0, 20,0, 20,10, 30,10, 30,30, 20,30, 20,100, 0,100, outline='black', fill='black')
@@ -528,6 +531,7 @@ class App():
 		global middleDepthNumber
 		global bottomDepthNumber
 		global z #value for depth canvas movement horizontal
+		global zz
 		global tickerForDepth #will replace z
 		global coords
 		global color 
@@ -564,8 +568,10 @@ class App():
 								item = self.depthCanvas.create_line(lineCoordsX, lineCoordsY, z, (coords), fill = "white",width=1)
 								lineCoordsX=z
 								lineCoordsY=(coords)			
-								tickerForDepth = second		
-								z+=1	
+								tickerForDepth = second	
+								if ((zz%5)!=0):
+									z+=1
+								zz+=1	
 							
 							self.depthCanvas.coords(self.topDepthLine,0,topDepthNumber,800,topDepthNumber)
 							self.depthCanvas.coords(self.middleDepthLine,0,middleDepthNumber,800,middleDepthNumber)

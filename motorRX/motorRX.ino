@@ -224,7 +224,7 @@ void loop() {
 //    Serial.print(" ");
 //    Serial.print(Joystick3B);
 //    Serial.print(" ");
-//    Serial.print(LightVal);
+    Serial.println(LightVal);
 //    Serial.print(" ");
 //    Serial.println(ServoVal);
 
@@ -246,6 +246,9 @@ if (Joystick3B > 1024) {
   Joystick3B = 1024; }
 if (ServoVal > 1024) {
   ServoVal = 1024; }
+if(LightVal>1024){
+  LightVal=1024;
+}
 
 if (Joystick1A < 0) {
   Joystick1A = 0; }
@@ -261,6 +264,9 @@ if (Joystick3B < 0) {
   Joystick3B = 0; }
 if (ServoVal < 0) {
   ServoVal = 0; }
+if (LightVal<0){
+  LightVal=0;
+}
 
 
   
