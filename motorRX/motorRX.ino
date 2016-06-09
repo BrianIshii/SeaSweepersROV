@@ -9,6 +9,7 @@ Servo myservo;
 int ServoVal;
 int beautiful;
 
+Servo mylightl
 int LightVal;
 int beautiful2;
 
@@ -65,8 +66,6 @@ int H3PWM = 7;     //MOTOR H3 back left
 int H4Direction = 39;
 int H4PWM = 6;     //MOTOR H4 back right
 
-int Light = 13;  // pin for light
-
 
 
 int Vertical;
@@ -119,6 +118,7 @@ void setup() {
 
 
   myservo.attach(11);
+  mylight.attach(13);
   delay(1000);
 }
 
@@ -276,11 +276,11 @@ beautiful = map(ServoVal, 0, 1023, 60, 170); //maps number for use with servo, 1
 myservo.write(beautiful); }
 
 if (LightVal < 400) {
-  analogWrite (Light, 0);
+  mylight.write(1100);
 }
 if (LightVal >= 400); {
-  beautiful2 = map(LightVal, 400, 1023, 0, 255);
-  analogWrite (Light, beautiful2);
+  beautiful2 = map(LightVal, 400, 1023, 1100, 1900);
+  mylight.write(Light, beautiful2);
 }
 
 if (((Joystick1A < 570) && (Joystick1A > 430)) && ((Joystick2A < 570) && (Joystick2A > 430))) {
