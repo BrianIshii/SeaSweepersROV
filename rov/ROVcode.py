@@ -64,7 +64,7 @@ class App():
 		self.root = tk.Tk()
 		self.root.title("SeaSweepers BRUCE the RILF")
 		self.root.option_add("*Font", "Rockwell 20") #Use with MACBOOK
-		#self.root.option_add("*Font", "Rockwell 10") what we used in comp
+		#self.root.option_add("*Font", "Rockwell 15") what we used in comp
 		self.root.minsize(width=1440, height=880)
 		self.root.maxsize(width=1440, height=880)
 		self.root.configure(bg ="gray")
