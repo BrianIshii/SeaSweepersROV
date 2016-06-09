@@ -9,7 +9,7 @@ Servo myservo;
 int ServoVal;
 int beautiful;
 
-Servo mylightl
+Servo mylight;
 int LightVal;
 int beautiful2;
 
@@ -280,7 +280,7 @@ if (LightVal < 400) {
 }
 if (LightVal >= 400); {
   beautiful2 = map(LightVal, 400, 1023, 1100, 1900);
-  mylight.write(Light, beautiful2);
+  mylight.write(beautiful2);
 }
 
 if (((Joystick1A < 570) && (Joystick1A > 430)) && ((Joystick2A < 570) && (Joystick2A > 430))) {
