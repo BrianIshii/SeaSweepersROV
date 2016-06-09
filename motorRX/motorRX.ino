@@ -1,4 +1,4 @@
-c/*
+/*
   Receving Code
   Reads bytes from Transmitting Code and put thems back together
   Applies the read bytes to our motor control board
@@ -224,7 +224,7 @@ void loop() {
 //    Serial.print(" ");
 //    Serial.print(Joystick3B);
 //    Serial.print(" ");
-//    Serial.println(LightVal);
+    Serial.println(LightVal);
 //    Serial.print(" ");
 //    Serial.println(ServoVal);
 
@@ -507,8 +507,8 @@ if ((Joystick1B > 570) && (Joystick3A > 570)) {
     Crab = map(Joystick1B, 570, 1023, ForBack, 0);
   analogWrite (H1PWM, ForBack);
   analogWrite (H2PWM, Crab);
-  analogWrite (H3PWM, Crab);
-  analogWrite (H4PWM, ForBack);
+  analogWrite (H3PWM, ForBack);
+  analogWrite (H4PWM, Crab);
   delayMicroseconds(100);
   digitalWrite (H1Direction, HIGH);
   digitalWrite (H2Direction, LOW);
@@ -518,8 +518,8 @@ if ((Joystick1B > 570) && (Joystick3A > 570)) {
 if ((Joystick1B < 430) && (Joystick3A > 570)) {
     ForBack = map(Joystick3A, 570, 1023, 0, 255);
     Crab = map(Joystick1B, 430, 0, ForBack, 0);
-  analogWrite (H1PWM, ForBack);
-  analogWrite (H2PWM, Crab);
+  analogWrite (H1PWM, Crab);
+  analogWrite (H2PWM, ForBack);
   analogWrite (H3PWM, Crab);
   analogWrite (H4PWM, ForBack);
   delayMicroseconds(100);
@@ -533,8 +533,8 @@ if ((Joystick1B > 570) && (Joystick3A < 430)) {
     Crab = map(Joystick1B, 570, 1023, ForBack, 0);
   analogWrite (H1PWM, ForBack);
   analogWrite (H2PWM, Crab);
-  analogWrite (H3PWM, Crab);
-  analogWrite (H4PWM, ForBack);
+  analogWrite (H3PWM, ForBack);
+  analogWrite (H4PWM, Crab);
   delayMicroseconds(100);
   digitalWrite (H1Direction, LOW);
   digitalWrite (H2Direction, HIGH);
@@ -544,8 +544,8 @@ if ((Joystick1B > 570) && (Joystick3A < 430)) {
 if ((Joystick1B < 430) && (Joystick3A < 430)) {
     ForBack = map(Joystick3A, 0, 430, 255, 0);
     Crab = map(Joystick1B, 430, 0, ForBack, 0);
-  analogWrite (H1PWM, ForBack);
-  analogWrite (H2PWM, Crab);
+  analogWrite (H1PWM, Crab);
+  analogWrite (H2PWM, ForBack);
   analogWrite (H3PWM, Crab);
   analogWrite (H4PWM, ForBack);
   delayMicroseconds(100);
