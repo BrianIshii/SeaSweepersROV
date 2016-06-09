@@ -224,7 +224,7 @@ void loop() {
 //    Serial.print(" ");
 //    Serial.print(Joystick3B);
 //    Serial.print(" ");
-    Serial.println(LightVal);
+//    Serial.println(LightVal);
 //    Serial.print(" ");
 //    Serial.println(ServoVal);
 
