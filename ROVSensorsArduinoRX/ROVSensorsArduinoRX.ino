@@ -474,7 +474,7 @@ void loop() {
       digitalWrite(12,HIGH);
       digitalWrite(11,HIGH);
       }
-    delay(200);
+    delay(100);
     }
 }
 
