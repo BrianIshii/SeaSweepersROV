@@ -442,60 +442,6 @@ if (((Joystick3B < 430) && ((Joystick3A < 570) && (Joystick3A > 430))) && ((Joys
   }
 
 
-// VERTICAL AND PITCH
-
-if ((Joystick2A > 570) && (Joystick2B > 570)) {
-    Vertical = map(Joystick2A, 570, 1023, 0, 255);
-    Pitch = map(Joystick2B, 570, 1023, Vertical, 0);
-  analogWrite (V1PWM, Vertical);
-  analogWrite (V2PWM, Vertical);
-  analogWrite (V3PWM, Pitch);
-  analogWrite (V4PWM, Pitch);
-  delayMicroseconds(100);
-  digitalWrite (V1Direction, LOW);
-  digitalWrite (V2Direction, HIGH);
-  digitalWrite (V3Direction, LOW);
-  digitalWrite (V4Direction, HIGH); }
-  
-if ((Joystick2A < 430) && (Joystick2B > 570)) {
-    Vertical = map(Joystick2A, 0, 430, 255, 0);
-    Pitch = map(Joystick2B, 570, 1023, Vertical, 0);
-  analogWrite (V1PWM, Vertical);
-  analogWrite (V2PWM, Vertical);
-  analogWrite (V3PWM, Pitch);
-  analogWrite (V4PWM, Pitch);
-  delayMicroseconds(100);
-  digitalWrite (V1Direction, LOW);
-  digitalWrite (V2Direction, HIGH);
-  digitalWrite (V3Direction, LOW);
-  digitalWrite (V4Direction, HIGH); }
-  
-if ((Joystick2A > 570) && (Joystick2B < 430)) {
-    Vertical = map(Joystick2A, 570, 1023, 0, 255);
-    Pitch = map(Joystick2B, 0, 430, Vertical, 0);
-  analogWrite (V1PWM, Pitch);
-  analogWrite (V2PWM, Pitch);
-  analogWrite (V3PWM, Vertical);
-  analogWrite (V4PWM, Vertical);
-  delayMicroseconds(100);
-  digitalWrite (V1Direction, HIGH);
-  digitalWrite (V2Direction, LOW);
-  digitalWrite (V3Direction, HIGH);
-  digitalWrite (V4Direction, LOW); }
-  
-if ((Joystick2A < 430) && (Joystick2B < 430)) {
-    Vertical = map(Joystick2A, 0, 430, 255, 0);
-    Pitch = map(Joystick2B, 0, 430, Vertical, 0);
-  analogWrite (V1PWM, Pitch);
-  analogWrite (V2PWM, Pitch);
-  analogWrite (V3PWM, Vertical);
-  analogWrite (V4PWM, Vertical);
-  delayMicroseconds(100);
-  digitalWrite (V1Direction, HIGH);
-  digitalWrite (V2Direction, LOW);
-  digitalWrite (V3Direction, HIGH);
-  digitalWrite (V4Direction, LOW); }
-
 
   
 // FORBACK AND YAW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
