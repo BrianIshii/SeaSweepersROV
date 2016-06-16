@@ -152,7 +152,7 @@ void loop() {
   handshake3 = Serial1.read();
 
   if ((handshake == 1) && (handshake2 == 2) && (handshake3 == 3)) {
-    Serial.print("hi");
+    // Serial.print("hi");
     Serial1.write(1);
     Serial1.write(data[0]);
     Serial1.write(data[1]);
@@ -188,12 +188,11 @@ void loop() {
 
     Serial1.write(2);
 
-    //    Serial1.flush();
-    delay(20);     // delay in between reads for stability
+    //    Serial1.flush();     // delay in between reads for stability
   }
 
   // VIEW IN SERIAL MONTIOR:
-
+  
   if (Serial2.available() > 2) {
     handshake4 = Serial2.read();
     handshake5 = Serial2.read();
@@ -234,6 +233,10 @@ void loop() {
       Serial2.write(data[14]);
       Serial2.write(data[15]);  //light
       Serial2.write(checksum7);
+      
+      Serial2.write(2);
     }
+
   }
+    delay(20);
 }
