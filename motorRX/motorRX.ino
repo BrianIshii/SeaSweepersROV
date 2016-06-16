@@ -1,7 +1,10 @@
 /*
-  Receving Code
-  Reads bytes from Transmitting Code and put thems back together
-  Applies the read bytes to our motor control board
+  Receiving Motor Code
+  Reads bytes from Transmitting Motor Code and put thems back together
+  Uses read bytes to control motors, servo, and light
+
+  Written for the Sea Sweepers ROV Club
+  Michael Georgariou 2016
 */
 
 #include <Servo.h>

@@ -1,6 +1,10 @@
 /*
-  Transmitting Code
-  Reads potentiometers and sends them through serial
+  Transmitting Motor Code
+  Reads values of potentiometers and joysticks and transmits them
+  Sends same values to ROVCode.py for the GUI
+
+  Written for the Sea Sweepers ROV Club
+  Michael Georgariou 2016
 */
 
 int data [16];    // to send bytes
