@@ -63,7 +63,7 @@ void setup() {
   sensor.init();
   sensor.setFluidDensity(997);
    dht.begin();   //inside temp sensor
-
+delay(1000);
 } 
 
 void loop() {
@@ -195,37 +195,37 @@ int waterTwo = 0;
   waterSenseTwoCheck = ~(data[44] + data[45]) + 1;
 
   // WRITE VALUES AND CHECKSUMS TO SERIAL:
-  Serial.print(insideTemperature);
-  Serial.print(" ");
-  //Serial.print(insideHumidity);
-  //Serial.print(" ");
-  //Serial.print(altitude);
-  //Serial.print(" ");
-  Serial.print(depth);
-  Serial.print(" ");
-  //Serial.print(outsideTemperature);
-  //Serial.print(" ");
-  Serial.print(pressure);
-  Serial.print(" ");
-  Serial.print(probeTemperature);
-  Serial.print(" ");
-  Serial.print(totalVolt);
-  Serial.print(" ");
-  Serial.print(totalAmp);
-  Serial.print(" ");
-  Serial.print(XAcceleration);
-  Serial.print(" ");
-  Serial.print(YAcceleration);
-  Serial.print(" ");
-  Serial.print(ZAcceleration);
-  Serial.print(" ");
-  Serial.print(angle);
-  Serial.print(" ");
-  Serial.print(waterOne);
-  Serial.print(" ");
-  Serial.println(waterTwo);
+//  Serial.print(insideTemperature);
+//  Serial.print(" ");
+//  //Serial.print(insideHumidity);
+//  //Serial.print(" ");
+//  //Serial.print(altitude);
+//  //Serial.print(" ");
+//  Serial.print(depth);
+//  Serial.print(" ");
+//  //Serial.print(outsideTemperature);
+//  //Serial.print(" ");
+//  Serial.print(pressure);
+//  Serial.print(" ");
+//  Serial.print(probeTemperature);
+////  Serial.print(" ");
+////  Serial.print(totalVolt);
+////  Serial.print(" ");
+////  Serial.print(totalAmp);
+////  Serial.print(" ");
+////  Serial.print(XAcceleration);
+////  Serial.print(" ");
+////  Serial.print(YAcceleration);
+////  Serial.print(" ");
+////  Serial.print(ZAcceleration);
+////  Serial.print(" ");
+////  Serial.print(angle);
+//  Serial.print(" ");
+//  Serial.print(waterOne);
+//  Serial.print(" ");
+//  Serial.println(waterTwo);
   
-    while (Serial1.available() < 3) {
+    while (Serial1.available() < 2) {
     ; //wait for request from receiver
   }
   handshake = Serial1.read();
@@ -233,9 +233,9 @@ int waterTwo = 0;
   handshake3 = Serial1.read();
 
   if ((handshake == 1) && (handshake2 == 2) && (handshake3 == 3)) {    
-    Serial1.write(255);
-    Serial1.write(255);
-    Serial1.write(255);
+    Serial1.write(1);
+    Serial1.write(2);
+    Serial1.write(3);
 
     Serial1.write(data[0]);    
     Serial1.write(data[1]);
@@ -252,30 +252,6 @@ int waterTwo = 0;
     Serial1.write(data[12]);
     Serial1.write(data[13]);
     Serial1.write(probeTemperatureCheck);
-
-    Serial1.write(data[30]);
-    Serial1.write(data[31]);
-    Serial1.write(totalVoltCheck);
-
-    Serial1.write(data[32]);
-    Serial1.write(data[33]);
-    Serial1.write(totalAmpCheck);
-
-    Serial1.write(data[34]);
-    Serial1.write(data[35]);
-    Serial1.write(xAccelCheck);
-
-    Serial1.write(data[36]);    
-    Serial1.write(data[37]); 
-    Serial1.write(yAccelCheck);
-    
-    Serial1.write(data[38]);
-    Serial1.write(data[39]);
-    Serial1.write(zAccelCheck);
-
-    Serial1.write(data[40]);
-    Serial1.write(data[41]);
-    Serial1.write(angleCheck);
     
     Serial1.write(data[42]);
     Serial1.write(data[43]);
@@ -284,9 +260,12 @@ int waterTwo = 0;
     Serial1.write(data[44]);
     Serial1.write(data[45]);
     Serial1.write(waterSenseTwoCheck);
-    
+    //Serial.print("f");
+    Serial1.write(2);
+ }
+    //Serial.print("w");
+
     delay(50);     // delay in between reads for stability
-  }
 
 }
 //function for getting probe temp
