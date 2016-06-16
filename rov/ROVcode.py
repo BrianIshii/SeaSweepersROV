@@ -7,8 +7,8 @@ from serial import *
 
 #Setting up Serial port
 #for raspberry pi use serialPort = "/dev/ttyACM0"
-#serialPort = "/dev/cu.usbmodemFD121"
-serialPort = "/dev/cu.usbmodemFA131"
+serialPort = "/dev/cu.usbmodemFD121"
+#serialPort = "/dev/cu.usbmodemFA131"
 baudRate = 115200
 ser = Serial(serialPort , baudRate, timeout=0, writeTimeout=0) #ensure non-blocking, code will not run if the port is not connected
 
@@ -152,6 +152,7 @@ class App():
 		self.timerTitle = tk.Label(text="Timer", bg="gray",width=15,height=2)
 		self.timerButton = tk.Button(text= "Start", bg="gray", width=12,height=2,highlightbackground="gray", command=self.getTime)
 		self.timerData = tk.Label(text="00:00", relief=tk.SUNKEN, width=7,height=1,font=("Rockwell", 100),bg="green")
+		#self.timerData = tk.Label(text="00:00", relief=tk.SUNKEN, width=7,height=1,font=("Rockwell", 80),bg="green")#for raspberry pi
 		self.dataButton = tk.Button(text="compile data", bg="gray", width=12,height=2,highlightbackground="gray", command=self.getData)
 		
 		#depthCanvas for depth
@@ -163,7 +164,48 @@ class App():
 		self.bottomDepthLine = self.depthCanvas.create_line(0,0,800,0, fill = "yellow",width=3, dash=(8, 8))
 		self.finishLineWhite = self.depthCanvas.create_line(760, 0, 760, 500, fill = "white",width=8, dash=(20, 20))
 		self.finishLineBlack = self.depthCanvas.create_line(760, 20, 760, 500, fill = "black",width=8, dash=(20, 20))
-		
+		bucket = 630
+		self.bucketWhite = self.depthCanvas.create_polygon(bucket,440, bucket+22,440, bucket+22,410, bucket+28,410, bucket+28,440, bucket+50,440, bucket+50,500, bucket,500,fill="white",outline="black")
+		self.bucketLid = self.depthCanvas.create_rectangle(bucket-2,438, bucket+52,442,fill="orange",outline="black")
+		cap = 100
+		self.capWhite = self.depthCanvas.create_polygon(cap,480, cap+15,480, cap+15,410, cap+35,410, cap+35,480, cap+50,480, cap+50,500, cap,500,fill="white",outline="black")
+		self.capLid = self.depthCanvas.create_rectangle(cap-2,480, cap+52,480,fill="white",outline="black")
+		self.flange = self.depthCanvas.create_rectangle(cap+10,410, cap+40,440,fill="black",outline="black")						
+		self.bolt = self.depthCanvas.create_polygon(cap+18,410, cap+12,410, cap+12,407, cap+25,407, cap+25,402, cap+5,402, cap+5,407, cap+18,407,fill="white", outline="black")
+		self.bolt = self.depthCanvas.create_polygon(cap+38,410, cap+32,410, cap+32,407, cap+45,407, cap+45,402, cap+25,402, cap+25,407, cap+38,407,fill="white", outline="black")		
+		cube = 500
+		self.cubeSateOutside = self.depthCanvas.create_rectangle(cube,460, cube+70,500,width=1,fill="white",outline="black")		
+		self.cubeSateMiddle = self.depthCanvas.create_rectangle(cube+5,465, cube+65,495,width=1,fill="blue",outline="white")
+		self.cubeSateInside = self.depthCanvas.create_rectangle(cube+10,470, cube+60,490,fill="white",outline="white")
+		self.cubeSateLine = self.depthCanvas.create_line(cube+5, 480, cube+65,480, fill="white",width=5)		
+		self.cubeSatNumber = self.depthCanvas.create_text(cube+35, 480, text="H139D")
+		coral =550
+		self.coralBranchOne = self.depthCanvas.create_line(coral+3, 475, coral+15, 490, fill = "red",width=2)
+		self.coralBranchTwo = self.depthCanvas.create_line(coral+10, 470, coral+15, 490, fill = "yellow",width=2)
+		self.coralBranchThree = self.depthCanvas.create_line(coral+30, 465, coral+15, 490, fill = "orange",width=2)
+		self.coralBranchFour = self.depthCanvas.create_line(coral, 460, coral+15, 490, fill = "purple",width=2)
+		self.coralBranchFive = self.depthCanvas.create_line(coral+35, 470, coral+15, 490, fill = "white")
+		self.coralBase = self.depthCanvas.create_polygon(coral+18,490, coral+12,490, coral+12,492, coral+25,492, coral+25,497, coral+5,497, coral+5,492, coral+18,492,fill="white")
+		oilT=0
+		self.oilTOne = self.depthCanvas.create_polygon(oilT,475, oilT+35,475, oilT+35,485, oilT+23,485, oilT+23,496, oilT+12,496, oilT+12,485, oilT,485,fill="brown",outline="black")
+		self.oilTTwo = self.depthCanvas.create_polygon(oilT+40,475, oilT+75,475, oilT+75,485, oilT+63,485, oilT+63,496, oilT+52,496, oilT+52,485, oilT+40,485,fill="brown",outline="black")
+		self.oilTBase = self.depthCanvas.create_rectangle(oilT+10,496, oilT+64,500, fill="brown",outline="black")
+		cCoral=600
+		self.aBase = self.depthCanvas.create_line(cCoral,500, cCoral+50,500,fill="#daa520",width=5)
+		self.aBranch = self.depthCanvas.create_line(cCoral+25,498, cCoral+25,430, fill="#daa520",width=5)
+		self.aBranchTwo = self.depthCanvas.create_line(cCoral,480, cCoral+50,480,fill="#daa520",width=5)
+		self.aBranchThree = self.depthCanvas.create_line(cCoral,483, cCoral,460,fill="#daa520",width=5)
+		self.aBranchFour = self.depthCanvas.create_line(cCoral+50,483, cCoral+50,450,fill="#daa520",width=5)
+		self.aBranchDead = self.depthCanvas.create_line(cCoral+15,445, cCoral+23,445, fill="black",width=5)
+		self.aBranchDeadTwo = self.depthCanvas.create_line(cCoral+15,445, cCoral+15,430, fill="black",width=5)
+		self.aSign = self.depthCanvas.create_rectangle(cCoral+15,480, cCoral+35,498, fill="white")
+		self.aLetter = self.depthCanvas.create_text(cCoral+25,490, text="A")
+		ESP = 200
+		self.box = self.depthCanvas.create_polygon(ESP+50,450, ESP+100,450, ESP+100,500, ESP+50,500,fill="red",outline="black")
+		self.box = self.depthCanvas.create_polygon(ESP+50,450, ESP+100,450, ESP+100,500, ESP+50,500,fill="red",outline="black")
+		self.connector = self.depthCanvas.create_polygon(ESP,480, ESP+20,480, ESP+20,470, ESP+30,470, ESP+30,480, ESP+60,480, ESP+60,490, ESP+30,490, ESP+30,500, ESP+20,500, ESP+20,490, ESP,490, fill="white",outline="black")
+		self.connectorLine = self.depthCanvas.create_line(ESP,485, ESP-10,480, fill="orange")
+		self.connectorLineT = self.depthCanvas.create_line(ESP-10,480, ESP-40,490, fill="orange")		
 		#servoCanvas
 		self.servoCanvas = tk.Canvas(self.root, width=200, height = 150, background= "blue")
 		self.servoClawRight = self.servoCanvas.create_polygon(0,0, 20,0, 20,10, 30,10, 30,30, 20,30, 20,100, 0,100, outline='black', fill='black')
@@ -364,8 +406,8 @@ class App():
 		global dataArray
 		dataArray = []
 		data = ser.readline()
-		dataList.append(timeInWater)
-		dataList.append(data)
+		#dataList.append(timeInWater)
+		#dataList.append(data)
 		#print dataList
 		for i in data:
 			dataArray.append(i)
@@ -375,7 +417,7 @@ class App():
 		for i in range(19):
 			self.dataOne(i)
 		self.dataTwo()
-		self.root.after(100, self.update_data)
+		self.root.after(20, self.update_data)
 
 	def dataOne(self,c):
 		head = ['A','B','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
@@ -406,28 +448,29 @@ class App():
 							buf += dataArray[int(item)+a]
 							a +=1
 						#print int(buf) data points
-						if int(buf) >= int(limits[(2*c)+1]):
-							color = "red"
-							self.stopTitle.configure(bg = color)
-							w+=1
-							#ser.open
-							#ser.write(b'2')
-							#ser.close
-						elif int(buf)>= int(limits[(2*c)]):
-							color = "yellow"
-							self.warningTitle.configure(bg = color)
-							w+=1
-							#ser.open
-							#ser.write(b'1')
-							#ser.close
-						else: 
-							color = "white"
-							if w == 0:
-								self.warningTitle.configure(bg = "gray")
-								self.stopTitle.configure(bg = "gray")
+						if (c==17)or(c==18):
+							if int(buf) >= int(limits[(2*c)+1]):
+								color = "red"
+								self.stopTitle.configure(bg = color)
+								w+=1
 								#ser.open
-								#ser.write(b'0')
+								#ser.write(b'2')
 								#ser.close
+							elif int(buf)>= int(limits[(2*c)]):
+								color = "yellow"
+								self.warningTitle.configure(bg = color)
+								w+=1
+								#ser.open
+								#ser.write(b'1')
+								#ser.close
+							else: 
+								color = "white"
+								if w == 0:
+									self.warningTitle.configure(bg = "gray")
+									self.stopTitle.configure(bg = "gray")
+									#ser.open
+									#ser.write(b'0')
+									#ser.close
 					except: 
 						print "bad data" + str(c)
 					if c == 0:
