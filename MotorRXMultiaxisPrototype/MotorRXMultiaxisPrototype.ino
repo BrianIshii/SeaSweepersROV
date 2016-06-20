@@ -1,14 +1,13 @@
 /*
-  Receving Code
-  Reads bytes from Transmitting Code and put thems back together
-  Applies the read bytes to our motor control board
+  Receiving Motor Code
+  Reads bytes from Transmitting Motor Code and put thems back together
+  Uses read bytes to control motors, servo, and light
+
+  Attempt 3 of mutliaxis support in order to make JP happy
+
+  Written for the Sea Sweepers ROV Club
+  Michael Georgariou 2016
 */
-
-
-
-
-
-
 
 #include <Servo.h>
 Servo myservo;
@@ -503,7 +502,7 @@ if (Joystick3AMap > 30) { //3A is up
       digitalWrite (H3Direction, LOW);
       digitalWrite (H4Direction, LOW);
     }
-    if ((abs(Joystick3AMap) - abs(Joystick3BMap)) < 30) { //if 3A and 3B are equal (within 30)
+    if (abs(abs(Joystick3AMap) - abs(Joystick3BMap)) < 30) { //if 3A and 3B are equal (within 30)
       Left = Joystick3BMap;
       Right = 0;
       LeftMap = map(Left, 0, 512, 0, 255);
@@ -553,7 +552,7 @@ if (Joystick3AMap > 30) { //3A is up
       digitalWrite (H3Direction, HIGH);
       digitalWrite (H4Direction, HIGH);
     }
-    if ((abs(Joystick3AMap) - abs(Joystick3BMap)) < 30) { //if 3A and 3B are equal (within 30)
+    if (abs(abs(Joystick3AMap) - abs(Joystick3BMap)) < 30) { //if 3A and 3B are equal (within 30)
       Left = 0;
       Right = Joystick3BMap;
       LeftMap = map(Left, 0, 512, 0, 255);
@@ -606,7 +605,7 @@ if (-30 > Joystick3AMap) { //3A down
       digitalWrite (H3Direction, LOW);
       digitalWrite (H4Direction, LOW);
     }
-    if ((abs(Joystick3AMap) - abs(Joystick3BMap)) < 30) { //if 3A and 3B are equal (within 30)
+    if (abs(abs(Joystick3AMap) - abs(Joystick3BMap)) < 30) { //if 3A and 3B are equal (within 30)
       Left = abs(Joystick3BMap);
       Right = 0;
       LeftMap = map(Left, 0, 512, 0, 255);
@@ -656,7 +655,7 @@ if (-30 > Joystick3AMap) { //3A down
       digitalWrite (H3Direction, HIGH);
       digitalWrite (H4Direction, HIGH);
     }
-    if ((abs(Joystick3AMap) - abs(Joystick3BMap)) < 30) { //if 3A and 3B are equal (within 30)
+    if (abs(abs(Joystick3AMap) - abs(Joystick3BMap)) < 30) { //if 3A and 3B are equal (within 30)
       Left = 0;
       Right = abs(Joystick3BMap);
       LeftMap = map(Left, 0, 512, 0, 255);
