@@ -201,86 +201,86 @@ void loop() {
   }
   delay(20);
     //read joystick data
-  Serial2.write(1);
-  Serial2.write(2);
-  Serial2.write(3);
-    
-  if (Serial2.available() > 2) {
-    motorFirstByte = Serial2.read();
-    motorSecondByte = Serial2.read();
-    motorThirdByte = Serial2.read();
-    if ((motorFirstByte == 1) && (motorSecondByte == 2) && (motorThirdByte == 3)) {
-
-      val[14] = Serial2.read();
-      val[15] = Serial2.read();
-      joyOneCheck = Serial2.read();
-
-      val[16] = Serial2.read();
-      val[17] = Serial2.read();
-      joyTwoCheck = Serial2.read();
-
-      val[18] = Serial2.read();
-      val[19] = Serial2.read();
-      joyThreeCheck = Serial2.read();
-
-      val[20] = Serial2.read();
-      val[21] = Serial2.read();
-      joyFourCheck = Serial2.read();
-
-      val[22] = Serial2.read();
-      val[23] = Serial2.read();
-      joyFiveCheck = Serial2.read();
-
-      val[24] = Serial2.read();
-      val[25] = Serial2.read();
-      joySixCheck = Serial2.read();
-
-      val[26] = Serial2.read();
-      val[27] = Serial2.read();
-      servoCheck = Serial2.read();
-        
-      val[28] = Serial2.read();
-      val[29] = Serial2.read();
-      lightCheck = Serial2.read();
-      
-      LastByte = Serial2.read();
-
-      joyOneCheckit = val[14] + val[15] + joyOneCheck;
-      joyTwoCheckit = val[16] + val[17] + joyTwoCheck;
-      joyThreeCheckit = val[18] + val[19] + joyThreeCheck;
-      joyFourCheckit = val[20] + val[21] + joyFourCheck;
-      joyFiveCheckit = val[22] + val[23] + joyFiveCheck;
-      joySixCheckit = val[24] + val[25] + joySixCheck;
-      servoCheckit = val[26] + val[27] + servoCheck;
-      lightCheckit = val[28] + val[29] + lightCheck;        
-    }
-    if (LastByte == 2){
-      if (joyOneCheckit == 0)  {
-        joyStickOneData = val[15] << 8 | val[14];
-      }
-      if (joyTwoCheckit == 0)  {
-        joyStickTwoData = val[17] << 8 | val[16];
-      }
-      if (joyThreeCheckit == 0)  {
-        joyStickThreeData = val[19] << 8 | val[18];
-      }
-      if (joyFourCheckit == 0)  {
-        joyStickFourData = val[21] << 8 | val[20];
-      }
-      if (joyFiveCheckit == 0)  {
-        joyStickFiveData = val[23] << 8 | val[22];
-      }
-      if (joySixCheckit == 0)  {
-        joyStickSixData = val[25] << 8 | val[24];
-      }
-      if (servoCheckit == 0)  {
-        servoDataReal = val[27] << 8 | val[26];
-      }
-      if (lightCheckit == 0)  {
-        lightData = val[29] << 8 | val[28];
-      }
-    }
-  }
+//  Serial2.write(1);
+//  Serial2.write(2);
+//  Serial2.write(3);
+//    
+//  if (Serial2.available() > 2) {
+//    motorFirstByte = Serial2.read();
+//    motorSecondByte = Serial2.read();
+//    motorThirdByte = Serial2.read();
+//    if ((motorFirstByte == 1) && (motorSecondByte == 2) && (motorThirdByte == 3)) {
+//
+//      val[14] = Serial2.read();
+//      val[15] = Serial2.read();
+//      joyOneCheck = Serial2.read();
+//
+//      val[16] = Serial2.read();
+//      val[17] = Serial2.read();
+//      joyTwoCheck = Serial2.read();
+//
+//      val[18] = Serial2.read();
+//      val[19] = Serial2.read();
+//      joyThreeCheck = Serial2.read();
+//
+//      val[20] = Serial2.read();
+//      val[21] = Serial2.read();
+//      joyFourCheck = Serial2.read();
+//
+//      val[22] = Serial2.read();
+//      val[23] = Serial2.read();
+//      joyFiveCheck = Serial2.read();
+//
+//      val[24] = Serial2.read();
+//      val[25] = Serial2.read();
+//      joySixCheck = Serial2.read();
+//
+//      val[26] = Serial2.read();
+//      val[27] = Serial2.read();
+//      servoCheck = Serial2.read();
+//        
+//      val[28] = Serial2.read();
+//      val[29] = Serial2.read();
+//      lightCheck = Serial2.read();
+//      
+//      LastByte = Serial2.read();
+//
+//      joyOneCheckit = val[14] + val[15] + joyOneCheck;
+//      joyTwoCheckit = val[16] + val[17] + joyTwoCheck;
+//      joyThreeCheckit = val[18] + val[19] + joyThreeCheck;
+//      joyFourCheckit = val[20] + val[21] + joyFourCheck;
+//      joyFiveCheckit = val[22] + val[23] + joyFiveCheck;
+//      joySixCheckit = val[24] + val[25] + joySixCheck;
+//      servoCheckit = val[26] + val[27] + servoCheck;
+//      lightCheckit = val[28] + val[29] + lightCheck;        
+//    }
+//    if (LastByte == 2){
+//      if (joyOneCheckit == 0)  {
+//        joyStickOneData = val[15] << 8 | val[14];
+//      }
+//      if (joyTwoCheckit == 0)  {
+//        joyStickTwoData = val[17] << 8 | val[16];
+//      }
+//      if (joyThreeCheckit == 0)  {
+//        joyStickThreeData = val[19] << 8 | val[18];
+//      }
+//      if (joyFourCheckit == 0)  {
+//        joyStickFourData = val[21] << 8 | val[20];
+//      }
+//      if (joyFiveCheckit == 0)  {
+//        joyStickFiveData = val[23] << 8 | val[22];
+//      }
+//      if (joySixCheckit == 0)  {
+//        joyStickSixData = val[25] << 8 | val[24];
+//      }
+//      if (servoCheckit == 0)  {
+//        servoDataReal = val[27] << 8 | val[26];
+//      }
+//      if (lightCheckit == 0)  {
+//        lightData = val[29] << 8 | val[28];
+//      }
+//    }
+//  }
     Serial.print("A");
     Serial.print(insideTemperatureData);
     Serial.print("B");
