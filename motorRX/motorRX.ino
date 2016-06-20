@@ -397,77 +397,11 @@ if ((Joystick2B < 482) && (((Joystick1A < 542) && (Joystick1A > 482)) && ((Joyst
   digitalWrite (V3Direction, HIGH);
   digitalWrite (V4Direction, LOW);}
 
-////FOR FORABACK
-//
-//if ((Joystick3A > 570) && ((Joystick3B > 430) && (Joystick3B < 570)) && ((Joystick1B > 430) && (Joystick1B < 570))) {
-//    ForBack = map(Joystick3A, 570, 1023, 0, 255);
-//  analogWrite (H1PWM, ForBack);
-//  analogWrite (H2PWM, ForBack);
-//  analogWrite (H3PWM, ForBack);
-//  analogWrite (H4PWM, ForBack); 
-//  delayMicroseconds(100); 
-//  digitalWrite (H1Direction, HIGH);
-//  digitalWrite (H2Direction, LOW);
-//  digitalWrite (H3Direction, LOW);
-//  digitalWrite (H4Direction, HIGH);}
-//
-//if (((Joystick3A < 570) && (Joystick3A > 430)) && ((Joystick3B > 430) && (Joystick3B < 570)) && ((Joystick1B > 430) && (Joystick1B < 570))) {
-//  analogWrite (H1PWM, 0);
-//  analogWrite (H2PWM, 0);
-//  analogWrite (H3PWM, 0);
-//  analogWrite (H4PWM, 0);  
-//  delayMicroseconds(100);
-//  digitalWrite (H1Direction, LOW);
-//  digitalWrite (H2Direction, LOW);
-//  digitalWrite (H3Direction, LOW);
-//  digitalWrite (H4Direction, LOW);}
-//
-//if ((Joystick3A < 430) && ((Joystick3B > 430) && (Joystick3B < 570)) && ((Joystick1B > 430) && (Joystick1B < 570))) {
-//    ForBack = map(Joystick3A, 0, 430, 255, 0);
-//  analogWrite (H1PWM, ForBack);
-//  analogWrite (H2PWM, ForBack);
-//  analogWrite (H3PWM, ForBack);
-//  analogWrite (H4PWM, ForBack);  
-//  delayMicroseconds(100);
-//  digitalWrite (H1Direction, LOW);
-//  digitalWrite (H2Direction, HIGH);
-//  digitalWrite (H3Direction, HIGH);
-//  digitalWrite (H4Direction, LOW);}
-//  
-//// FOR YAW:
-//
-//  
-//if (((Joystick3B > 570) && ((Joystick3A < 570) && (Joystick3A > 430))) && ((Joystick1B < 570) && (Joystick1B > 430))) {
-//    Yaw = map(Joystick3B, 570, 1023, 0, 255);
-//  analogWrite (H1PWM, Yaw);
-//  analogWrite (H2PWM, Yaw);
-//  analogWrite (H3PWM, Yaw);
-//  analogWrite (H4PWM, Yaw);
-//  delayMicroseconds(100);
-//  digitalWrite (H1Direction, HIGH);
-//  digitalWrite (H2Direction, HIGH);
-//  digitalWrite (H3Direction, HIGH);
-//  digitalWrite (H4Direction, HIGH);
-//  }
-//  
-//if (((Joystick3B < 430) && ((Joystick3A < 570) && (Joystick3A > 430))) && ((Joystick1B < 570) && (Joystick1B > 430))) {
-//    Yaw = map(Joystick3B, 0, 430, 255, 0);
-//  analogWrite (H1PWM, Yaw);
-//  analogWrite (H2PWM, Yaw);
-//  analogWrite (H3PWM, Yaw);
-//  analogWrite (H4PWM, Yaw);
-//  delayMicroseconds(100);
-//  digitalWrite (H1Direction, LOW);
-//  digitalWrite (H2Direction, LOW);
-//  digitalWrite (H3Direction, LOW);
-//  digitalWrite (H4Direction, LOW);
-//  }  
+
 
 // FORBACK AND YAW ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-Serial.print("Joystick3AMap:"); Serial.print(Joystick3AMap);
-Serial.print("      Joystick3BMap:"); Serial.println(Joystick3BMap);
 
 if (Joystick3AMap > 30) { //3A is up
   if (Joystick3BMap > 30) { //3B is to right 
@@ -571,7 +505,7 @@ if (Joystick3AMap > 30) { //3A is up
     }
   }
 }
-delay(10);
+
 if (-30 > Joystick3AMap) { //3A down
   if (Joystick3BMap > 30) { //3B right
     if ((abs(Joystick3AMap) > abs(Joystick3BMap)) && ((abs(abs(Joystick3AMap) - abs(Joystick3BMap)) > 30))){ //3A is bigger
@@ -754,63 +688,6 @@ if (((Joystick3BMap < 30) && (Joystick3BMap > -30)) && ((Joystick3AMap < 30) && 
   digitalWrite (H4Direction, LOW);  
 }
 
-
-
-
-
-// FOR FORBACK AND CRAB~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~`
-//
-//if ((Joystick1B > 542) && (Joystick3A > 542)) {
-//    ForBack = map(Joystick3A, 542, 1023, 0, 255);
-//    Crab = map(Joystick1B, 542, 1023, ForBack, 0);
-//  analogWrite (H1PWM, ForBack);
-//  analogWrite (H2PWM, Crab);
-//  analogWrite (H3PWM, ForBack);
-//  analogWrite (H4PWM, Crab);
-//  delayMicroseconds(100);
-//  digitalWrite (H1Direction, HIGH);
-//  digitalWrite (H2Direction, LOW);
-//  digitalWrite (H3Direction, LOW);
-//  digitalWrite (H4Direction, HIGH); }
-//  
-//if ((Joystick1B < 482) && (Joystick3A > 542)) {
-//    ForBack = map(Joystick3A, 542, 1023, 0, 255);
-//    Crab = map(Joystick1B, 482, 0, ForBack, 0);
-//  analogWrite (H1PWM, Crab);
-//  analogWrite (H2PWM, ForBack);
-//  analogWrite (H3PWM, Crab);
-//  analogWrite (H4PWM, ForBack);
-//  delayMicroseconds(100);
-//  digitalWrite (H1Direction, HIGH);
-//  digitalWrite (H2Direction, LOW);
-//  digitalWrite (H3Direction, LOW);
-//  digitalWrite (H4Direction, HIGH); }
-//  
-//if ((Joystick1B > 542) && (Joystick3A < 482)) {
-//    ForBack = map(Joystick3A, 0, 482, 255, 0);
-//    Crab = map(Joystick1B, 542, 1023, ForBack, 0);
-//  analogWrite (H1PWM, ForBack);
-//  analogWrite (H2PWM, Crab);
-//  analogWrite (H3PWM, ForBack);
-//  analogWrite (H4PWM, Crab);
-//  delayMicroseconds(100);
-//  digitalWrite (H1Direction, LOW);
-//  digitalWrite (H2Direction, HIGH);
-//  digitalWrite (H3Direction, HIGH);
-//  digitalWrite (H4Direction, LOW); }
-//  
-//if ((Joystick1B < 482) && (Joystick3A < 482)) {
-//    ForBack = map(Joystick3A, 0, 482, 255, 0);
-//    Crab = map(Joystick1B, 482, 0, ForBack, 0);
-//  analogWrite (H1PWM, Crab);
-//  analogWrite (H2PWM, ForBack);
-//  analogWrite (H3PWM, Crab);
-//  analogWrite (H4PWM, ForBack);
-//  delayMicroseconds(100);
-//  digitalWrite (H1Direction, LOW);
-//  digitalWrite (H2Direction, HIGH);
-//  digitalWrite (H3Direction, HIGH);
-//  digitalWrite (H4Direction, LOW); }
 
 
 // NOTE: CRAB AND YAW DON'T WORK TOGETHER!!!
