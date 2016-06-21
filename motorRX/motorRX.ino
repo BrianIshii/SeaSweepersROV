@@ -280,8 +280,8 @@ if (LightVal<0){
   LightVal=0;
 }
 
-Joystick3AMap = map(Joystick3A, 0, 1023, 512, -512);
-Joystick3BMap = map(Joystick3B, 0, 1023, 512, -512);
+Joystick3AMap = map(Joystick3A, 0, 1023, -512, 512);
+Joystick3BMap = map(Joystick3B, 0, 1023, -512, 512);
   if (Joystick3AMap > 512){
   Joystick3AMap = 512;}
   if (Joystick3AMap < -512){
